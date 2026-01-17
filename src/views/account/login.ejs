@@ -9,21 +9,20 @@
     <title>lotus lottery Lottery</title>
     <link href="/css/account/chunk-vendors.css" rel="stylesheet" />
     <link href="/css/account/app.css" rel="stylesheet" />
+    <link href="/css/main.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/images/bitbug_favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
-    		<link rel="stylesheet" href="https://goagames.in/assets/css/modules-8b01ca49.css">
-		<link rel="stylesheet" href="https://goagames.in/assets/css/page-activity-323fd479.css">
-		<link rel="stylesheet" href="https://goagames.in/assets/css/page-home-fe71694e.css">
-		<link rel="stylesheet" href="https://goagames.in/assets/css/index-0d5f8a5b.css">
-	<link rel="modulepreload" as="script" crossorigin="" href="/assets/js/page-login-65aad3be.js"><link rel="stylesheet" href="https://goagames.in/assets/css/page-login-b269684e.css">
+    <link rel="stylesheet" href="/css/account/app.css">
+    <link rel="stylesheet" href="/css/account/chunk-vendors.css">
     <style>
         html,
         body {
             height: 100%;
             width: 100%;
-            background-color: #9195a3;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 0;
             margin: 0;
+            font-family: var(--font-family-base);
         }
 
         .msg-content {
@@ -45,50 +44,111 @@
                 transform: scale(1, 1);
             }
         }
+        
         .btn {
-  border: 1px solid red;
-  background-color: white;
-  color: black;
-  padding: 14px 28px;
-  font-size: 20px;
-  height: 43px;
-  cursor: pointer;
-  box-shadow: 1px 1px 10px #888888;
-  width: 90%;
-  margin-left: 16px;
-}
+            border: 2px solid #6366f1;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            height: auto;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            width: 90%;
+            margin-left: 16px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
 
-.success {
-  font-weight: 600 ;
-  color: red;
-}
-.footer{
-	margin-top: 1vw;
-	display: flex;
-	width: 100%;
-}
-.footer .footer_data{
-    width: 50%;
-}
-.footer .footer_data img{
-    width: 4vw; 
-    margin-left: 4.2vw;
-}
-.footer .footer_data p{
-    text-align:center;
-}
- @media (max-width:600px) {
- .footer {
-        margin-top: 5vw;
-        display: flex;
-        width: 100%;
-    }
-    .footer .footer_data img {
-        width: 10vw;
-        margin-left: 15vw;
-    }
- }
-
+        .success {
+            font-weight: 600;
+            color: white;
+            background: transparent;
+            border: 2px solid white;
+        }
+        
+        .success:hover {
+            background: white;
+            color: #6366f1;
+        }
+        
+        .footer{
+            margin-top: 2rem;
+            display: flex;
+            width: 100%;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .footer .footer_data{
+            width: auto;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .footer .footer_data:hover {
+            transform: scale(1.05);
+        }
+        
+        .footer .footer_data img{
+            width: 48px; 
+            height: 48px;
+            margin: 0 auto 0.5rem;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .footer .footer_data p{
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item {
+            border-radius: 12px !important;
+            border: 2px solid #e2e8f0 !important;
+            transition: all 0.3s ease;
+        }
+        
+        .item:focus-within {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        input[type="tel"],
+        input[type="password"] {
+            border: none !important;
+            outline: none !important;
+        }
+        
+        @media (max-width:600px) {
+            .footer {
+                margin-top: 2rem;
+                display: flex;
+                width: 100%;
+                gap: 0.5rem;
+            }
+            .footer .footer_data img {
+                width: 40px;
+                height: 40px;
+            }
+        }
     </style>
 </head>
 

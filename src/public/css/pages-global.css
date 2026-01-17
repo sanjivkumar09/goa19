@@ -1,0 +1,320 @@
+/* Global Page Styles for All User-Facing Pages */
+
+/* Page Container */
+.mian {
+    min-height: 100vh;
+    background: var(--bg-gray, #f5f6fa);
+    padding-bottom: 80px;
+}
+
+/* Navbar Styles */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    color: var(--text-white);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 100;
+}
+
+.navbar-title {
+    font-size: 18px;
+    font-weight: bold;
+    flex: 1;
+    text-align: center;
+}
+
+.navbar-left, .navbar-right {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-left img, .navbar-right img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* Card Styles */
+.card {
+    background: #fff;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Button Styles */
+.btn-primary {
+    background: var(--primary-green);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 25px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.btn-secondary {
+    background: #fff;
+    color: var(--primary-green);
+    padding: 12px 24px;
+    border-radius: 25px;
+    border: 2px solid var(--primary-green);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+    background: var(--primary-green);
+    color: #fff;
+}
+
+/* Rewards/CheckIn Specific Styles */
+.check-box {
+    padding: 20px;
+}
+
+.check-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.check-header .tit {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin: 0 0 16px 0;
+}
+
+.check-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.check-item {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.check-item:hover {
+    transform: translateY(-4px);
+}
+
+.check-item.received {
+    background: #ccc;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.check-item .amount {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.check-item .status {
+    font-size: 14px;
+}
+
+/* Wallet Styles */
+.wallet-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    color: #fff;
+    padding: 32px 20px;
+    text-align: center;
+}
+
+.wallet-balance {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 16px 0 8px 0;
+}
+
+.wallet-label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.wallet-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 20px;
+}
+
+.wallet-action-btn {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-dark);
+}
+
+.wallet-action-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.wallet-action-btn img {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 8px;
+}
+
+.wallet-action-btn .label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Member/Profile Styles */
+.member-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    color: #fff;
+    padding: 32px 20px;
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.member-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-avatar img {
+    width: 48px;
+    height: 48px;
+}
+
+.member-details {
+    flex: 1;
+}
+
+.member-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+}
+
+.member-id {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.member-menu {
+    padding: 20px;
+}
+
+.menu-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-dark);
+}
+
+.menu-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+}
+
+.menu-item .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-item .icon img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+}
+
+.menu-item .label {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.menu-item .arrow {
+    color: var(--text-light);
+}
+
+/* Loading Overlay */
+.van-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+}
+
+.Loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 10000;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .check-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .wallet-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

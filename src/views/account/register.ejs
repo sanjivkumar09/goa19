@@ -11,6 +11,7 @@
     <link href="/css/account/app.css" rel="stylesheet" />
     <link href="/css/account/chunk.css" rel="stylesheet" />
     <link href="/css/account/chunk-3abb8cfe.27bda068.css" rel="stylesheet" />
+    <link href="/css/main.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/images/bitbug_favicon.ico" type="image/x-icon" />
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
     <style>
@@ -18,9 +19,46 @@
         body {
             height: 100%;
             width: 100%;
-            background-color: #9195a3;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 0;
             margin: 0;
+            font-family: var(--font-family-base);
+        }
+        
+        .forgot-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        
+        .item {
+            border-radius: 12px !important;
+            border: 2px solid #e2e8f0 !important;
+            transition: all 0.3s ease;
+        }
+        
+        .item:focus-within {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        input[type="tel"],
+        input[type="password"],
+        input[type="text"] {
+            border: none !important;
+            outline: none !important;
+        }
+        
+        .van-button {
+            border-radius: 12px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .van-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
         }
         .msg-content {
             animation: zoom-in 0.45s ease reverse;
@@ -98,15 +136,6 @@
             
             <input data-v-d8986e5e="" id="password" data-v-7ee4aaeb="" type="password" placeholder="Please Enter The Password" οnkeyup="value=value.replace(/[^\w\.\/]/ig,'')" class="pw-input">
             <span toggle="#password-field" class="fa fa-fw fa-eye field_icon toggle-password" style="margin: 10px;"></span>
-        </div>
-        <span data-v-7ee4aaeb="" class="img c-row">
-                <img data-v-7ee4aaeb="" height="20px" width="18px" src="/images/download.png" class="password">
-                <span data-v-7ee4aaeb=""><p style="
-    margin: 0.3vw 0 0 1vw;"> Invite Code</p></span>
-            </span>
-        <div data-v-7ee4aaeb="" class="item c-row c-row-center c-row-middle">
-           
-            <input data-v-7ee4aaeb="" id="invite" type="text" placeholder="Please Enter The Invitation code">
         </div>
         <div data-v-7ee4aaeb="" class="c-row c-row-middle">
             <div data-v-7ee4aaeb="" role="checkbox" tabindex="0" aria-checked="true" class="van-checkbox">
@@ -243,7 +272,7 @@
         }
 
         function validateForm(username, password, invite, checkbox, text) {
-            if (!username || !invite || !checkbox || !password) {
+            if (!username || !checkbox || !password) {
                 alertMess(text);
                 return false;
             } else {
@@ -256,7 +285,7 @@
             let username = $('#username').val().trim();
             // let otp = $('#otp').val().trim();
             let password = $('#password').val().trim();
-            let invite = $('#invite').val().trim();
+            let invite = '';
             let checkbox = $('.van-checkbox__icon').hasClass('van-checkbox__icon--checked');
             let status = validateForm(username, password, invite, checkbox, 'Please fill in the required section');
             if (status) {
@@ -333,7 +362,7 @@
         var url = new URL(window.location.href);
         var c = url.searchParams.get("r_code");
         if (c) {
-            $('#invite').val(c);
+            setCookie('invite_code', c, 7);
         }
     </script>
     <script>

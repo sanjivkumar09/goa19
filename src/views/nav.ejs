@@ -1,12 +1,50 @@
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/home-modern.css">
 <style>
     .block-click {
         pointer-events: none;  
     }
     .van-tabbar {
-    background: url(/images/tabBarBg.png);
-    left: auto !important;
-    background-position: center;
-}
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08) !important;
+        border-top: 1px solid rgba(0,0,0,0.05) !important;
+        left: auto !important;
+        padding: 8px 0 max(8px, env(safe-area-inset-bottom)) !important;
+    }
+    .van-tabbar-item {
+        transition: all 0.25s ease;
+        margin: 0 4px;
+        flex-direction: column;
+    }
+    .van-tabbar-item__text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .van-tabbar-item__text img {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 4px;
+        filter: grayscale(1) opacity(0.6);
+        transition: filter 0.2s, transform 0.25s ease;
+    }
+    .van-tabbar-item:hover .van-tabbar-item__text img {
+        transform: scale(1.1);
+    }
+    .van-tabbar-item.block-click .van-tabbar-item__text img {
+        filter: grayscale(0) opacity(1);
+    }
+    .van-tabbar-item__text .name {
+        font-size: 11px;
+        font-weight: 500;
+        color: #7f8c8d;
+    }
+    .van-tabbar-item.block-click .van-tabbar-item__text .name {
+        color: #2ecc71;
+        font-weight: 600;
+    }
 </style>
 <div data-v-432e6ed0="" class="nav c-pr" id="nav_checkUrl" data-url="">
     <div class="van-hairline--top-bottom van-tabbar van-tabbar--fixed">
