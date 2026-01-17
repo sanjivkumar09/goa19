@@ -254,7 +254,6 @@
       margin-top: 10px;
       
     }
-    #conBar li{}
     #conBar li a{text-decoration: none;color: #3aa0fa;}
   </style>
 
@@ -337,9 +336,10 @@
 
 <script src="./Payment_files/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-  if ('ontouchstart' in document.documentElement) document.write( // 如果是H5
-    "<script src='./Payment_files/jquery.mobile.custom.min.js'> " + " < " + " / script > ");  // 加载 jquery.mobile.custom.min.js
-</script><script src="./Payment_files/jquery.mobile.custom.min.js">  <  / script > 
+  if ('ontouchstart' in document.documentElement) {
+    document.write("<script src='./Payment_files/jquery.mobile.custom.min.js'><\/script>");
+  }
+</script>
 <script src="./Payment_files/jquery.mobile.custom.min.js"></script>
 <script src="./Payment_files/check.min.js"></script>
 <!-- <script src="./Payment_files/jquery.qrcode.min.js"></script> -->
@@ -421,7 +421,6 @@
   var pay_module = "idpay";
   var request_order = "pay_20211007212245006687";
   var channel_code = "india_bankpay_self_jiang_pay";
-  
 
 
 
