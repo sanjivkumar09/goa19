@@ -286,7 +286,7 @@
 
     <div class="cp">
       <p style="font-weight: bold;color:rgb(175, 175, 175)">UPI ID</p>
-      <p><span id="upiC" style="color:red">im.201022148330@indus</span>&nbsp;&nbsp;&nbsp;<a data-clipboard-target="#upiC" href="javascript:;" class="iconfont icon-copy btn-copy" style="text-decoration: none; color:black"></a></p>
+      <p><span id="upiC" style="color:red">Loading...</span>&nbsp;&nbsp;&nbsp;<a data-clipboard-target="#upiC" href="javascript:;" class="iconfont icon-copy btn-copy" style="text-decoration: none; color:black"></a></p>
       </div><br>
 
     <a id="qrcodeC">
@@ -295,7 +295,7 @@
       <div id="qrcode-footer"></div>
     </a>
     <div style="display:flex;justify-content:center"><a id="download" style="text-decoration: none; color: rgb(78, 205, 255);border: 1px solid rgb(78, 205, 255);font-size: 12px;padding: 5px; border-radius: 999em;" href="javascript:;">Download</a></div>
-    <p style="text-align: center; color:#eb7100">hava you paid successfully?</p><br>
+    <p style="text-align: center; color:#eb7100; font-weight: 600; font-size: 16px;">Have you paid successfully?</p><br>
     <p style="text-align: center ">Paytm, PhonePe, GooglePay, Other Bank</p><br>
 
     <div class="choese">
@@ -729,16 +729,50 @@
                 let data = response.datas;
                 let infoBank = response.infoBank;
                 if (!data) {
-                    alert("order id invalid");
-                    window.location.href = "/wallet/recharge";
+                    $('body').append(`
+                        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 400px; text-align: center;">
+                                <div style="font-size: 50px; color: #f44336; margin-bottom: 15px;">❌</div>
+                                <h3 style="color: #333; margin-bottom: 15px; font-size: 20px;">Invalid Order</h3>
+                                <p style="color: #666; margin-bottom: 25px;">The order ID is invalid. Please create a new deposit request.</p>
+                                <button onclick="window.location.href='/wallet/recharge'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 40px; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: 600;">OK</button>
+                            </div>
+                        </div>
+                    `);
+                    setTimeout(() => {
+                        window.location.href = "/wallet/recharge";
+                    }, 3000);
+                    return;
                 };
-                if (data.utr != 0) {
-                    alert("UTR already submitted for this order wait for verification");
-                    window.location.href = "/wallet/recharge";
+                // Check if UTR has been submitted (must have a valid value, not 0, null, or empty)
+                if (data.utr && data.utr !== 0 && data.utr !== '0' && data.utr !== '' && data.utr !== null) {
+                    // Show better styled message instead of browser alert
+                    $('body').append(`
+                        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+                            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 400px; text-align: center;">
+                                <div style="font-size: 50px; color: #ff9800; margin-bottom: 15px;">⚠️</div>
+                                <h3 style="color: #333; margin-bottom: 15px; font-size: 20px;">UTR Already Submitted</h3>
+                                <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">Your UTR has already been submitted for this order. Please wait for verification. This process usually takes 5-10 minutes.</p>
+                                <button onclick="window.location.href='/wallet/recharge'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 40px; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: 600;">OK</button>
+                            </div>
+                        </div>
+                    `);
+                    setTimeout(() => {
+                        window.location.href = "/wallet/recharge";
+                    }, 5000);
+                    return;
                 }
                 $('.submit').attr('id', data.id_order);
                 let i = 0;
+                // Update UPI ID
+                $('#upiC').text(infoBank[i].stk);
                 $('#idup').text(infoBank[i].stk);
+                
+                // Update QR Code
+                if (infoBank[i].qr_code_image) {
+                    $('#qrcodeImg').html(`<img src="${infoBank[i].qr_code_image}" alt="QR Code" style="width: 200px; height: 200px;">`);
+                }
+                
                 $('#amount').text('₹ ' + data.money);
                 $('.info .box .text:eq(4)').text(data.id_order);
             }

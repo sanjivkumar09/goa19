@@ -351,7 +351,12 @@
                             setCookie('auth', response.value, 1);
                             // alertMess(response.message);
                             setTimeout(() => {
-                                location.href = '/home';
+                                // Redirect to admin panel if user is admin (level 1)
+                                if (response.level === 1) {
+                                    location.href = '/admin/manager/index';
+                                } else {
+                                    location.href = '/home';
+                                }
                             }, 500);
                         } else {
                             $('.van-overlay').fadeOut(300);

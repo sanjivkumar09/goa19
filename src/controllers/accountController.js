@@ -81,7 +81,8 @@ const login = async (req, res) => {
                     message: 'Login Sucess',
                     status: true,
                     token: accessToken,
-                    value: md5(accessToken)
+                    value: md5(accessToken),
+                    level: rows[0].level
                 });
             } else {
                 return res.status(200).json({

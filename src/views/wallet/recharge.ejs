@@ -7776,20 +7776,20 @@
                                 <div data-v-67caa467="" class="input van-cell van-field">
                                     <div class="van-cell__value van-cell__value--alone van-field__value">
                                         <div class="van-field__body">
-                                            <input type="tel" id="ramount" inputmode="numeric" oninput="value=value.replace(/\D/g,'')" placeholder="₹ 200 ~ 20000" class="van-field__control ">
+                                            <input type="tel" id="ramount" inputmode="numeric" oninput="value=value.replace(/\D/g,'')" placeholder="₹ 500 ~ 20000" class="van-field__control ">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div data-v-67caa467="" class="list m-t-10 c-row c-row-between c-flex-warp">
-                                <div data-v-67caa467="" data-money="200" class="li action">
-                                    <span data-v-67caa467="" class="number">₹200</span>
-                                </div>
-                                <div data-v-67caa467="" data-money="500" class="li">
+                                <div data-v-67caa467="" data-money="500" class="li action">
                                     <span data-v-67caa467="" class="number">₹500</span>
                                 </div>
                                 <div data-v-67caa467="" data-money="1000" class="li">
                                     <span data-v-67caa467="" class="number">₹1000</span>
+                                </div>
+                                <div data-v-67caa467="" data-money="2000" class="li">
+                                    <span data-v-67caa467="" class="number">₹2000</span>
                                 </div>
                                 <div data-v-67caa467="" data-money="5000" class="li">
                                     <span data-v-67caa467="" class="number">₹5000</span>
@@ -7801,17 +7801,44 @@
                                     <span data-v-67caa467="" class="number">₹20000</span>
                                 </div>
                             </div>
-                            <div data-v-67caa467="">
-                                <div data-v-67caa467="" class="des">
-                                    * The UPI payment gateway offers an additional 5% bonus on First deposit.
-                                </div>
-                              
-                                <div data-v-67caa467="" class="des">
-                                    If you transfer the wrong amount as instructed, the funds will be lost, and our
-                                    company will not be held responsible! </div>  
-                                <div data-v-67caa467="" class="des">
-                                    * Note: You must deposit the exact amount as instructed in the order. The system
-                                    will automatically update the bonus funds.
+                            <div data-v-67caa467="" style="margin-top: 20px;">
+                                <div style="background: #f0f8ff; border-left: 4px solid #4CAF50; padding: 15px; margin-bottom: 15px; border-radius: 4px;">
+                                    <h4 style="margin: 0 0 10px 0; color: #333; font-size: 16px; font-weight: 600;">📋 Rules & Regulations</h4>
+                                    
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                        <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Minimum deposit amount is ₹500</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                        <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Maximum deposit amount is ₹20,000</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                        <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">First deposit receives an additional 5% bonus</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                        <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">You must deposit the exact amount shown in the order</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                        <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Bonus funds will be automatically credited after deposit confirmation</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                        <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Deposit processing time: 5-10 minutes</span>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: flex-start;">
+                                        <span style="color: #ff5722; margin-right: 10px; font-size: 12px;">⚠️</span>
+                                        <span style="color: #d32f2f; font-size: 14px; line-height: 1.6; font-weight: 500;">If you transfer the wrong amount, the funds will be lost and our company will not be held responsible!</span>
+                                    </div>
                                 </div>
                             </div>
                             <div data-v-67caa467="" class="btn-list c-row c-row-center m-t-30">
@@ -7935,7 +7962,7 @@
             $(this).addClass('block-click');
             let money = $('#ramount').val().trim();
             let type = $('.pay-box:eq(0) .list').find('.action').attr('type');
-            if (money && money >= 20 && money <= 20000) { 
+            if (money && money >= 500 && money <= 20000) { 
                 $.ajax({
                     type: "POST",
                     url: "/api/webapi/recharge",
@@ -7965,7 +7992,7 @@
                 });
                 return true;
             }
-            alertMess('Deposit amount range : 200~20000', $(this));
+            alertMess('Deposit amount range : ₹500 ~ ₹20,000', $(this));
         });
         // $('.submit').click(function (e) {
         //     e.preventDefault();
