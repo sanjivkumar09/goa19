@@ -21,8 +21,16 @@ configViewEngine(app);
 // init Web Routes
 routes.initWebRouter(app);
 
-// Cron game 1 Phut 
-cronJobContronler.cronJobGame1p(io);
+// Initialize game periods on server start
+cronJobContronler.initializeGamePeriods().then(() => {
+    console.log('Games initialized successfully!');
+    // Cron game 1 Phut 
+    cronJobContronler.cronJobGame1p(io);
+}).catch(err => {
+    console.error('Failed to initialize games:', err);
+    // Start cron jobs anyway with safety checks
+    cronJobContronler.cronJobGame1p(io);
+});
 
 // Check xem ai connect vào sever 
 socketIoController.sendMessageAdmin(io);

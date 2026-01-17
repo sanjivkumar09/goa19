@@ -274,6 +274,13 @@ const addK3 = async (game) => {
         let result2 = makeid(3);
         let timeNow = Date.now();
         let [k5D] = await connection.query(`SELECT period FROM k3 WHERE status = 0 AND game = ${game} ORDER BY id DESC LIMIT 1 `);
+        
+        // Check if there's an active period
+        if (!k5D || k5D.length === 0) {
+            console.log(`No active K3 period found for game: ${game}`);
+            return;
+        }
+        
         const [setting] = await connection.query('SELECT * FROM `admin` ');
         let period = k5D[0].period;
 

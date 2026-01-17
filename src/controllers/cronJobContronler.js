@@ -4,6 +4,62 @@ import k5Controller from "./k5Controller";
 import k3Controller from "./k3Controller";
 import cron from 'node-cron';
 
+// Initialize game periods if they don't exist
+const initializeGamePeriods = async () => {
+    try {
+        const timeNow = Date.now();
+        
+        // Initialize WinGo games
+        const wingoGames = [
+            { game: 1, name: 'wingo' },
+            { game: 3, name: 'wingo3' },
+            { game: 5, name: 'wingo5' },
+            { game: 10, name: 'wingo10' }
+        ];
+        
+        for (const { game, name } of wingoGames) {
+            const [existing] = await connection.query(`SELECT * FROM wingo WHERE game = '${name}' AND status = 0 LIMIT 1`);
+            if (!existing || existing.length === 0) {
+                console.log(`Initializing ${name} game period...`);
+                await connection.execute(
+                    `INSERT INTO wingo (period, amount, game, status, time) VALUES (?, ?, ?, ?, ?)`,
+                    [1, 0, name, 0, timeNow]
+                );
+            }
+        }
+        
+        // Initialize K3 games
+        const k3Games = [1, 3, 5, 10];
+        for (const game of k3Games) {
+            const [existing] = await connection.query(`SELECT * FROM k3 WHERE game = ${game} AND status = 0 LIMIT 1`);
+            if (!existing || existing.length === 0) {
+                console.log(`Initializing K3 game ${game} period...`);
+                await connection.execute(
+                    `INSERT INTO k3 (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
+                    [1, 0, game, 0, timeNow]
+                );
+            }
+        }
+        
+        // Initialize 5D games
+        const d5Games = [1, 3, 5, 10];
+        for (const game of d5Games) {
+            const [existing] = await connection.query(`SELECT * FROM 5d WHERE game = ${game} AND status = 0 LIMIT 1`);
+            if (!existing || existing.length === 0) {
+                console.log(`Initializing 5D game ${game} period...`);
+                await connection.execute(
+                    `INSERT INTO 5d (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
+                    [1, '00000', game, 0, timeNow]
+                );
+            }
+        }
+        
+        console.log('Game periods initialization complete!');
+    } catch (error) {
+        console.error('Error initializing game periods:', error);
+    }
+};
+
 const cronJobGame1p = (io) => {
     cron.schedule('*/1 * * * *', async() => {
         await winGoController.addWinGo(1);
@@ -90,5 +146,6 @@ const cronJobGame1p = (io) => {
 }
 
 module.exports = {
-    cronJobGame1p
+    cronJobGame1p,
+    initializeGamePeriods
 };
