@@ -8,27 +8,53 @@
         background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08) !important;
-        border-top: 1px solid rgba(0,0,0,0.05) !important;
-        left: auto !important;
-        padding: 8px 0 max(8px, env(safe-area-inset-bottom)) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+        border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+        position: fixed !important;
+        top: 0 !important;
+        bottom: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        padding: 12px 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        z-index: 999 !important;
     }
     .van-tabbar-item {
         transition: all 0.25s ease;
-        margin: 0 4px;
-        flex-direction: column;
+        margin: 0 8px;
+        flex-direction: column !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        cursor: pointer;
+        min-width: 70px;
+    }
+    .van-tabbar-item:hover {
+        background: rgba(46, 204, 113, 0.1) !important;
     }
     .van-tabbar-item__text {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px !important;
     }
     .van-tabbar-item__text img {
         width: 24px;
         height: 24px;
-        margin-bottom: 4px;
+        margin-bottom: 4px !important;
         filter: grayscale(1) opacity(0.6);
         transition: filter 0.2s, transform 0.25s ease;
+    }
+    .van-tabbar-item__text > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .van-tabbar-item:hover .van-tabbar-item__text img {
         transform: scale(1.1);
@@ -37,13 +63,23 @@
         filter: grayscale(0) opacity(1);
     }
     .van-tabbar-item__text .name {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 500;
         color: #7f8c8d;
+        margin-bottom: 0 !important;
+        margin-top: 0 !important;
+        text-align: center;
     }
     .van-tabbar-item.block-click .van-tabbar-item__text .name {
         color: #2ecc71;
         font-weight: 600;
+    }
+    .van-tabbar-item.block-click {
+        background: rgba(46, 204, 113, 0.15) !important;
+    }
+    /* Add padding to body to prevent content from hiding under fixed navbar */
+    body {
+        padding-top: 70px !important;
     }
 </style>
 <div data-v-432e6ed0="" class="nav c-pr" id="nav_checkUrl" data-url="">
@@ -78,7 +114,7 @@
                 <div class="muan">
                     <img src="/images/invite.webp" class="img">
                 </div>
-                <span class="name" style="margin-bottom: 10px;">Promotion</span>
+                <span class="name">Promotion</span>
             </div>
         </div>
         <div class="van-tabbar-item" data-url="/wallet" onclick="location.href='/wallet'">
