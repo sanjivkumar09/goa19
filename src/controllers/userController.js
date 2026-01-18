@@ -1,9 +1,10 @@
-import connection from "../config/connectDB";
-import jwt from 'jsonwebtoken'
-import md5 from "md5";
-import request from 'request';
-require('dotenv').config();
+const connection = require("../config/connectDB.js");
+const jwt = require('jsonwebtoken');
+const md5 = require("md5");
+const request = require('request');
+const dotenv = require('dotenv');
 const axios = require('axios');
+dotenv.config();
 let timeNow = Date.now();
 
 const randomNumber = (min, max) => {
@@ -1664,4 +1665,4 @@ module.exports = {
     search,
     updateRecharge,
     confirmRecharge,
-}
+};

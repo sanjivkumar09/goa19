@@ -1,6 +1,7 @@
-import e from "express";
-import connection from "../config/connectDB";
-require('dotenv').config();
+const e = require("express");
+const connection = require("../config/connectDB.js");
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 const K5DPage = async (req, res) => {
@@ -600,4 +601,4 @@ module.exports = {
     GetMyEmerdList,
     add5D,
     handling5D
-}
+};

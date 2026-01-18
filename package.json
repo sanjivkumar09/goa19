@@ -5,8 +5,8 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "database": "babel-node src/modal/CreateDatabase.js",
-        "start": "babel-node src/server.js"
+        "database": "node src/modal/CreateDatabase.js",
+        "start": "node src/server.js"
     },
     "author": "",
     "license": "ISC",

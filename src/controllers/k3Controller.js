@@ -1,5 +1,6 @@
-import connection from "../config/connectDB";
-require('dotenv').config();
+const connection = require("../config/connectDB.js");
+const dotenv = require('dotenv');
+dotenv.config();
 
 const K3Page = async (req, res) => {
     return res.render("bet/k3/k3.ejs");
@@ -1131,4 +1132,4 @@ module.exports = {
     handlingK3,
     listOrderOld,
     GetMyEmerdList
-}
+};

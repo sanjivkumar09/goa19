@@ -1,7 +1,8 @@
-import connection from "../config/connectDB";
-import jwt from 'jsonwebtoken'
-import md5 from "md5";
-require('dotenv').config();
+const connection = require("../config/connectDB.js");
+const jwt = require('jsonwebtoken');
+const md5 = require("md5");
+const dotenv = require('dotenv');
+dotenv.config();
 
 let timeNow = Date.now();
 
@@ -1299,4 +1300,4 @@ module.exports = {
     listWithdrawMem,
     listRedenvelope,
     listBet
-}
+};

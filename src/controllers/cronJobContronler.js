@@ -1,8 +1,8 @@
-import connection from "../config/connectDB";
-import winGoController from "./winGoController";
-import k5Controller from "./k5Controller";
-import k3Controller from "./k3Controller";
-import cron from 'node-cron';
+const connection = require("../config/connectDB.js");
+const winGoController = require("./winGoController.js");
+const k5Controller = require("./k5Controller.js");
+const k3Controller = require("./k3Controller.js");
+const cron = require('node-cron');
 
 // Initialize game periods if they don't exist
 const initializeGamePeriods = async () => {
@@ -145,7 +145,4 @@ const cronJobGame1p = (io) => {
     });
 }
 
-module.exports = {
-    cronJobGame1p,
-    initializeGamePeriods
-};
+module.exports = { cronJobGame1p, initializeGamePeriods };

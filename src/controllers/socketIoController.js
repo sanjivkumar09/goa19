@@ -1,5 +1,6 @@
-import connection from '../config/connectDB';
-require('dotenv').config();
+const connection = require('../config/connectDB.js');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const sendMessageAdmin = (io) => {
     io.on('connection', (socket) => {
@@ -20,6 +21,4 @@ const sendMessageAdmin = (io) => {
         // });
     });
 } 
-module.exports = {
-    sendMessageAdmin,
-}
+module.exports = { sendMessageAdmin };

@@ -1,13 +1,13 @@
-import express from 'express';
-import accountController from '../controllers/accountController';
-import homeController from '../controllers/homeController';
-import winGoController from '../controllers/winGoController';
-import userController from '../controllers/userController';
-import middlewareController from '../controllers/middlewareController';
-import adminController from '../controllers/adminController';
-import dailyController from '../controllers/dailyController';
-import k5Controller from '../controllers/k5Controller';
-import k3Controller from '../controllers/k3Controller';
+const express = require('express');
+const accountController = require('../controllers/accountController.js');
+const homeController = require('../controllers/homeController.js');
+const winGoController = require('../controllers/winGoController.js');
+const userController = require('../controllers/userController.js');
+const middlewareController = require('../controllers/middlewareController.js');
+const adminController = require('../controllers/adminController.js');
+const dailyController = require('../controllers/dailyController.js');
+const k5Controller = require('../controllers/k5Controller.js');
+const k3Controller = require('../controllers/k3Controller.js');
 let router = express.Router();
 
 const initWebRouter = (app) => {
@@ -15,8 +15,8 @@ const initWebRouter = (app) => {
     router.get('/login', accountController.loginPage);
     router.get('/register', accountController.registerPage);
     router.get('/forgot', accountController.forgotPage);
-    router.post('/api/sent/otp/verify', accountController.verifyCode);
-    router.post('/api/sent/otp/verify/reset', accountController.verifyCodePass);
+    // router.post('/api/sent/otp/verify', accountController.verifyCode);
+    // router.post('/api/sent/otp/verify/reset', accountController.verifyCodePass);
     router.post('/api/resetPasword', accountController.forGotPassword);
 
     // page home

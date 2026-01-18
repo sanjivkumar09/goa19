@@ -1,4 +1,4 @@
-import connection from '../config/connectDB';
+const connection = require('../config/connectDB');
 
 const middlewareController = async(req, res, next) => {
     // xác nhận token
@@ -20,4 +20,4 @@ const middlewareController = async(req, res, next) => {
     }
 }
 
-export default middlewareController;
+module.exports = middlewareController;

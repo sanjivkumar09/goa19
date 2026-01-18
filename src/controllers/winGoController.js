@@ -1,8 +1,9 @@
-import connection from "../config/connectDB";
-import jwt from 'jsonwebtoken'
-import md5 from "md5";
-import e from "express";
-require('dotenv').config();
+const connection = require("../config/connectDB.js");
+const jwt = require('jsonwebtoken');
+const md5 = require("md5");
+const e = require("express");
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 const winGoPage = async (req, res) => {
@@ -852,4 +853,4 @@ module.exports = {
     winGoPage3,
     winGoPage5,
     winGoPage10
-}
+};
