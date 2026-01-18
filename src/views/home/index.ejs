@@ -9,6 +9,45 @@
 	<title>Goa Games</title>
 	<link rel="stylesheet" href="/css/main.css">
 	<link rel="stylesheet" href="/css/home-modern.css">
+	<style>
+		@keyframes shineEffect {
+			0% {
+				background-position: -200% center;
+			}
+			100% {
+				background-position: 200% center;
+			}
+		}
+		
+		.game-card-shine {
+			position: relative;
+			overflow: hidden;
+		}
+		
+		.game-card-shine::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				90deg,
+				transparent 0%,
+				rgba(255, 255, 255, 0.3) 40%,
+				rgba(255, 255, 255, 0.5) 50%,
+				rgba(255, 255, 255, 0.3) 60%,
+				transparent 100%
+			);
+			animation: shineEffect 3s infinite;
+			pointer-events: none;
+			z-index: 10;
+		}
+		
+		.game-card-shine:hover::before {
+			animation: shineEffect 1.5s infinite;
+		}
+	</style>
 </head>
 <body class="home-page">
 	<!-- Logo Header -->
@@ -36,7 +75,63 @@
 		<a href="/promotion" class="detail-btn">Detail</a>
 	</div>
 
-	<!-- Category Icons -->
+	<!-- Lottery Section -->
+	<div class="section-header">
+		<h3>Lottery</h3>
+		<a href="/win" class="more-link">More ›</a>
+	</div>
+
+	<div class="games-container">
+		<div class="games-grid">
+			<a class="game-card game-card-shine" href="/win" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
+				<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg3.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
+					<img src="/images/logo-wingo.webp" alt="WinGo" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
+				</div>
+				<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">WinGo</div>
+			</a>
+			<a class="game-card game-card-shine" href="/k3" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
+				<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg1.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
+					<img src="/images/logo-k333.webp" alt="K3" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
+				</div>
+				<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">K3</div>
+			</a>
+			<a class="game-card game-card-shine" href="/5d" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
+				<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
+					<img src="/images/logo-lottery.webp" alt="5D" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
+				</div>
+				<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">5D</div>
+			</a>
+		</div>
+	</div>
+
+	<!-- Super Jackpot Section -->
+	<div class="section-header">
+		<h3>Super Jackpot</h3>
+		<a href="/win" class="more-link">›</a>
+	</div>
+	<div class="jackpot-section">
+		<p class="jackpot-info">When you win a super jackpot, you will receive additional rewards</p>
+		<p class="jackpot-amount">Maximum bonus ₹300.00</p>
+	</div>
+
+	<!-- Slots Section -->
+	<div class="section-header">
+		<h3>Slots</h3>
+		<a href="/win" class="more-link">›</a>
+	</div>
+	<div class="games-container">
+		<div class="games-grid">
+			<a class="game-card" href="/win">
+				<div class="game-image">
+					<img src="/images/bg1.png" alt="Win Crash">
+				</div>
+				<div class="game-name">Win Crash</div>
+				<div class="game-desc">Win/Crash to Win</div>
+			</a>
+		</div>
+	</div>
+
+	<!-- Category Icons (Moved Below Games) -->
 	<div class="category-section">
 		<div class="category-grid">
 			<a href="/win" class="category-item">
@@ -68,63 +163,6 @@
 					<img src="/images/s5.png" alt="Sports">
 				</div>
 				<span class="category-name">Sports</span>
-			</a>
-		</div>
-	</div>
-
-	<!-- Lottery Section -->
-	<div class="section-header">
-		<h3>Lottery</h3>
-		<a href="/win" class="more-link">More ›</a>
-	</div>
-
-	<div class="games-container">
-		<p class="section-subtitle">Fair and diverse lottery gameplay</p>
-		<div class="games-grid">
-			<a class="game-card" href="/win">
-				<div class="game-image">
-					<img src="/images/logo-wingo.webp" alt="WinGo">
-				</div>
-				<div class="game-name">WinGo</div>
-			</a>
-			<a class="game-card" href="/k3">
-				<div class="game-image">
-					<img src="/images/logo-k333.webp" alt="K3">
-				</div>
-				<div class="game-name">K3</div>
-			</a>
-			<a class="game-card" href="/5d">
-				<div class="game-image">
-					<img src="/images/logo-lottery.webp" alt="5D">
-				</div>
-				<div class="game-name">5D</div>
-			</a>
-		</div>
-	</div>
-
-	<!-- Super Jackpot Section -->
-	<div class="section-header">
-		<h3>Super Jackpot</h3>
-		<a href="/win" class="more-link">›</a>
-	</div>
-	<div class="jackpot-section">
-		<p class="jackpot-info">When you win a super jackpot, you will receive additional rewards</p>
-		<p class="jackpot-amount">Maximum bonus ₹300.00</p>
-	</div>
-
-	<!-- Slots Section -->
-	<div class="section-header">
-		<h3>Slots</h3>
-		<a href="/win" class="more-link">›</a>
-	</div>
-	<div class="games-container">
-		<div class="games-grid">
-			<a class="game-card" href="/win">
-				<div class="game-image">
-					<img src="/images/bg1.png" alt="Win Crash">
-				</div>
-				<div class="game-name">Win Crash</div>
-				<div class="game-desc">Win/Crash to Win</div>
 			</a>
 		</div>
 	</div>

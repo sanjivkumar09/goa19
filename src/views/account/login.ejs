@@ -8,18 +8,16 @@
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport" />
     <title>lotus lottery Lottery</title>
     <link href="/css/account/chunk-vendors.css" rel="stylesheet" />
-    <link href="/css/account/app.css" rel="stylesheet" />
+    <link href="/css/account/app.css?v=<%= Date.now() %>" rel="stylesheet" />
     <link href="/css/main.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/images/bitbug_favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
-    <link rel="stylesheet" href="/css/account/app.css">
-    <link rel="stylesheet" href="/css/account/chunk-vendors.css">
     <style>
         html,
         body {
             height: 100%;
             width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2a2a2a;
             padding: 0;
             margin: 0;
             font-family: var(--font-family-base);
@@ -107,34 +105,90 @@
         
         .footer .footer_data p{
             text-align: center;
-            color: white;
+            color: #D4AF37;
             font-size: 12px;
             margin: 0;
-            font-weight: 500;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .footer .footer_data img {
+            border-radius: 50%;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .footer .footer_data img:hover {
+            border-color: #D4AF37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
         
         .login-box {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(30, 30, 46, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1);
+        }
+        
+        .login-box .tit {
+            color: #D4AF37 !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .phoneInput__container-label,
+        .passwordInput__container-label {
+            color: #e0e0e0 !important;
+        }
+        
+        .phoneInput__container-label span,
+        .passwordInput__container-label span {
+            color: #e0e0e0 !important;
         }
         
         .item {
             border-radius: 12px !important;
-            border: 2px solid #e2e8f0 !important;
+            border: 2px solid rgba(212, 175, 55, 0.3) !important;
             transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.95) !important;
         }
         
         .item:focus-within {
-            border-color: #6366f1 !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            border-color: #D4AF37 !important;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), 0 0 15px rgba(212, 175, 55, 0.3);
         }
         
         input[type="tel"],
         input[type="password"] {
             border: none !important;
             outline: none !important;
+            color: #000000 !important;
+            font-weight: 500 !important;
+        }
+        
+        input::placeholder {
+            color: #999999 !important;
+        }
+        
+        .item .number {
+            color: #000000 !important;
+            font-weight: 700 !important;
+        }
+        
+        .login-banner {
+            position: relative;
+        }
+        
+        .login-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0) 0%, rgba(26, 26, 46, 0.3) 100%);
+            pointer-events: none;
         }
         
         @media (max-width:600px) {
@@ -187,12 +241,15 @@
                     <div data-v-a0753f48="" class="mian-btn">
                         <button data-v-a0753f48=""
                             class="gradient van-button van-button--default van-button--normal van-button--block van-button--round"
-                            style="color: color: rgb(169 127 127); width: 90%;
-                                                        background: linear-gradient(180deg,#cfd1df 0%,#c8cada 100%);
-                                                        margin-bottom: 10px;">
+                            style="color: #000000; width: 90%;
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                margin-bottom: 10px;
+                                font-weight: 700;
+                                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                                transition: all 0.3s ease;">
                             <div data-v-a0753f48="" class="van-button__content">
                                 <span data-v-a0753f48="" class="van-button__text">
-                                    <span data-v-a0753f48="">Login</span>
+                                    <span data-v-a0753f48="" style="color: #ffffff; font-weight: 700;">Login</span>
                                 </span>
                             </div>
                         </button>

@@ -16,6 +16,8 @@ const middlewareController = async(req, res, next) => {
             return res.redirect("/login");
         }
     } catch (error) {
+        console.error('Middleware Error:', error);
+        res.clearCookie("auth");
         return res.redirect("/login");
     }
 }

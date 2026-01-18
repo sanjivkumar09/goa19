@@ -9,57 +9,72 @@
     <link rel="stylesheet" href="/css/pages-global.css">
     <style>
         body {
-            background: var(--bg-gray);
+            background: #2a2a2a !important;
             margin: 0;
             padding: 0;
         }
         
         .profile-header {
-            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.85) 0%, rgba(197, 160, 40, 0.85) 100%), url('/images/bdg1.png');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
             padding: 40px 20px 30px;
-            color: #fff;
+            color: #000000;
             text-align: center;
             border-radius: 0 0 24px 24px;
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
         }
         
         .profile-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid rgba(212, 175, 55, 0.5);
             margin: 0 auto 16px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
         }
         
         .profile-name {
             font-size: 20px;
-            font-weight: bold;
+            font-weight: 900;
             margin-bottom: 4px;
+            color: #000000;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
         }
         
         .profile-id {
             font-size: 14px;
             opacity: 0.9;
+            color: #000000;
+            font-weight: 600;
         }
         
         .balance-card {
-            background: #fff;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.85) 0%, rgba(197, 160, 40, 0.85) 100%), url('/images/bdg.png') !important;
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: overlay;
             margin: -20px 16px 16px;
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5) !important;
             text-align: center;
         }
         
         .balance-amount {
             font-size: 32px;
-            font-weight: bold;
-            color: var(--primary-green);
+            font-weight: 900 !important;
+            color: #000000 !important;
             margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
         }
         
         .balance-label {
             font-size: 14px;
-            color: var(--text-secondary);
+            color: #000000 !important;
+            font-weight: 600;
+            opacity: 0.8;
         }
         
         .quick-actions {
@@ -70,18 +85,24 @@
         }
         
         .action-btn {
-            background: #fff;
+            background: rgba(30, 30, 46, 0.8);
             padding: 16px;
             border-radius: 12px;
             text-align: center;
             text-decoration: none;
-            color: var(--text-dark);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            color: #e0e0e0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(212, 175, 55, 0.2);
         }
         
         .action-btn:active {
             transform: scale(0.95);
+        }
+        
+        .action-btn:hover {
+            border-color: #D4AF37;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
         }
         
         .action-btn img {
@@ -96,19 +117,26 @@
         }
         
         .menu-section {
-            background: #fff;
+            background: rgba(30, 30, 46, 0.8);
             margin: 16px;
             border-radius: 16px;
             overflow: hidden;
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         
         .menu-item {
             display: flex;
             align-items: center;
             padding: 16px;
-            border-bottom: 1px solid var(--bg-gray);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
             text-decoration: none;
-            color: var(--text-dark);
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            background: rgba(212, 175, 55, 0.1);
         }
         
         .menu-item:last-child {
@@ -129,20 +157,32 @@
         .menu-item::after {
             content: '›';
             font-size: 24px;
-            color: var(--text-secondary);
+            color: #D4AF37;
         }
         
         .logout-btn {
-            background: #fff;
-            color: #f44336;
-            border: 2px solid #f44336;
+            background: rgba(30, 30, 46, 0.8);
+            color: #ef4444;
+            border: 2px solid #ef4444;
             padding: 16px;
             margin: 16px;
             border-radius: 12px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
             font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+        
+        .logout-btn:active {
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -187,11 +227,11 @@
             <span>Settings</span>
         </a>
         <a href="/notification" class="menu-item">
-            <img src="/images/notification.png" alt="Notification">
+            <img src="/images/s9.png" alt="Notification">
             <span>Notification</span>
         </a>
         <a href="/feedbeck" class="menu-item">
-            <img src="/images/feedback.png" alt="Feedback">
+            <img src="/images/s8.png" alt="Feedback">
             <span>Feedback</span>
         </a>
         <a href="/keFuMenu" class="menu-item">

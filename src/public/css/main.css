@@ -2,26 +2,26 @@
    Goa Games - Modern Design System
    ======================================== */
 
-/* CSS Variables - Design Tokens */
+/* CSS Variables - BDG WIN Theme */
 :root {
-    /* Primary Colors */
-    --primary-color: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary-color: #ec4899;
-    --accent-color: #f59e0b;
+    /* Primary Colors - Gold Theme */
+    --primary-color: #D4AF37;
+    --primary-dark: #B8941E;
+    --primary-light: #E6BE4E;
+    --secondary-color: #C5A028;
+    --accent-color: #D4AF37;
     
-    /* Background Colors */
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --bg-tertiary: #334155;
+    /* Background Colors - Dark Grey Theme */
+    --bg-primary: #2a2a2a;
+    --bg-secondary: #1f1f1f;
+    --bg-tertiary: rgba(30, 30, 46, 0.8);
     --bg-light: #f8fafc;
-    --bg-card: #ffffff;
+    --bg-card: rgba(30, 30, 46, 0.8);
     
     /* Text Colors */
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-light: #94a3b8;
+    --text-primary: #D4AF37;
+    --text-secondary: #e0e0e0;
+    --text-light: #e0e0e0;
     --text-white: #ffffff;
     
     /* Status Colors */
@@ -101,10 +101,13 @@ body {
     font-family: var(--font-family-base);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-normal);
-    color: var(--text-primary);
-    background-color: var(--bg-light);
+    color: var(--text-light);
+    background-color: var(--bg-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    padding-bottom: 75px !important;
+    margin: 0 !important;
+    position: relative;
 }
 
 /* ========================================
@@ -196,26 +199,6 @@ img {
 .btn-large {
     padding: var(--spacing-md) var(--spacing-xl);
     font-size: var(--font-size-lg);
-}
-
-.btn.success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff;
-    font-weight: 600;
-    width: 90%;
-    height: 55px;
-    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn.success:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px -2px rgba(16, 185, 129, 0.4);
-}
-
-.btn.success:active {
-    transform: translateY(0);
 }
 
 .btn-small {
@@ -315,49 +298,101 @@ img {
 }
 
 .van-tabbar {
-    background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
+    background: rgba(42, 42, 42, 0.98);
     backdrop-filter: blur(20px);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
-    padding: var(--spacing-sm) 0;
+    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(212, 175, 55, 0.1);
+    border-top: 2px solid rgba(212, 175, 55, 0.2);
+    padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    z-index: 999;
 }
 
 .van-tabbar-item {
     transition: all var(--transition-fast);
     border-radius: var(--border-radius-sm);
-    margin: 0 var(--spacing-xs);
+    margin: 0 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    min-width: 60px;
+    max-width: 80px;
+    flex: 1 1 0;
+    height: 100%;
+    cursor: pointer;
 }
 
 .van-tabbar-item:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
 }
 
 .van-tabbar-item__text {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-xs);
+    justify-content: center;
+    gap: 2px;
+    width: 100%;
 }
 
 .van-tabbar-item__text img {
-    width: 24px;
-    height: 24px;
-    transition: transform var(--transition-base);
+    width: 26px;
+    height: 26px;
+    margin-bottom: 4px;
+    filter: grayscale(1) opacity(0.5);
+    transition: all var(--transition-base);
+    display: block;
 }
 
 .van-tabbar-item:hover .van-tabbar-item__text img {
-    transform: scale(1.1);
+    transform: scale(1.15);
+    filter: grayscale(0) opacity(0.8);
 }
 
 .van-tabbar-item__text .name {
-    font-size: var(--font-size-xs);
-    color: var(--text-light);
-    transition: color var(--transition-fast);
-    font-weight: var(--font-weight-medium);
+    font-size: 11px;
+    color: #9ca3af;
+    transition: all var(--transition-fast);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-.van-tabbar-item .action,
+.van-tabbar-item .action {
+    color: #D4AF37 !important;
+    font-weight: 700 !important;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5) !important;
+}
+
 .van-tabbar-item:hover .name {
-    color: var(--primary-light);
+    color: #fbbf24;
+}
+
+.van-tabbar-item.block-click .van-tabbar-item__text img {
+    filter: grayscale(0) opacity(1) drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
+    transform: scale(1.1);
+}
+
+.van-tabbar-item.block-click {
+    background: rgba(212, 175, 55, 0.15);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    transform: scale(1.05);
 }
 
 /* ========================================
@@ -422,8 +457,28 @@ img {
     }
     
     .van-tabbar-item__text img {
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 400px) {
+    .van-tabbar-item__text .name {
+        font-size: 10px;
+    }
+    
+    .van-tabbar-item__text img {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+@media (min-width: 768px) {
+    .van-tabbar {
+        max-width: 600px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 20px 20px 0 0;
     }
 }
 
@@ -469,7 +524,42 @@ img {
    ======================================== */
 
 .block-click {
-    pointer-events: none;
-    opacity: 0.6;
-    cursor: not-allowed;
+    pointer-events: auto !important;
+}
+
+/* ========================================
+   Force Bottom Navigation Fixed Position
+   ======================================== */
+
+/* Parent container */
+#nav_checkUrl,
+div[data-v-432e6ed0].nav.c-pr,
+.nav.c-pr {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 70px !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+}
+
+/* Navigation bar - all possible class combinations */
+.van-hairline--top-bottom.van-tabbar.van-tabbar--fixed,
+.van-hairline--top-bottom.van-tabbar,
+div.van-tabbar.van-tabbar--fixed,
+.van-tabbar--fixed,
+.van-tabbar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 70px !important;
+    z-index: 9999 !important;
+    transform: none !important;
+    margin: 0 !important;
 }

@@ -66,7 +66,7 @@ const login = async (req, res) => {
 
             const accessToken = jwt.sign(
                 { user: others, timeNow },
-                process.env.JWT_ACCESS_TOKEN,
+                process.env.JWT_SECRET || 'your_jwt_secret_key_here_change_this_to_random_string',
                 { expiresIn: "1d" }
             );
 
@@ -88,8 +88,12 @@ const login = async (req, res) => {
         }
 
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({ message: 'Server error' });
+        console.error('Login Error:', err);
+        return res.status(500).json({ 
+            message: 'Server error during login', 
+            status: false,
+            error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+        });
     }
 };
 
@@ -147,8 +151,12 @@ const register = async (req, res) => {
         return res.status(200).json({ message: "Registered successfully", status: true });
 
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({ message: 'Server error' });
+        console.error('Registration Error:', err);
+        return res.status(500).json({ 
+            message: 'Server error during registration', 
+            status: false,
+            error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+        });
     }
 };
 

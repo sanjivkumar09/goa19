@@ -10,6 +10,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 const port = process.env.PORT || 3000;
+const host = process.env.SERVER_HOST || '0.0.0.0';
 
 app.use(cookieParser());
 // app.use(express.static('public'));
@@ -40,8 +41,10 @@ socketIoController.sendMessageAdmin(io);
 // });
 
 
-server.listen(port, () => {
-    console.log("Connected success port: " + port);
+server.listen(port, host, () => {
+    console.log(`🚀 Server running on ${host}:${port}`);
+    console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`💾 Database: ${process.env.DB_NAME}`);
 });
 
 process.on('uncaughtException', function (err) {

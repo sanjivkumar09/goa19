@@ -6,7 +6,13 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "database": "node src/modal/CreateDatabase.js",
-        "start": "node src/server.js"
+        "start": "node src/server.js",
+        "dev:local": "copy .env.local .env && echo Switched to LOCAL development environment",
+        "check": "node check-config.js",
+        "deploy": "node deploy.js",
+        "deploy:files": "node deploy.js files",
+        "deploy:restart": "ssh root@93.127.167.248 \"cd /root && pm2 restart game-server\"",
+        "logs": "ssh root@93.127.167.248 \"pm2 logs game-server --lines 50 --nostream\""
     },
     "author": "",
     "license": "ISC",

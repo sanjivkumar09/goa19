@@ -9,28 +9,34 @@
     <link rel="stylesheet" href="/css/pages-global.css">
     <style>
         body {
-            background: var(--bg-gray);
+            background: #2a2a2a !important;
             margin: 0;
             padding: 0;
         }
         
         .promo-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
             padding: 40px 20px;
-            color: #fff;
+            color: #000000;
             text-align: center;
             border-radius: 0 0 24px 24px;
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
         }
         
         .promo-header h1 {
             font-size: 24px;
             margin: 0 0 8px 0;
+            color: #000000;
+            font-weight: 900;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
         }
         
         .promo-header p {
             font-size: 14px;
             opacity: 0.9;
             margin: 0;
+            color: #000000;
+            font-weight: 600;
         }
         
         .stats-grid {
@@ -42,45 +48,52 @@
         }
         
         .stat-card {
-            background: #fff;
+            background: rgba(30, 30, 46, 0.8);
             padding: 20px;
             border-radius: 16px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
         }
         
         .stat-value {
             font-size: 24px;
-            font-weight: bold;
-            color: var(--primary-green);
+            font-weight: 900;
+            color: #D4AF37;
             margin-bottom: 4px;
+            text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
         }
         
         .stat-label {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: #e0e0e0;
+            font-weight: 600;
         }
         
         .commission-card {
-            background: #fff;
+            background: rgba(30, 30, 46, 0.8);
             margin: 16px;
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
         }
         
         .commission-title {
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 900;
             margin-bottom: 16px;
-            color: var(--text-dark);
+            color: #D4AF37;
+            text-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
         }
         
         .commission-item {
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
-            border-bottom: 1px solid var(--bg-gray);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
         }
         
         .commission-item:last-child {
@@ -89,13 +102,15 @@
         
         .commission-label {
             font-size: 14px;
-            color: var(--text-secondary);
+            color: #e0e0e0;
+            font-weight: 500;
         }
         
         .commission-value {
             font-size: 16px;
-            font-weight: bold;
-            color: var(--primary-green);
+            font-weight: 900;
+            color: #D4AF37;
+            text-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
         }
         
         .action-buttons {
@@ -106,24 +121,31 @@
         }
         
         .copy-btn {
-            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
-            color: #fff;
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            color: #000000;
             padding: 16px;
-            border-radius: 12px;
+            border-radius: 25px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 900;
             cursor: pointer;
             border: none;
             font-size: 14px;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
         }
         
         .copy-btn:active {
-            transform: scale(0.95);
+            transform: translateY(0) scale(0.98);
         }
         
         .team-link {
-            background: #fff;
+            background: rgba(30, 30, 46, 0.8);
             margin: 16px;
             padding: 16px;
             border-radius: 16px;
@@ -131,25 +153,71 @@
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
-            color: var(--text-dark);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            color: #e0e0e0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .team-link:hover {
+            border-color: #D4AF37;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
         }
         
         .team-link img {
             width: 32px;
             height: 32px;
             margin-right: 12px;
+            filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3));
         }
         
         .team-link span {
             flex: 1;
-            font-weight: bold;
+            font-weight: 700;
         }
         
         .team-link::after {
             content: '›';
             font-size: 24px;
-            color: var(--text-secondary);
+            color: #D4AF37;
+        }
+        
+        .support-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
+            z-index: 999;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: supportPulse 2s infinite;
+        }
+        
+        .support-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.8);
+        }
+        
+        .support-btn img {
+            width: 32px;
+            height: 32px;
+            filter: brightness(0);
+        }
+        
+        @keyframes supportPulse {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
+            }
+            50% {
+                box-shadow: 0 6px 30px rgba(212, 175, 55, 0.9);
+            }
         }
     </style>
 </head>
@@ -228,7 +296,7 @@
         // Alert message function
         function alertMess(text) {
             $('body').append(`
-                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: #fff; padding: 16px 24px; border-radius: 8px; z-index: 9999; animation: fadeInOut 2s;">
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%); color: #000000; padding: 16px 24px; border-radius: 16px; z-index: 9999; animation: fadeInOut 2s; font-weight: 700; box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6); text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);">
                     ${text}
                 </div>
             `);

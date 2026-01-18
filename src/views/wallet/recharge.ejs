@@ -16,7 +16,7 @@
         body {
             height: 100%;
             width: 100%;
-            background-color: #9195a3;
+            background-color: #2a2a2a !important;
             padding: 0;
             margin: 0;
         }
@@ -27,7 +27,8 @@
 
         .mian[data-v-67caa467] {
             padding-bottom: 1.6rem;
-            background-color: #fbfcfd
+            padding-top: 0 !important;
+            background-color: #2a2a2a !important;
         }
 
         .mian[data-v-67caa467] .van-popup__close-icon--top-right {
@@ -35,34 +36,94 @@
             right: .26667rem
         }
 
+        /* Navbar Styling - Fixed at Top */
+        .navbar[data-v-106b99c8],
+        [data-v-106b99c8].navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            height: 50px !important;
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 0 12px !important;
+            z-index: 9999 !important;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5) !important;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3) !important;
+        }
+
+        .navbar-title[data-v-106b99c8] {
+            flex: 1 !important;
+            text-align: center !important;
+            font-size: 18px !important;
+            font-weight: 900 !important;
+            color: #000000 !important;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .navbar-left[data-v-106b99c8],
+        .navbar-right[data-v-106b99c8] {
+            min-width: 60px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            color: #000000 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .navbar-left[data-v-106b99c8]:hover,
+        .navbar-right[data-v-106b99c8]:hover {
+            opacity: 0.8;
+        }
+
+        .navbar-back[data-v-106b99c8] {
+            width: 24px !important;
+            height: 24px !important;
+            filter: brightness(0) !important;
+        }
+
         .mian .selectBox[data-v-67caa467] {
-            width: 100%
+            width: 100%;
+            margin-top: 50px !important;
+            padding-top: 10px !important;
         }
 
         .mian .selectBox .colorBox[data-v-67caa467] {
             height: 1.06667rem;
             width: 100%;
-            background-image: linear-gradient(90deg, #cd0103, #f64841)
+            background-image: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+            margin-top: 0 !important;
         }
 
         .mian .selectBox .txtBox[data-v-67caa467] {
-            background-color: #fff;
+            background-color: rgba(30, 30, 46, 0.9);
             z-index: 99;
-            margin-top: -.8rem;
+            margin-top: -.4rem !important;
             border-radius: .26667rem .26667rem 0 0;
             padding: .26667rem .53333rem;
-            position: relative
+            position: relative;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .mian .selectBox .txtBox .txt[data-v-67caa467] {
-            color: #333;
-            font-size: .42667rem
+            color: #e0e0e0;
+            font-size: .42667rem;
+            font-weight: 600;
         }
 
         .mian .selectBox .txtBox .money[data-v-67caa467] {
-            color: #090909;
-            font-weight: 600;
-            font-size: .58667rem
+            color: #D4AF37;
+            font-weight: 900;
+            font-size: .58667rem;
+            text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
         }
 
         .mian .selectBox .txtBox .img.action[data-v-67caa467] {
@@ -96,7 +157,8 @@
         .mian .selectBox .recharge .rechargeType[data-v-67caa467] {
             padding: .26667rem .4rem .13333rem;
             height: 2rem;
-            background-color: #fff
+            background-color: rgba(30, 30, 46, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.2);
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox[data-v-67caa467] {
@@ -109,22 +171,28 @@
             position: relative;
             padding: .26667rem;
             white-space: nowrap;
-            background-image: linear-gradient(40deg, #e5e7f6 35%, #f5f3fb);
-            margin-right: .4rem
+            background-image: linear-gradient(135deg, rgba(30, 30, 46, 0.8), rgba(40, 40, 56, 0.8));
+            margin-right: .4rem;
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item .name[data-v-67caa467] {
-            color: #414141;
-            font-size: .34667rem
+            color: #e0e0e0;
+            font-size: .34667rem;
+            font-weight: 600;
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item .txt[data-v-67caa467] {
-            font-size: .32rem
+            font-size: .32rem;
+            color: #a0a0a0;
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item.action[data-v-67caa467] {
-            background-image: linear-gradient(90deg, #4781FF, #4781FF);
-            position: relative
+            background-image: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            position: relative;
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item.action .icon[data-v-67caa467] {
@@ -140,78 +208,100 @@
 
         .mian .selectBox .recharge .rechargeType .customerBox .item.action .name[data-v-67caa467],
         .mian .selectBox .recharge .rechargeType .customerBox .item.action .txt[data-v-67caa467] {
-            color: #fff
+            color: #000000;
+            font-weight: 700;
         }
 
         .mian .selectBox .recharge .conTxt[data-v-67caa467] {
-            padding: .4rem
+            padding: .4rem;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 12px;
+            margin: 10px;
+            border: 2px solid rgba(212, 175, 55, 0.2);
         }
 
         .mian .selectBox .recharge .conTxt .li[data-v-67caa467] {
             line-height: .53333rem;
-            color: #4781FF
+            color: #D4AF37;
+            font-weight: 600;
         }
 
         .mian .selectBox .recharge .box[data-v-67caa467] {
             padding: .13333rem .4rem .26667rem;
-            background: #fff;
-            box-shadow: 0 .08rem .69333rem .10667rem #f1f2f5
+            background: rgba(30, 30, 46, 0.8);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            margin: 10px;
         }
 
         .mian .selectBox .recharge .box .list.rechargeList .item[data-v-67caa467] {
-            border: .05333rem solid #fff;
+            border: .05333rem solid rgba(212, 175, 55, 0.2);
             margin-bottom: .26667rem;
             padding: .26667rem .4rem;
             width: 100%;
-            background: #fff;
-            box-shadow: 0 .24rem .4rem 0 rgba(240, 74, 80, .05);
-            border-radius: .4rem
+            background: rgba(40, 40, 56, 0.8);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-radius: .4rem;
+            transition: all 0.3s ease;
         }
 
         .mian .selectBox .recharge .box .list.rechargeList .item .txt[data-v-67caa467] {
-            color: #a2a2a2;
+            color: #a0a0a0;
             font-size: .34667rem;
-            margin-top: .26667rem
+            margin-top: .26667rem;
         }
 
         .mian .selectBox .recharge .box .list.rechargeList .item .icon[data-v-67caa467] {
             height: .66667rem;
             width: .66667rem;
             border-radius: .66667rem;
-            background-color: #fdd0cf
+            background-color: rgba(212, 175, 55, 0.3);
         }
 
         .mian .selectBox .recharge .box .list.rechargeList .item.action[data-v-67caa467] {
-            border-color: #4781FF
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
         }
 
         .mian .selectBox .recharge .box .list .item[data-v-67caa467] {
-            border: .05333rem solid #fff;
+            border: .05333rem solid rgba(212, 175, 55, 0.2);
             margin-bottom: .26667rem;
             padding: .26667rem;
             text-align: center;
             width: 30%;
-            background: #fff;
-            box-shadow: 0 .18667rem .50667rem 0 rgba(143, 139, 139, .11);
+            background: rgba(40, 40, 56, 0.8);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             border-radius: .4rem;
-            margin-right: .26667rem
+            margin-right: .26667rem;
+            color: #e0e0e0;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .mian .selectBox .recharge .box .list .item .icon[data-v-67caa467] {
-            margin: 0 auto
+            margin: 0 auto;
         }
 
         .mian .selectBox .recharge .box .list .item.action[data-v-67caa467] {
-            border-color: #4781FF;
-            color: #4781FF
+            border-color: #D4AF37;
+            color: #000000;
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+            font-weight: 900;
         }
 
         .mian .selectBox .recharge .box.numberBox .number-box .fuhao[data-v-67caa467] {
-            font-size: .53333rem
+            font-size: .53333rem;
+            color: #D4AF37;
         }
 
         .mian .selectBox .recharge .box.numberBox .number-box .input[data-v-67caa467] {
-            font-size: .42667rem
+            font-size: .42667rem;
+            color: #e0e0e0;
+            background: rgba(40, 40, 56, 0.8);
+            border-color: rgba(212, 175, 55, 0.3);
         }
 
         .mian .selectBox .recharge .box.numberBox .item[data-v-67caa467] {
@@ -219,7 +309,10 @@
             height: 1.06667rem;
             line-height: .53333rem;
             border-radius: .13333rem;
-            font-size: .4rem
+            font-size: .4rem;
+            background: rgba(40, 40, 56, 0.8);
+            color: #e0e0e0;
+            border: 2px solid rgba(212, 175, 55, 0.2);
         }
 
         .mian .selectBox .recharge-btn[data-v-67caa467] {
@@ -227,23 +320,40 @@
             height: 1.06667rem;
             font-size: .4rem;
             margin: 0 auto;
-            box-shadow: 0 0 .21333rem .02667rem rgba(71, 129, 255)
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%) !important;
+            color: #000000 !important;
+            font-weight: 900 !important;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5) !important;
+            border: none !important;
+            border-radius: 25px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .mian .selectBox .recharge-btn[data-v-67caa467]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.7) !important;
         }
 
         .mian .selectBox .pay-box[data-v-67caa467] {
-            padding: 0 .53333rem
+            padding: 0 .53333rem;
+            background: rgba(30, 30, 46, 0.8);
+            border-radius: 12px;
+            margin: 10px;
+            border: 2px solid rgba(212, 175, 55, 0.2);
         }
 
         .mian .selectBox .pay-box .title[data-v-67caa467] {
             font-size: .4rem;
-            font-weight: 600
+            font-weight: 700;
+            color: #D4AF37;
         }
 
         .mian .selectBox .pay-box .title .time[data-v-67caa467] {
-            background-image: linear-gradient(90deg, #4781FF, #4781FF);
+            background-image: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
             padding: .13333rem .26667rem;
-            color: #fff;
-            border-radius: .05333rem
+            color: #000000;
+            border-radius: .05333rem;
+            font-weight: 700;
         }
 
         .mian .selectBox .pay-box .numberSize .fuhao[data-v-67caa467] {
@@ -255,17 +365,18 @@
         }
 
         .mian .selectBox .pay-box .bank-list[data-v-67caa467] {
-            margin-top: .26667rem
+            margin-top: .26667rem;
         }
 
         .mian .selectBox .pay-box .bank-list .item[data-v-67caa467] {
-            border: .05333rem solid #eee;
+            border: .05333rem solid rgba(212, 175, 55, 0.2);
             margin-bottom: .26667rem;
             padding: .26667rem;
             width: 100%;
-            background: #fff;
-            box-shadow: 0 .24rem .4rem 0 rgba(240, 74, 80, .05);
-            border-radius: .26667rem
+            background: rgba(40, 40, 56, 0.8);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-radius: .26667rem;
+            color: #e0e0e0;
         }
 
         .mian .selectBox .pay-box .bank-list .item .txt[data-v-67caa467] {

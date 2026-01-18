@@ -62,8 +62,8 @@ function showListOrder(datas) {
         html += 
         `
         <div data-v-a9660e98="" class="c-tc item van-row">
-            <div data-v-a9660e98="" class="van-col van-col--8">
-                <div data-v-a9660e98="" class="c-tc goItem">${data.period}</div>
+            <div data-v-a9660e98="" class="van-col van-col--11">
+                <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${data.period}</div>
             </div>
             <div data-v-a9660e98="" class="van-col van-col--5">
                 <div data-v-a9660e98="" class="c-tc goItem" style="display: flex;justify-content: center;">
@@ -73,12 +73,12 @@ function showListOrder(datas) {
                     <span data-v-a9660e98="" class="red box-xs" style="font-size: 14px"> ${total} </span>
                 </div>
             </div>
-            <div data-v-a9660e98="" class="van-col van-col--5">
+            <div data-v-a9660e98="" class="van-col van-col--4">
                 <div data-v-a9660e98="" class="c-tc goItem">
                     <span data-v-a9660e98=""> ${(total >= 3 && total <= 10) ? "Small" : "Big"} </span>
                 </div>
             </div>
-            <div data-v-a9660e98="" class="van-col van-col--5">
+            <div data-v-a9660e98="" class="van-col van-col--4">
                 <div data-v-a9660e98="" class="c-tc goItem">
                     <span data-v-a9660e98=""> ${(total % 2 == 0) ? "Even" : "Odd"} </span>
                 </div>

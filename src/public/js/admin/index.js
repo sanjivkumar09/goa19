@@ -45,6 +45,21 @@ const isNumber = (params) => {
     return pattern.test(params);
 }
 
+function formatPeriodDate(period) {
+    // Period format is typically: 20240118224 (YYYYMMDDHHMM)
+    // Extract: Year-Month-Day Hour:Minute
+    if (!period || period.length < 11) return period;
+    
+    const periodStr = String(period);
+    const year = periodStr.substring(0, 4);
+    const month = periodStr.substring(4, 6);
+    const day = periodStr.substring(6, 8);
+    const hour = periodStr.substring(8, 10);
+    const minute = periodStr.substring(10, 12);
+    
+    return `${year}-${month}-${day} ${hour}:${minute}`;
+}
+
 function showJoinMember(data) {
     let phone = data.phone;
     let bet = data.bet;
@@ -164,22 +179,22 @@ function showListOrder4(list_orders, x) {
     let result = list_orders.map((list_orders) => {
         return (htmls += `
                     <div data-v-a9660e98="" class="c-tc item van-row">
-                        <div data-v-a9660e98="" class="van-col van-col--8">
-                            <div data-v-a9660e98="" class="c-tc goItem">${list_orders.period}</div>
+                        <div data-v-a9660e98="" class="van-col van-col--12">
+                            <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${formatPeriodDate(list_orders.period)}</div>
                         </div>
-                        <div data-v-a9660e98="" class="van-col van-col--5">
+                        <div data-v-a9660e98="" class="van-col van-col--4">
                             <div data-v-a9660e98="" class="c-tc goItem">
                                 <!---->
                                 <span data-v-a9660e98="" class="${list_orders.amount % 2 == 0 ? "red" : "green"}"> ${list_orders.amount} </span>
                             </div>
                         </div>
-                        <div data-v-a9660e98="" class="van-col van-col--5">
+                        <div data-v-a9660e98="" class="van-col van-col--4">
                             <div data-v-a9660e98="" class="c-tc goItem">
                                 <span data-v-a9660e98=""> ${list_orders.amount < 5 ? "Small" : "Big"} </span>
                                 <!---->
                             </div>
                         </div>
-                        <div data-v-a9660e98="" class="van-col van-col--6">
+                        <div data-v-a9660e98="" class="van-col van-col--4">
                             <div data-v-a9660e98="" class="goItem c-row c-tc c-row-center">
                                 <div data-v-a9660e98="" class="c-tc c-row box c-row-center">
                                     <span data-v-a9660e98="" class="li ${list_orders.amount % 2 == 0 ? "red" : "green"}"></span>
@@ -309,22 +324,22 @@ function showListOrder3(list_orders, x) {
     let result = list_orders.map((list_orders) => {
         return (htmls += `
                     <div data-v-a9660e98="" class="c-tc item van-row">
-                        <div data-v-a9660e98="" class="van-col van-col--8">
-                            <div data-v-a9660e98="" class="c-tc goItem">${list_orders.period}</div>
+                        <div data-v-a9660e98="" class="van-col van-col--12">
+                            <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${formatPeriodDate(list_orders.period)}</div>
                         </div>
-                        <div data-v-a9660e98="" class="van-col van-col--5">
+                        <div data-v-a9660e98="" class="van-col van-col--4">
                             <div data-v-a9660e98="" class="c-tc goItem">
                                 <!---->
                                 <span data-v-a9660e98="" class="${list_orders.amount % 2 == 0 ? "red" : "green"}"> ${list_orders.amount} </span>
                             </div>
                         </div>
-                        <div data-v-a9660e98="" class="van-col van-col--5">
+                        <div data-v-a9660e98="" class="van-col van-col--4">
                             <div data-v-a9660e98="" class="c-tc goItem">
                                 <span data-v-a9660e98=""> ${list_orders.amount < 5 ? "Small" : "Big"} </span>
                                 <!---->
                             </div>
                         </div>
-                        <div data-v-a9660e98="" class="van-col van-col--6">
+                        <div data-v-a9660e98="" class="van-col van-col--4">
                             <div data-v-a9660e98="" class="goItem c-row c-tc c-row-center">
                                 <div data-v-a9660e98="" class="c-tc c-row box c-row-center">
                                     <span data-v-a9660e98="" class="li ${list_orders.amount % 2 == 0 ? "red" : "green"}"></span>
