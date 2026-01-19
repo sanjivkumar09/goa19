@@ -252,6 +252,140 @@
 				padding: 8px 12px;
 			}
 		}
+		
+		/* Live Activity Feed Styles */
+		.live-activity-section {
+			margin: 20px 10px;
+			background: linear-gradient(180deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);
+			border-radius: 12px;
+			padding: 15px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+		}
+		
+		.activity-header {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 15px;
+			padding-bottom: 10px;
+			border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+		}
+		
+		.activity-header h3 {
+			color: #FFD700;
+			font-size: 16px;
+			font-weight: 600;
+			margin: 0;
+		}
+		
+		.activity-pulse {
+			width: 10px;
+			height: 10px;
+			background-color: #00ff00;
+			border-radius: 50%;
+			animation: pulse 2s infinite;
+		}
+		
+		@keyframes pulse {
+			0%, 100% {
+				box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
+			}
+			50% {
+				box-shadow: 0 0 0 8px rgba(0, 255, 0, 0);
+			}
+		}
+		
+		.activity-feed {
+			max-height: 300px;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+		
+		.activity-feed::-webkit-scrollbar {
+			width: 4px;
+		}
+		
+		.activity-feed::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 4px;
+		}
+		
+		.activity-feed::-webkit-scrollbar-thumb {
+			background: rgba(212, 175, 55, 0.5);
+			border-radius: 4px;
+		}
+		
+		.activity-item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 12px;
+			margin-bottom: 8px;
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 8px;
+			border-left: 3px solid #FFD700;
+			animation: slideIn 0.5s ease-out;
+		}
+		
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateX(-20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+		
+		.activity-user {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		
+		.activity-avatar {
+			width: 35px;
+			height: 35px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-weight: 600;
+			font-size: 14px;
+		}
+		
+		.activity-info {
+			flex: 1;
+		}
+		
+		.activity-username {
+			color: #fff;
+			font-size: 13px;
+			font-weight: 500;
+		}
+		
+		.activity-game {
+			color: rgba(255, 255, 255, 0.6);
+			font-size: 11px;
+		}
+		
+		.activity-win {
+			text-align: right;
+		}
+		
+		.activity-amount {
+			color: #00ff00;
+			font-weight: 700;
+			font-size: 14px;
+		}
+		
+		.activity-time {
+			color: rgba(255, 255, 255, 0.4);
+			font-size: 10px;
+		}
 	</style>
 </head>
 <body class="home-page">
@@ -409,6 +543,17 @@
 				</div>
 				<span class="category-name">Sports</span>
 			</a>
+		</div>
+	</div>
+
+	<!-- Live Activity Feed -->
+	<div class="live-activity-section">
+		<div class="activity-header">
+			<span class="activity-pulse"></span>
+			<h3>Live Winners</h3>
+		</div>
+		<div class="activity-feed" id="activityFeed">
+			<!-- Activities will be dynamically added here -->
 		</div>
 	</div>
 

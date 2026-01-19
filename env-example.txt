@@ -1,8 +1,0 @@
-# Copy this to .env file
-# Rename env-example.txt to .env
-
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=
-DB_NAME=games
-DB_PORT=3306
