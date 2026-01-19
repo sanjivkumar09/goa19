@@ -9,6 +9,17 @@ const initializeGamePeriods = async () => {
     try {
         const timeNow = Date.now();
         
+        // Generate proper period based on current date
+        let date = new Date();
+        let years = date.getFullYear();
+        let months = String(date.getMonth() + 1).padStart(2, '0');
+        let days = String(date.getDate()).padStart(2, '0');
+        let hours = String(date.getHours()).padStart(2, '0');
+        let minutes = String(date.getMinutes()).padStart(2, '0');
+        let currentPeriod = `${years}${months}${days}${hours}${minutes}001`;
+        
+        console.log(`Initializing game periods with: ${currentPeriod}`);
+        
         // Initialize WinGo games
         const wingoGames = [
             { game: 1, name: 'wingo' },
@@ -23,7 +34,7 @@ const initializeGamePeriods = async () => {
                 console.log(`Initializing ${name} game period...`);
                 await connection.execute(
                     `INSERT INTO wingo (period, amount, game, status, time) VALUES (?, ?, ?, ?, ?)`,
-                    [1, 0, name, 0, timeNow]
+                    [currentPeriod, 0, name, 0, timeNow]
                 );
             }
         }
@@ -36,7 +47,7 @@ const initializeGamePeriods = async () => {
                 console.log(`Initializing K3 game ${game} period...`);
                 await connection.execute(
                     `INSERT INTO k3 (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
-                    [1, 0, game, 0, timeNow]
+                    [currentPeriod, 0, game, 0, timeNow]
                 );
             }
         }
@@ -49,7 +60,7 @@ const initializeGamePeriods = async () => {
                 console.log(`Initializing 5D game ${game} period...`);
                 await connection.execute(
                     `INSERT INTO 5d (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
-                    [1, '00000', game, 0, timeNow]
+                    [currentPeriod, '00000', game, 0, timeNow]
                 );
             }
         }

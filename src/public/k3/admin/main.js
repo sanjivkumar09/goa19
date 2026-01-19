@@ -26,6 +26,20 @@ function formatMoney(money) {
     return String(money).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
 }
 
+function formatPeriodToDate(period) {
+    // Convert period like "2022070110001" to "2022-07-01 10:00"
+    let periodStr = String(period);
+    if (periodStr.length >= 10) {
+        let year = periodStr.substr(0, 4);
+        let month = periodStr.substr(4, 2);
+        let day = periodStr.substr(6, 2);
+        let hour = periodStr.substr(8, 2);
+        let minute = periodStr.length >= 12 ? periodStr.substr(10, 2) : '00';
+        return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
+    return period; // Return as-is if format doesn't match
+}
+
 function cownDownTimer() {
     var countDownDate = new Date("2030-07-16T23:59:59.9999999+01:00").getTime();
     setInterval(function () {
@@ -63,7 +77,7 @@ function showListOrder(datas) {
         `
         <div data-v-a9660e98="" class="c-tc item van-row">
             <div data-v-a9660e98="" class="van-col van-col--11">
-                <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${data.period}</div>
+                <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${formatPeriodToDate(data.period)}</div>
             </div>
             <div data-v-a9660e98="" class="van-col van-col--5">
                 <div data-v-a9660e98="" class="c-tc goItem" style="display: flex;justify-content: center;">

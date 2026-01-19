@@ -80,7 +80,6 @@ const initWebRouter = (app) => {
     router.post('/api/webapi/k3/GetNoaverageEmerdList', middlewareController, k3Controller.listOrderOld); // register
     router.post('/api/webapi/k3/GetMyEmerdList', middlewareController, k3Controller.GetMyEmerdList); // register
 
-
     // login | register 
     router.post('/api/webapi/login', accountController.login); // login
     router.post('/api/webapi/register', accountController.register); // register
@@ -158,7 +157,6 @@ const initWebRouter = (app) => {
 
     router.get('/admin/manager/5d', adminController.middlewareAdminController, adminController.adminPage5d); // get info account
     router.get('/admin/manager/k3', adminController.middlewareAdminController, adminController.adminPageK3); // get info account
-
 
     router.get('/admin/manager/members', adminController.middlewareAdminController, adminController.membersPage); // get info account
     router.get('/admin/manager/createBonus', adminController.middlewareAdminController, adminController.giftPage); // get info account

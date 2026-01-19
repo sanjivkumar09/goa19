@@ -47,6 +47,133 @@
 		.game-card-shine:hover::before {
 			animation: shineEffect 1.5s infinite;
 		}
+		
+		/* Banner Carousel Styles */
+		.banner-carousel {
+			position: relative;
+			width: 100%;
+			max-width: 1040px;
+			margin: 0 auto;
+			overflow: hidden;
+			border-radius: 12px;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+		}
+		
+		.banner-slide {
+			display: none;
+			width: 100%;
+			animation: fadeIn 0.8s ease-in-out;
+		}
+		
+		.banner-slide.active {
+			display: block;
+		}
+		
+		.banner-slide img {
+			width: 100%;
+			height: auto;
+			display: block;
+			object-fit: cover;
+			max-height: 280px;
+		}
+		
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: scale(1.05);
+			}
+			to {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+		
+		/* Navigation Arrows */
+		.banner-prev,
+		.banner-next {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			background: rgba(0, 0, 0, 0.5);
+			color: #FFD700;
+			border: none;
+			font-size: 24px;
+			padding: 12px 16px;
+			cursor: pointer;
+			border-radius: 50%;
+			transition: all 0.3s ease;
+			z-index: 10;
+			backdrop-filter: blur(5px);
+		}
+		
+		.banner-prev:hover,
+		.banner-next:hover {
+			background: rgba(212, 175, 55, 0.8);
+			color: #000;
+			transform: translateY(-50%) scale(1.1);
+		}
+		
+		.banner-prev {
+			left: 10px;
+		}
+		
+		.banner-next {
+			right: 10px;
+		}
+		
+		/* Dots Indicator */
+		.banner-dots {
+			position: absolute;
+			bottom: 15px;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			gap: 8px;
+			z-index: 10;
+		}
+		
+		.dot {
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.5);
+			cursor: pointer;
+			transition: all 0.3s ease;
+			border: 2px solid transparent;
+		}
+		
+		.dot:hover {
+			background: rgba(255, 255, 255, 0.8);
+			transform: scale(1.2);
+		}
+		
+		.dot.active {
+			background: #FFD700;
+			border-color: #fff;
+			transform: scale(1.3);
+		}
+		
+		/* Responsive Design */
+		@media (max-width: 768px) {
+			.banner-carousel {
+				border-radius: 8px;
+			}
+			
+			.banner-slide img {
+				max-height: 180px;
+			}
+			
+			.banner-prev,
+			.banner-next {
+				font-size: 18px;
+				padding: 8px 12px;
+			}
+			
+			.dot {
+				width: 8px;
+				height: 8px;
+			}
+		}
 	</style>
 </head>
 <body class="home-page">
@@ -57,13 +184,49 @@
 		</a>
 	</div>
 
-	<!-- Banner Section -->
+	<!-- Banner Section - Auto-Rotating Carousel -->
 	<div class="banner-section">
-		<div class="bonus-banner">
-			<div class="bonus-content">
-				<h2>DAILY CHECK-IN<br>BONUS</h2>
-				<p>RECHARGE &amp; CLAIM REWARD</p>
-				<a href="/checkIn" class="bonus-btn">Claim Now</a>
+		<div class="banner-carousel">
+			<!-- Banner Slides -->
+			<div class="banner-slide active">
+				<img src="/banner/1.png" alt="Banner 1">
+			</div>
+			<div class="banner-slide">
+				<img src="/banner/2.png" alt="Banner 2">
+			</div>
+			<div class="banner-slide">
+				<img src="/banner/3.png" alt="Banner 3">
+			</div>
+			<div class="banner-slide">
+				<img src="/banner/4.png" alt="Banner 4">
+			</div>
+			<div class="banner-slide">
+				<img src="/banner/5.png" alt="Banner 5">
+			</div>
+			<div class="banner-slide">
+				<img src="/banner/6.png" alt="Banner 6">
+			</div>
+			<div class="banner-slide">
+				<img src="/banner/7.png" alt="Banner 7">
+			</div>
+			<div class="banner-slide">
+				<img src="/banner/8.png" alt="Banner 8">
+			</div>
+			
+			<!-- Navigation Arrows -->
+			<button class="banner-prev" onclick="changeBanner(-1)">❮</button>
+			<button class="banner-next" onclick="changeBanner(1)">❯</button>
+			
+			<!-- Dots Indicator -->
+			<div class="banner-dots">
+				<span class="dot active" onclick="currentBanner(1)"></span>
+				<span class="dot" onclick="currentBanner(2)"></span>
+				<span class="dot" onclick="currentBanner(3)"></span>
+				<span class="dot" onclick="currentBanner(4)"></span>
+				<span class="dot" onclick="currentBanner(5)"></span>
+				<span class="dot" onclick="currentBanner(6)"></span>
+				<span class="dot" onclick="currentBanner(7)"></span>
+				<span class="dot" onclick="currentBanner(8)"></span>
 			</div>
 		</div>
 	</div>
@@ -104,33 +267,6 @@
 		</div>
 	</div>
 
-	<!-- Super Jackpot Section -->
-	<div class="section-header">
-		<h3>Super Jackpot</h3>
-		<a href="/win" class="more-link">›</a>
-	</div>
-	<div class="jackpot-section">
-		<p class="jackpot-info">When you win a super jackpot, you will receive additional rewards</p>
-		<p class="jackpot-amount">Maximum bonus ₹300.00</p>
-	</div>
-
-	<!-- Slots Section -->
-	<div class="section-header">
-		<h3>Slots</h3>
-		<a href="/win" class="more-link">›</a>
-	</div>
-	<div class="games-container">
-		<div class="games-grid">
-			<a class="game-card" href="/win">
-				<div class="game-image">
-					<img src="/images/bg1.png" alt="Win Crash">
-				</div>
-				<div class="game-name">Win Crash</div>
-				<div class="game-desc">Win/Crash to Win</div>
-			</a>
-		</div>
-	</div>
-
 	<!-- Category Icons (Moved Below Games) -->
 	<div class="category-section">
 		<div class="category-grid">
@@ -140,12 +276,7 @@
 				</div>
 				<span class="category-name">Lottery</span>
 			</a>
-			<a href="/win" class="category-item">
-				<div class="category-icon">
-					<img src="/images/s2.png" alt="Super Jackpot">
-				</div>
-				<span class="category-name">Jackpot</span>
-			</a>
+		<!-- Jackpot category removed -->
 			<a href="/win" class="category-item">
 				<div class="category-icon">
 					<img src="/images/s3.png" alt="Slots">
@@ -210,6 +341,106 @@
 				}
 			});
 		});
+		
+		// Banner Carousel Auto-Rotation
+		let currentBannerIndex = 1;
+		let bannerInterval;
+		
+		// Show specific banner
+		function showBanner(n) {
+			const slides = document.querySelectorAll('.banner-slide');
+			const dots = document.querySelectorAll('.dot');
+			
+			if (n > slides.length) {
+				currentBannerIndex = 1;
+			}
+			if (n < 1) {
+				currentBannerIndex = slides.length;
+			}
+			
+			// Hide all slides
+			slides.forEach(slide => {
+				slide.classList.remove('active');
+			});
+			
+			// Remove active from all dots
+			dots.forEach(dot => {
+				dot.classList.remove('active');
+			});
+			
+			// Show current slide and dot
+			slides[currentBannerIndex - 1].classList.add('active');
+			dots[currentBannerIndex - 1].classList.add('active');
+		}
+		
+		// Next/Previous controls
+		function changeBanner(n) {
+			// Reset auto-rotation timer
+			clearInterval(bannerInterval);
+			currentBannerIndex += n;
+			showBanner(currentBannerIndex);
+			startBannerAutoRotation();
+		}
+		
+		// Dot controls
+		function currentBanner(n) {
+			// Reset auto-rotation timer
+			clearInterval(bannerInterval);
+			currentBannerIndex = n;
+			showBanner(currentBannerIndex);
+			startBannerAutoRotation();
+		}
+		
+		// Auto-rotation function
+		function autoBanner() {
+			currentBannerIndex++;
+			showBanner(currentBannerIndex);
+		}
+		
+		// Start auto-rotation
+		function startBannerAutoRotation() {
+			bannerInterval = setInterval(autoBanner, 3000); // Change banner every 3 seconds
+		}
+		
+		// Initialize carousel when page loads
+		document.addEventListener('DOMContentLoaded', function() {
+			showBanner(currentBannerIndex);
+			startBannerAutoRotation();
+		});
+		
+		// Pause on hover
+		document.querySelector('.banner-carousel')?.addEventListener('mouseenter', function() {
+			clearInterval(bannerInterval);
+		});
+		
+		// Resume on mouse leave
+		document.querySelector('.banner-carousel')?.addEventListener('mouseleave', function() {
+			startBannerAutoRotation();
+		});
+		
+		// Touch swipe support for mobile
+		let touchStartX = 0;
+		let touchEndX = 0;
+		
+		document.querySelector('.banner-carousel')?.addEventListener('touchstart', function(e) {
+			touchStartX = e.changedTouches[0].screenX;
+		});
+		
+		document.querySelector('.banner-carousel')?.addEventListener('touchend', function(e) {
+			touchEndX = e.changedTouches[0].screenX;
+			handleSwipe();
+		});
+		
+		function handleSwipe() {
+			if (touchEndX < touchStartX - 50) {
+				// Swipe left - next banner
+				changeBanner(1);
+			}
+			if (touchEndX > touchStartX + 50) {
+				// Swipe right - previous banner
+				changeBanner(-1);
+			}
+		}
 	</script>
 </body>
 </html>

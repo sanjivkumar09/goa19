@@ -360,8 +360,28 @@ const add5D = async(game) => {
             result = arr[0];
             await connection.execute(`UPDATE 5d SET result = ?,status = ? WHERE period = ? AND game = ${game}`, [result, 1, period]);
         }
+        
+        // Generate period based on current date/time (Format: YYYYMMDDHHmmS)
+        let date = new Date();
+        let years = date.getFullYear();
+        let months = String(date.getMonth() + 1).padStart(2, '0');
+        let days = String(date.getDate()).padStart(2, '0');
+        let hours = String(date.getHours()).padStart(2, '0');
+        let minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        // Get sequence number from last 3 digits of old period, or start at 1
+        let sequence = 1;
+        if (period && String(period).length >= 12) {
+            let oldSequence = parseInt(String(period).slice(-3));
+            let oldMinute = String(period).slice(8, 10);
+            if (oldMinute === minutes) {
+                sequence = oldSequence + 1;
+            }
+        }
+        let newPeriod = `${years}${months}${days}${hours}${minutes}${String(sequence).padStart(3, '0')}`;
+        
         const sql = `INSERT INTO 5d SET period = ?, result = ?, game = ?, status = ?, time = ?`;
-        await connection.execute(sql, [Number(period) + 1, 0, game, 0, timeNow]);
+        await connection.execute(sql, [newPeriod, 0, game, 0, timeNow]);
 
         if (game == 1) join = 'k5d';
         if (game == 3) join = 'k5d3';

@@ -663,13 +663,30 @@ const addWinGo = async (game) => {
             result = arr[0];
             await connection.execute(`UPDATE wingo SET amount = ?,status = ? WHERE period = ? AND game = "${join}"`, [result, 1, period]);
         }
+        // Generate new period based on current date
+        let date = new Date();
+        let years = date.getFullYear();
+        let months = String(date.getMonth() + 1).padStart(2, '0');
+        let days = String(date.getDate()).padStart(2, '0');
+        let hours = String(date.getHours()).padStart(2, '0');
+        let minutes = String(date.getMinutes()).padStart(2, '0');
+        let sequence = 1;
+        if (period && String(period).length >= 12) {
+            let oldSequence = parseInt(String(period).slice(-3));
+            let oldMinute = String(period).slice(8, 10);
+            if (oldMinute === minutes) {
+                sequence = oldSequence + 1;
+            }
+        }
+        let newPeriod = `${years}${months}${days}${hours}${minutes}${String(sequence).padStart(3, '0')}`;
+        
         const sql = `INSERT INTO wingo SET 
         period = ?,
         amount = ?,
         game = ?,
         status = ?,
         time = ?`;
-        await connection.execute(sql, [Number(period) + 1, 0, join, 0, timeNow]);
+        await connection.execute(sql, [newPeriod, 0, join, 0, timeNow]);
 
         if (game == 1) join = 'wingo1';
         if (game == 3) join = 'wingo3';

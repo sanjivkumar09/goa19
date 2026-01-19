@@ -406,12 +406,17 @@
                             $('.Loading').fadeIn(10);
                             setCookie('token', response.token, 1);
                             setCookie('auth', response.value, 1);
+                            
+                            console.log('Login successful! User level:', response.level);
+                            
                             // alertMess(response.message);
                             setTimeout(() => {
-                                // Redirect to admin panel if user is admin (level 1)
-                                if (response.level === 1) {
+                                // Redirect to admin panel if user is admin (level >= 1)
+                                if (response.level >= 1) {
+                                    console.log('Redirecting to admin dashboard...');
                                     location.href = '/admin/manager/index';
                                 } else {
+                                    console.log('Redirecting to home page...');
                                     location.href = '/home';
                                 }
                             }, 500);
