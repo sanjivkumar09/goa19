@@ -253,84 +253,82 @@
 			}
 		}
 		
-		/* Live Activity Feed Styles */
+		/* Winning Information Styles */
 		.live-activity-section {
 			margin: 20px 10px;
-			background: linear-gradient(180deg, rgba(10, 10, 30, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);
-			border-radius: 12px;
-			padding: 15px;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+			background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+			border-radius: 15px;
+			padding: 20px 15px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 		}
 		
 		.activity-header {
 			display: flex;
 			align-items: center;
-			gap: 10px;
-			margin-bottom: 15px;
-			padding-bottom: 10px;
-			border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+			gap: 8px;
+			margin-bottom: 20px;
+			padding-bottom: 12px;
+			border-bottom: 2px solid rgba(255, 215, 0, 0.2);
 		}
 		
 		.activity-header h3 {
 			color: #FFD700;
-			font-size: 16px;
-			font-weight: 600;
+			font-size: 18px;
+			font-weight: 700;
 			margin: 0;
+			letter-spacing: 0.5px;
 		}
 		
-		.activity-pulse {
-			width: 10px;
-			height: 10px;
-			background-color: #00ff00;
-			border-radius: 50%;
-			animation: pulse 2s infinite;
-		}
-		
-		@keyframes pulse {
-			0%, 100% {
-				box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
-			}
-			50% {
-				box-shadow: 0 0 0 8px rgba(0, 255, 0, 0);
-			}
+		.activity-header::before {
+			content: '|';
+			color: #FFD700;
+			font-size: 20px;
+			font-weight: 700;
 		}
 		
 		.activity-feed {
-			max-height: 300px;
+			max-height: 400px;
 			overflow-y: auto;
 			overflow-x: hidden;
+			padding-right: 5px;
 		}
 		
 		.activity-feed::-webkit-scrollbar {
-			width: 4px;
+			width: 6px;
 		}
 		
 		.activity-feed::-webkit-scrollbar-track {
 			background: rgba(255, 255, 255, 0.05);
-			border-radius: 4px;
+			border-radius: 10px;
 		}
 		
 		.activity-feed::-webkit-scrollbar-thumb {
-			background: rgba(212, 175, 55, 0.5);
-			border-radius: 4px;
+			background: linear-gradient(180deg, #FFD700, #FFA500);
+			border-radius: 10px;
 		}
 		
 		.activity-item {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			padding: 12px;
-			margin-bottom: 8px;
-			background: rgba(255, 255, 255, 0.05);
-			border-radius: 8px;
-			border-left: 3px solid #FFD700;
-			animation: slideIn 0.5s ease-out;
+			padding: 15px 12px;
+			margin-bottom: 10px;
+			background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+			border-radius: 12px;
+			border: 1px solid rgba(255, 215, 0, 0.1);
+			animation: slideInWinner 0.6s ease-out;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
 		}
 		
-		@keyframes slideIn {
+		.activity-item:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+		}
+		
+		@keyframes slideInWinner {
 			from {
 				opacity: 0;
-				transform: translateX(-20px);
+				transform: translateX(-30px);
 			}
 			to {
 				opacity: 1;
@@ -341,20 +339,23 @@
 		.activity-user {
 			display: flex;
 			align-items: center;
-			gap: 10px;
+			gap: 12px;
+			flex: 1;
 		}
 		
 		.activity-avatar {
-			width: 35px;
-			height: 35px;
+			width: 45px;
+			height: 45px;
 			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			color: white;
-			font-weight: 600;
-			font-size: 14px;
+			font-weight: 700;
+			font-size: 18px;
+			border: 2px solid rgba(255, 215, 0, 0.3);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 		}
 		
 		.activity-info {
@@ -363,13 +364,28 @@
 		
 		.activity-username {
 			color: #fff;
-			font-size: 13px;
-			font-weight: 500;
+			font-size: 14px;
+			font-weight: 600;
+			margin-bottom: 4px;
 		}
 		
 		.activity-game {
-			color: rgba(255, 255, 255, 0.6);
-			font-size: 11px;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+		
+		.activity-game-icon {
+			width: 18px;
+			height: 18px;
+			background: #FFD700;
+			border-radius: 3px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 10px;
+			font-weight: 700;
+			color: #1a1a2e;
 		}
 		
 		.activity-win {
@@ -377,14 +393,16 @@
 		}
 		
 		.activity-amount {
-			color: #00ff00;
+			color: #FFD700;
 			font-weight: 700;
-			font-size: 14px;
+			font-size: 15px;
+			margin-bottom: 4px;
 		}
 		
-		.activity-time {
-			color: rgba(255, 255, 255, 0.4);
-			font-size: 10px;
+		.activity-status {
+			color: rgba(255, 255, 255, 0.5);
+			font-size: 11px;
+			font-weight: 400;
 		}
 	</style>
 </head>
@@ -546,14 +564,13 @@
 		</div>
 	</div>
 
-	<!-- Live Activity Feed -->
+	<!-- Winning Information -->
 	<div class="live-activity-section">
 		<div class="activity-header">
-			<span class="activity-pulse"></span>
-			<h3>Live Winners</h3>
+			<h3>Winning information</h3>
 		</div>
 		<div class="activity-feed" id="activityFeed">
-			<!-- Activities will be dynamically added here -->
+			<!-- Winners will be dynamically added here -->
 		</div>
 	</div>
 
@@ -792,75 +809,99 @@
 			}
 		});
 		
-		// Live Activity Feed
-		const fakeUsers = [
-			'User***123', 'Player***456', 'Lucky***789', 'Winner***234', 'Gamer***567',
-			'Pro***890', 'King***345', 'Ace***678', 'Star***901', 'Boss***432',
-			'Hero***765', 'Ninja***098', 'Elite***543', 'Champ***876', 'Master***210',
-			'Guru***654', 'Legend***987', 'Titan***321', 'Phoenix***765', 'Dragon***098'
+		// Winning Information Feed
+		const memberSuffixes = [
+			'KGG', 'LKM', 'CTR', 'NKE', 'UTD', 'FCB', 'RMA', 'PSG', 'BAY', 'JUV',
+			'ARS', 'CHE', 'LIV', 'MCI', 'TOT', 'INT', 'MIL', 'NAP', 'ROM', 'ATL',
+			'SEV', 'VAL', 'DOR', 'LEI', 'WHU', 'EVE', 'WOL', 'CRY', 'BUR', 'SOU'
 		];
 		
-		const games = ['WinGo', 'K3', '5D'];
+		const gameTypes = ['WinGo', 'K3', '5D'];
+		const gameNumbers = ['1', '3', '5', '7', '9'];
 		
-		function getRandomUser() {
-			return fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+		function getRandomMember() {
+			const suffix = memberSuffixes[Math.floor(Math.random() * memberSuffixes.length)];
+			return 'Mem***' + suffix;
 		}
 		
 		function getRandomGame() {
-			return games[Math.floor(Math.random() * games.length)];
+			return gameTypes[Math.floor(Math.random() * gameTypes.length)];
+		}
+		
+		function getRandomGameNumber() {
+			return gameNumbers[Math.floor(Math.random() * gameNumbers.length)];
 		}
 		
 		function getRandomAmount() {
-			const amounts = [50, 100, 150, 200, 250, 300, 400, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000];
-			return amounts[Math.floor(Math.random() * amounts.length)];
-		}
-		
-		function getRandomTime() {
-			const seconds = Math.floor(Math.random() * 300) + 5;
-			if (seconds < 60) {
-				return seconds + 's ago';
-			} else {
-				const minutes = Math.floor(seconds / 60);
-				return minutes + 'm ago';
-			}
+			const baseAmounts = [188, 288, 388, 488, 588, 688, 788, 888, 988, 1288, 1588, 1888, 2288, 2588, 2888];
+			const base = baseAmounts[Math.floor(Math.random() * baseAmounts.length)];
+			const decimal = Math.floor(Math.random() * 100);
+			return base + '.' + (decimal < 10 ? '0' + decimal : decimal);
 		}
 		
 		function getUserInitial(username) {
 			return username.charAt(0).toUpperCase();
 		}
 		
+		function getRandomAvatarColor() {
+			const colors = [
+				'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+				'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+				'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+				'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+				'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+				'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+				'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+				'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+			];
+			return colors[Math.floor(Math.random() * colors.length)];
+		}
+		
 		function createActivityItem() {
-			const username = getRandomUser();
+			const username = getRandomMember();
 			const game = getRandomGame();
+			const gameNum = getRandomGameNumber();
 			const amount = getRandomAmount();
-			const time = getRandomTime();
 			const initial = getUserInitial(username);
+			const avatarColor = getRandomAvatarColor();
 			
-			const activityHTML = '<div class="activity-item"><div class="activity-user"><div class="activity-avatar">' + initial + '</div><div class="activity-info"><div class="activity-username">' + username + '</div><div class="activity-game">Won in ' + game + '</div></div></div><div class="activity-win"><div class="activity-amount">+₹' + amount + '</div><div class="activity-time">' + time + '</div></div></div>';
+			const activityHTML = '<div class="activity-item">' +
+				'<div class="activity-user">' +
+					'<div class="activity-avatar" style="background: ' + avatarColor + ';">' + initial + '</div>' +
+					'<div class="activity-info">' +
+						'<div class="activity-username">' + username + '</div>' +
+						'<div class="activity-game"><span class="activity-game-icon">' + gameNum + '</span></div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="activity-win">' +
+					'<div class="activity-amount">Receive ₹' + amount + '</div>' +
+					'<div class="activity-status">Winning amount</div>' +
+				'</div>' +
+			'</div>';
 			
 			const feed = document.getElementById('activityFeed');
 			if (feed) {
 				feed.insertAdjacentHTML('afterbegin', activityHTML);
 				
 				const items = feed.querySelectorAll('.activity-item');
-				if (items.length > 15) {
+				if (items.length > 20) {
 					items[items.length - 1].remove();
 				}
 			}
 		}
 		
 		function initializeActivities() {
-			for (let i = 0; i < 8; i++) {
+			for (let i = 0; i < 10; i++) {
 				setTimeout(() => {
 					createActivityItem();
-				}, i * 200);
+				}, i * 300);
 			}
 		}
 		
 		function startActivityFeed() {
 			setInterval(() => {
 				createActivityItem();
-			}, Math.random() * 5000 + 3000);
+			}, Math.random() * 6000 + 4000);
 		}
 		
 		if (document.getElementById('activityFeed')) {
