@@ -252,6 +252,158 @@
 				padding: 8px 12px;
 			}
 		}
+		
+		/* Winning Information Styles */
+		.live-activity-section {
+			margin: 20px 10px;
+			background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+			border-radius: 15px;
+			padding: 20px 15px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+		}
+		
+		.activity-header {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 20px;
+			padding-bottom: 12px;
+			border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+		}
+		
+		.activity-header h3 {
+			color: #FFD700;
+			font-size: 18px;
+			font-weight: 700;
+			margin: 0;
+			letter-spacing: 0.5px;
+		}
+		
+		.activity-header::before {
+			content: '|';
+			color: #FFD700;
+			font-size: 20px;
+			font-weight: 700;
+		}
+		
+		.activity-feed {
+			max-height: 400px;
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding-right: 5px;
+		}
+		
+		.activity-feed::-webkit-scrollbar {
+			width: 6px;
+		}
+		
+		.activity-feed::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 10px;
+		}
+		
+		.activity-feed::-webkit-scrollbar-thumb {
+			background: linear-gradient(180deg, #FFD700, #FFA500);
+			border-radius: 10px;
+		}
+		
+		.activity-item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 15px 12px;
+			margin-bottom: 10px;
+			background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+			border-radius: 12px;
+			border: 1px solid rgba(255, 215, 0, 0.1);
+			animation: slideInWinner 0.6s ease-out;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+		
+		.activity-item:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+		}
+		
+		@keyframes slideInWinner {
+			from {
+				opacity: 0;
+				transform: translateX(-30px);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+		
+		.activity-user {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			flex: 1;
+		}
+		
+		.activity-avatar {
+			width: 45px;
+			height: 45px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-weight: 700;
+			font-size: 18px;
+			border: 2px solid rgba(255, 215, 0, 0.3);
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+		}
+		
+		.activity-info {
+			flex: 1;
+		}
+		
+		.activity-username {
+			color: #fff;
+			font-size: 14px;
+			font-weight: 600;
+			margin-bottom: 4px;
+		}
+		
+		.activity-game {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+		
+		.activity-game-icon {
+			width: 18px;
+			height: 18px;
+			background: #FFD700;
+			border-radius: 3px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 10px;
+			font-weight: 700;
+			color: #1a1a2e;
+		}
+		
+		.activity-win {
+			text-align: right;
+		}
+		
+		.activity-amount {
+			color: #FFD700;
+			font-weight: 700;
+			font-size: 15px;
+			margin-bottom: 4px;
+		}
+		
+		.activity-status {
+			color: rgba(255, 255, 255, 0.5);
+			font-size: 11px;
+			font-weight: 400;
+		}
 	</style>
 </head>
 <body class="home-page">
@@ -409,6 +561,16 @@
 				</div>
 				<span class="category-name">Sports</span>
 			</a>
+		</div>
+	</div>
+
+	<!-- Winning Information -->
+	<div class="live-activity-section">
+		<div class="activity-header">
+			<h3>Winning information</h3>
+		</div>
+		<div class="activity-feed" id="activityFeed">
+			<!-- Winners will be dynamically added here -->
 		</div>
 	</div>
 
@@ -646,6 +808,106 @@
 				changeGame(-1);
 			}
 		});
+		
+		// Winning Information Feed
+		const memberSuffixes = [
+			'KGG', 'LKM', 'CTR', 'NKE', 'UTD', 'FCB', 'RMA', 'PSG', 'BAY', 'JUV',
+			'ARS', 'CHE', 'LIV', 'MCI', 'TOT', 'INT', 'MIL', 'NAP', 'ROM', 'ATL',
+			'SEV', 'VAL', 'DOR', 'LEI', 'WHU', 'EVE', 'WOL', 'CRY', 'BUR', 'SOU'
+		];
+		
+		const gameTypes = ['WinGo', 'K3', '5D'];
+		const gameNumbers = ['1', '3', '5', '7', '9'];
+		
+		function getRandomMember() {
+			const suffix = memberSuffixes[Math.floor(Math.random() * memberSuffixes.length)];
+			return 'Mem***' + suffix;
+		}
+		
+		function getRandomGame() {
+			return gameTypes[Math.floor(Math.random() * gameTypes.length)];
+		}
+		
+		function getRandomGameNumber() {
+			return gameNumbers[Math.floor(Math.random() * gameNumbers.length)];
+		}
+		
+		function getRandomAmount() {
+			const baseAmounts = [188, 288, 388, 488, 588, 688, 788, 888, 988, 1288, 1588, 1888, 2288, 2588, 2888];
+			const base = baseAmounts[Math.floor(Math.random() * baseAmounts.length)];
+			const decimal = Math.floor(Math.random() * 100);
+			return base + '.' + (decimal < 10 ? '0' + decimal : decimal);
+		}
+		
+		function getUserInitial(username) {
+			return username.charAt(0).toUpperCase();
+		}
+		
+		function getRandomAvatarColor() {
+			const colors = [
+				'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+				'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+				'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+				'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+				'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+				'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+				'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+				'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+			];
+			return colors[Math.floor(Math.random() * colors.length)];
+		}
+		
+		function createActivityItem() {
+			const username = getRandomMember();
+			const game = getRandomGame();
+			const gameNum = getRandomGameNumber();
+			const amount = getRandomAmount();
+			const initial = getUserInitial(username);
+			const avatarColor = getRandomAvatarColor();
+			
+			const activityHTML = '<div class="activity-item">' +
+				'<div class="activity-user">' +
+					'<div class="activity-avatar" style="background: ' + avatarColor + ';">' + initial + '</div>' +
+					'<div class="activity-info">' +
+						'<div class="activity-username">' + username + '</div>' +
+						'<div class="activity-game"><span class="activity-game-icon">' + gameNum + '</span></div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="activity-win">' +
+					'<div class="activity-amount">Receive ₹' + amount + '</div>' +
+					'<div class="activity-status">Winning amount</div>' +
+				'</div>' +
+			'</div>';
+			
+			const feed = document.getElementById('activityFeed');
+			if (feed) {
+				feed.insertAdjacentHTML('afterbegin', activityHTML);
+				
+				const items = feed.querySelectorAll('.activity-item');
+				if (items.length > 20) {
+					items[items.length - 1].remove();
+				}
+			}
+		}
+		
+		function initializeActivities() {
+			for (let i = 0; i < 10; i++) {
+				setTimeout(() => {
+					createActivityItem();
+				}, i * 300);
+			}
+		}
+		
+		function startActivityFeed() {
+			setInterval(() => {
+				createActivityItem();
+			}, Math.random() * 6000 + 4000);
+		}
+		
+		if (document.getElementById('activityFeed')) {
+			initializeActivities();
+			startActivityFeed();
+		}
 	</script>
 </body>
 </html>
