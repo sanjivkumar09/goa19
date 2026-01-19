@@ -791,6 +791,82 @@
 				changeGame(-1);
 			}
 		});
+		
+		// Live Activity Feed
+		const fakeUsers = [
+			'User***123', 'Player***456', 'Lucky***789', 'Winner***234', 'Gamer***567',
+			'Pro***890', 'King***345', 'Ace***678', 'Star***901', 'Boss***432',
+			'Hero***765', 'Ninja***098', 'Elite***543', 'Champ***876', 'Master***210',
+			'Guru***654', 'Legend***987', 'Titan***321', 'Phoenix***765', 'Dragon***098'
+		];
+		
+		const games = ['WinGo', 'K3', '5D'];
+		
+		function getRandomUser() {
+			return fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+		}
+		
+		function getRandomGame() {
+			return games[Math.floor(Math.random() * games.length)];
+		}
+		
+		function getRandomAmount() {
+			const amounts = [50, 100, 150, 200, 250, 300, 400, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000];
+			return amounts[Math.floor(Math.random() * amounts.length)];
+		}
+		
+		function getRandomTime() {
+			const seconds = Math.floor(Math.random() * 300) + 5;
+			if (seconds < 60) {
+				return seconds + 's ago';
+			} else {
+				const minutes = Math.floor(seconds / 60);
+				return minutes + 'm ago';
+			}
+		}
+		
+		function getUserInitial(username) {
+			return username.charAt(0).toUpperCase();
+		}
+		
+		function createActivityItem() {
+			const username = getRandomUser();
+			const game = getRandomGame();
+			const amount = getRandomAmount();
+			const time = getRandomTime();
+			const initial = getUserInitial(username);
+			
+			const activityHTML = '<div class="activity-item"><div class="activity-user"><div class="activity-avatar">' + initial + '</div><div class="activity-info"><div class="activity-username">' + username + '</div><div class="activity-game">Won in ' + game + '</div></div></div><div class="activity-win"><div class="activity-amount">+₹' + amount + '</div><div class="activity-time">' + time + '</div></div></div>';
+			
+			const feed = document.getElementById('activityFeed');
+			if (feed) {
+				feed.insertAdjacentHTML('afterbegin', activityHTML);
+				
+				const items = feed.querySelectorAll('.activity-item');
+				if (items.length > 15) {
+					items[items.length - 1].remove();
+				}
+			}
+		}
+		
+		function initializeActivities() {
+			for (let i = 0; i < 8; i++) {
+				setTimeout(() => {
+					createActivityItem();
+				}, i * 200);
+			}
+		}
+		
+		function startActivityFeed() {
+			setInterval(() => {
+				createActivityItem();
+			}, Math.random() * 5000 + 3000);
+		}
+		
+		if (document.getElementById('activityFeed')) {
+			initializeActivities();
+			startActivityFeed();
+		}
 	</script>
 </body>
 </html>
