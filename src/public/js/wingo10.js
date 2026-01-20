@@ -470,8 +470,8 @@ function showListOrder3(list_orders, x) {
   });
   $(".number-box button").click(function (e) {
     e.preventDefault();
-    let addTop = $(this).text().trim(); // Green - do - tim (x - d - t)
-    let addText = $(this).text(); // Green - do - tim
+    let addTop = $(this).attr("data-value") || $(this).text().trim(); // Green - do - tim (x - d - t)
+    let addText = $(this).attr("data-value") || $(this).text(); // Green - do - tim
     alertBox(addTop, addText);
   });
   $(".btn-box button").click(function (e) {

@@ -472,8 +472,8 @@ $(".con-box button").click(function (e) {
 });
 $(".number-box button").click(function (e) {
   e.preventDefault();
-  let addTop = $(this).text().trim(); // xanh - do - tim (x - d - t)
-  let addText = $(this).text(); // xanh - do - tim
+  let addTop = $(this).attr("data-value") || $(this).text().trim(); // xanh - do - tim (x - d - t)
+  let addText = $(this).attr("data-value") || $(this).text(); // xanh - do - tim
   alertBox(addTop, addText);
 });
 $(".btn-box button").click(function (e) {
