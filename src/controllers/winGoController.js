@@ -225,7 +225,7 @@ const betWinGo = async (req, res) => {
     if (typeid == 5) gameJoin = 'wingo5';
     if (typeid == 10) gameJoin = 'wingo10';
     const [winGoNow] = await connection.query(`SELECT period FROM wingo WHERE status = 0 AND game = '${gameJoin}' ORDER BY id DESC LIMIT 1 `);
-    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
+    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
     if (!winGoNow[0] || !user[0] || !isNumber(x) || !isNumber(money)) {
         return res.status(200).json({
             message: 'Error!',
@@ -330,6 +330,7 @@ const betWinGo = async (req, res) => {
         return years + '-' + months + '-' + days + ' ' + hours + ':' + minutes + ':' + seconds + ' ' + ampm;
     }
     let checkTime = timerJoin(date.getTime());
+    let todayStr = `${years}-${months}-${days}`;
 
     if (check >= 0) {
         const sql = `INSERT INTO minutes_1 SET 
@@ -342,15 +343,18 @@ const betWinGo = async (req, res) => {
         money = ?,
         amount = ?,
         fee = ?,
-        get = ?,
+        \`get\` = ?,
         game = ?,
         bet = ?,
         status = ?,
         today = ?,
         time = ?`;
-        await connection.execute(sql, [id_product, userInfo.phone, userInfo.code, userInfo.invite, period, userInfo.level, total, x, fee, 0, gameJoin, join, 0, checkTime, timeNow]);
-        await connection.execute('UPDATE `users` SET `money` = `money` - ? WHERE `token` = ? ', [money * x, auth]);
-        const [users] = await connection.query('SELECT `money`, `level` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
+        await connection.execute(sql, [id_product, userInfo.phone, userInfo.code, userInfo.invite, period, userInfo.level, total, x, fee, 0, gameJoin, join, 0, todayStr, timeNow]);
+        await connection.execute(
+            'UPDATE `users` SET `money` = IFNULL(`money_user`, `money`) - ?, `money_user` = IFNULL(`money_user`, `money`) - ? WHERE `token` = ? ',
+            [money * x, money * x, auth]
+        );
+        const [users] = await connection.query('SELECT IFNULL(`money_user`, `money`) AS `money`, `level` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
         await rosesPlus(auth, money * x);
         // const [level] = await connection.query('SELECT * FROM level ');
         // let level0 = level[0];
@@ -405,7 +409,7 @@ const listOrderOld = async (req, res) => {
         });
     }
     let auth = req.cookies.auth;
-    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
+    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
 
     let game = '';
     if (typeid == 1) game = 'wingo';
@@ -478,7 +482,7 @@ const GetMyEmerdList = async (req, res) => {
     if (typeid == 5) game = 'wingo5';
     if (typeid == 10) game = 'wingo10';
 
-    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, `money` FROM users WHERE token = ? AND veri = 1 LIMIT 1 ', [auth]);
+    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1 LIMIT 1 ', [auth]);
     const [minutes_1] = await connection.query(`SELECT * FROM minutes_1 WHERE phone = ? AND game = '${game}' ORDER BY id DESC LIMIT ${Number(pageno) + ',' + Number(pageto)}`, [user[0].phone]);
     const [minutes_1All] = await connection.query(`SELECT * FROM minutes_1 WHERE phone = ? AND game = '${game}' ORDER BY id DESC `, [user[0].phone]);
 
@@ -524,7 +528,7 @@ const addWinGo = async (game) => {
         if (game == 5) join = 'wingo5';
         if (game == 10) join = 'wingo10';
 
-        const [winGoNow] = await connection.query(`SELECT period FROM wingo WHERE status = 0 AND game = "${join}" ORDER BY id DESC LIMIT 1 `);
+        const [winGoNow] = await connection.query(`SELECT period, amount FROM wingo WHERE status = 0 AND game = "${join}" ORDER BY id DESC LIMIT 1 `);
         
         // Check if there's an active period
         if (!winGoNow || winGoNow.length === 0) {
@@ -532,11 +536,26 @@ const addWinGo = async (game) => {
             return;
         }
         
+        // Get the LAST COMPLETED period to avoid repeating the same result
+        const [lastCompleted] = await connection.query(`SELECT amount FROM wingo WHERE status != 0 AND game = "${join}" ORDER BY id DESC LIMIT 1 `);
+        
         const [setting] = await connection.query('SELECT * FROM `admin` ');
         let period = winGoNow[0].period; // cầu hiện tại
-        let amount = Math.floor(Math.random() * 10);
+        let lastAmount = (lastCompleted && lastCompleted.length > 0) ? lastCompleted[0].amount : null;
+        
+        // Generate random amount ensuring variety - avoid repeating the last amount
+        let amount;
+        do {
+            amount = Math.floor(Math.random() * 10);
+        } while (lastAmount !== null && amount === lastAmount);
+        
         const [minPlayers] = await connection.query(`SELECT * FROM minutes_1 WHERE status = 0 AND game = "${join}"`);
-        if (minPlayers.length >= 2) {
+        
+        // For 1-minute game, prioritize random selection for variety
+        // Only use betting-based selection if there are many players (3+)
+        const shouldUseBettingLogic = minPlayers.length >= 3;
+        
+        if (shouldUseBettingLogic && minPlayers.length >= 3) {
             const betColumns = [
                 // red_small 
                 { name: 'red_0', bets: ['0', 't', 'd', 'n'] },
@@ -593,7 +612,14 @@ const addWinGo = async (game) => {
                 );
             }
 
-            amount = lowestBet;
+            // Ensure we don't repeat the last amount
+            if (lowestBet === lastAmount && betsForCategory.length > 1) {
+                // If lowestBet is the same as last amount, try to pick a different one
+                const alternates = betsForCategory.filter(bet => bet !== lastAmount);
+                amount = alternates.length > 0 ? alternates[0] : lowestBet;
+            } else {
+                amount = lowestBet;
+            }
         } else if (minPlayers.length === 1 && parseFloat(minPlayers[0].money) >= 20) {
             const betColumns = [
                 { name: 'red_small', bets: ['0', '2', '4', 'd', 'n'] },
@@ -631,12 +657,20 @@ const addWinGo = async (game) => {
                 !categories.find(category => category.name === smallestCategory.name && category.total_money < smallestCategory.total_money)
             );
 
-            const lowestBet = availableBets.length > 0 ? availableBets[0] : Math.min(...betsForCategory);
-            amount = lowestBet;
+            let selectedBet = availableBets.length > 0 ? availableBets[0] : Math.min(...betsForCategory);
+            
+            // Ensure we don't repeat the last amount
+            if (selectedBet === lastAmount && betsForCategory.length > 1) {
+                // If selectedBet is the same as last amount, try to pick a different one
+                const alternates = betsForCategory.filter(bet => bet !== lastAmount);
+                amount = alternates.length > 0 ? alternates[0] : selectedBet;
+            } else {
+                amount = selectedBet;
+            }
+        } else {
+            // Not enough players for betting logic - keep the random amount we generated
+            console.log(`[WINGO] Game ${join}: Using random prediction (${amount}) - Only ${minPlayers.length} player(s)`);
         }
-
-        // xanh đỏ tím
-        let timeNow = Date.now();
 
         let nextResult = '';
         if (game == 1) nextResult = setting[0].wingo1;
@@ -644,25 +678,33 @@ const addWinGo = async (game) => {
         if (game == 5) nextResult = setting[0].wingo5;
         if (game == 10) nextResult = setting[0].wingo10;
 
-        let newArr = '';
-        if (nextResult == '-1') {
-            await connection.execute(`UPDATE wingo SET amount = ?,status = ? WHERE period = ? AND game = "${join}"`, [amount, 1, period]);
-            newArr = '-1';
-        } else {
-            let result = '';
-            let arr = nextResult.split('|');
-            let check = arr.length;
-            if (check == 1) {
-                newArr = '-1';
-            } else {
-                for (let i = 1; i < arr.length; i++) {
-                    newArr += arr[i] + '|';
+        let newArr = '-1';
+        let useAdminPrediction = false;
+        if (nextResult && nextResult !== '-1') {
+            let arr = nextResult.split('|').filter((item) => item !== '');
+            let selected = Number(arr[0]);
+            if (Number.isInteger(selected) && selected >= 0 && selected <= 9) {
+                amount = selected;
+                useAdminPrediction = true;
+                if (arr.length > 1) {
+                    newArr = arr.slice(1).join('|');
                 }
-                newArr = newArr.slice(0, -1);
             }
-            result = arr[0];
-            await connection.execute(`UPDATE wingo SET amount = ?,status = ? WHERE period = ? AND game = "${join}"`, [result, 1, period]);
         }
+
+        // Force random for 1-minute game to prevent repeated predictions
+        if (!useAdminPrediction && game == 1) {
+            let rand;
+            do {
+                rand = Math.floor(Math.random() * 10);
+            } while (lastAmount !== null && rand === lastAmount);
+            amount = rand;
+        }
+
+        // xanh đỏ tím
+        let timeNow = Date.now();
+
+        await connection.execute(`UPDATE wingo SET amount = ?,status = ? WHERE period = ? AND game = "${join}"`, [amount, 1, period]);
         // Generate new period based on current date
         let date = new Date();
         let years = date.getFullYear();
@@ -852,11 +894,11 @@ const handlingWinGo1P = async (typeid) => {
                 }
             }
         }
-        const [users] = await connection.execute('SELECT `money` FROM `users` WHERE `phone` = ?', [phone]);
+        const [users] = await connection.execute('SELECT IFNULL(`money_user`, `money`) AS `money` FROM `users` WHERE `phone` = ?', [phone]);
         let totals = parseFloat(users[0].money) + parseFloat(nhan_duoc);
         await connection.execute('UPDATE `minutes_1` SET `get` = ?, `status` = 1 WHERE `id` = ? ', [parseFloat(nhan_duoc), id]);
-        const sql = 'UPDATE `users` SET `money` = ? WHERE `phone` = ? ';
-        await connection.execute(sql, [totals, phone]);
+        const sql = 'UPDATE `users` SET `money` = ?, `money_user` = ? WHERE `phone` = ? ';
+        await connection.execute(sql, [totals, totals, phone]);
     }
 }
 

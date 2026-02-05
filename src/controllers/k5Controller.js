@@ -140,7 +140,7 @@ const betK5D = async (req, res) => {
         }
 
         const [k5DNow] = await connection.query(`SELECT period FROM 5d WHERE status = 0 AND game = ${game} ORDER BY id DESC LIMIT 1 `);
-        const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
+        const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
         if (k5DNow.length < 1 || user.length < 1) {
             return res.status(200).json({
                 message: 'Error!',
@@ -165,8 +165,11 @@ const betK5D = async (req, res) => {
             let timeNow = Date.now();
             const sql = `INSERT INTO result_5d SET id_product = ?,phone = ?,code = ?,invite = ?,stage = ?,level = ?,money = ?,price = ?,amount = ?,fee = ?,game = ?,join_bet = ?,bet = ?,status = ?,time = ?`;
             await connection.execute(sql, [id_product, userInfo.phone, userInfo.code, userInfo.invite, period.period, userInfo.level, total, price, x, fee, game, join, list_join, 0, timeNow]);
-            await connection.execute('UPDATE `users` SET `money` = `money` - ? WHERE `token` = ? ', [total, auth]);
-            const [users] = await connection.query('SELECT `money`, `level` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
+            await connection.execute(
+                'UPDATE `users` SET `money` = IFNULL(`money_user`, `money`) - ?, `money_user` = IFNULL(`money_user`, `money`) - ? WHERE `token` = ? ',
+                [total, total, auth]
+            );
+            const [users] = await connection.query('SELECT IFNULL(`money_user`, `money`) AS `money`, `level` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
             await rosesPlus(auth, money * x);
             const [level] = await connection.query('SELECT * FROM level ');
             let level0 = level[0];
@@ -210,7 +213,7 @@ const listOrderOld = async (req, res) => {
             status: false
         });
     }
-    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
+    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
 
     let game = Number(gameJoin);
 
@@ -265,7 +268,7 @@ const GetMyEmerdList = async (req, res) => {
 
     let game = Number(gameJoin);
 
-    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, `money` FROM users WHERE token = ? AND veri = 1 LIMIT 1 ', [auth]);
+    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1 LIMIT 1 ', [auth]);
     const [result_5d] = await connection.query(`SELECT * FROM result_5d WHERE phone = ? AND game = '${game}' ORDER BY id DESC LIMIT ${Number(pageno) + ',' + Number(pageto)}`, [user[0].phone]);
     const [result_5dAll] = await connection.query(`SELECT * FROM result_5d WHERE phone = ? AND game = '${game}' ORDER BY id DESC `, [user[0].phone]);
 
@@ -605,8 +608,8 @@ const handling5D = async(typeid) => {
         }
 
         await connection.execute('UPDATE `result_5d` SET `get` = ?, `status` = 1 WHERE `id` = ? ', [nhan_duoc, id]);
-        const sql = 'UPDATE `users` SET `money` = `money` + ? WHERE `phone` = ? ';
-        await connection.execute(sql, [nhan_duoc, phone]);
+        const sql = 'UPDATE `users` SET `money` = IFNULL(`money`, `money_user`) + ?, `money_user` = IFNULL(`money_user`, `money`) + ? WHERE `phone` = ? ';
+        await connection.execute(sql, [nhan_duoc, nhan_duoc, phone]);
     }
 }
 

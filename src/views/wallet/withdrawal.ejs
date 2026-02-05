@@ -7592,32 +7592,37 @@
                             <div data-v-25d9c352="" class="m-r-10 van-image" style="width: 30px; height: 30px;"><img
                                     src="/images/tải xuống (4).png"
                                     class="van-image__img"></div>
-                            <div data-v-25d9c352="">1. Withdraw fee 0%</div>
+                            <div data-v-25d9c352="">◆ Need to bet ₹0.0 to be able to withdraw</div>
                         </div>
-                        <!---->
                         <div data-v-25d9c352="" class="item c-row c-row-middle">
                             <div data-v-25d9c352="" class="m-r-10 van-image" style="width: 30px; height: 30px;"><img
                                     src="/images/tải xuống (5).png"
                                     class="van-image__img"></div>
-                            <div data-v-25d9c352="">2.Today Bet Amount ₹ Loading...</div>
+                            <div data-v-25d9c352="">◆ Withdraw time 00:00-23:59</div>
                         </div>
                         <div data-v-25d9c352="" class="item c-row c-row-middle">
                             <div data-v-25d9c352="" class="m-r-10 van-image" style="width: 30px; height: 30px;"><img
                                     src="/images/tải xuống (6).png"
                                     class="van-image__img"></div>
-                            <div data-v-25d9c352="">3.Withdrawal time 08:00 AM-08:00 PM</div>
+                            <div data-v-25d9c352="">◆ In-day remaining withdrawal times 3</div>
                         </div>
                         <div data-v-25d9c352="" class="item c-row c-row-middle">
                             <div data-v-25d9c352="" class="m-r-10 van-image" style="width: 30px; height: 30px;"><img
                                     src="/images/tải xuống (7).png"
                                     class="van-image__img"></div>
-                            <div data-v-25d9c352="">4.Daily withdrawal times 3</div>
+                            <div data-v-25d9c352="">◆ Withdrawal amount range ₹110.00-₹50,000.00</div>
                         </div>
                         <div data-v-25d9c352="" class="item c-row c-row-middle">
                             <div data-v-25d9c352="" class="m-r-10 van-image" style="width: 30px; height: 30px;"><img
                                     src="/images/tải xuống (8).png"
                                     class="van-image__img"></div>
-                            <div data-v-25d9c352="">5. Withdrawal amount Range 300-Unlimited</div>
+                            <div data-v-25d9c352="">◆ Please confirm your beneficiary account information before withdrawing. If your information is incorrect, our company will not be liable for the amount of loss</div>
+                        </div>
+                        <div data-v-25d9c352="" class="item c-row c-row-middle">
+                            <div data-v-25d9c352="" class="m-r-10 van-image" style="width: 30px; height: 30px;"><img
+                                    src="/images/tải xuống (8).png"
+                                    class="van-image__img"></div>
+                            <div data-v-25d9c352="">◆ Once deposit 5500 after withdrawal complete successfully</div>
                         </div>
                     </div>
                 </div>
@@ -7692,7 +7697,7 @@
             e.preventDefault();
             let money = $('input:eq(0)').val().trim();
             let password = $('input:eq(1)').val().trim();
-            if (money && password && money >= 300) {
+            if (money && password && money >= 5500) {
                 $.ajax({
                     type: "POST",
                     url: "/api/webapi/withdrawal",
@@ -7714,7 +7719,7 @@
                 alertMess('Please enter complete information', $(this));
             } else {
                 $(this).addClass('block-click');
-                alertMess('Withdrawal amount range 300-Unlimited', $(this));
+                alertMess('Withdrawal amount range 5500-Unlimited', $(this));
             }
         });
     </script>

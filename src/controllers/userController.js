@@ -78,6 +78,9 @@ const userInfo = async (req, res) => {
     });
 
     const { id, password, ip, veri, ip_address, status, time, token, ...others } = rows[0];
+    const walletBalance = (rows[0].money_user !== null && rows[0].money_user !== undefined)
+        ? rows[0].money_user
+        : rows[0].money;
     return res.status(200).json({
         message: 'Success',
         status: true,
@@ -86,7 +89,7 @@ const userInfo = async (req, res) => {
             id_user: others.id_user,
             name_user: others.name_user,
             phone_user: others.phone,
-            money_user: others.money,
+            money_user: walletBalance,
         },
         totalRecharge: totalRecharge,
         totalWithdraw: totalWithdraw,
@@ -687,9 +690,9 @@ const recharge = async (req, res) => {
     let utr = req.body.utr;
 
     if (type != 'cancel' && type != 'submit' && type != 'submitauto') {
-        if (!auth || !money || money <= 299) {
+        if (!auth || !money || money <= 499) {
             return res.status(200).json({
-                message: 'Minimum recharge 300',
+                message: 'Minimum recharge 500',
                 status: false,
                 timeStamp: timeNow,
             })
@@ -759,7 +762,10 @@ const recharge = async (req, res) => {
                     console.log('Transaction found:', transaction);
                     await connection.query(`UPDATE recharge SET status = 1 WHERE utr = ?`, [utr]);
                     console.log("money" + info[0].money + ",phone" + info[0].phone);
-                    await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ?', [info[0].money, info[0].money, info[0].phone]);
+                    await connection.query(
+                        'UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ?, total_money = total_money + ? WHERE phone = ?',
+                        [info[0].money, info[0].money, info[0].money, info[0].phone]
+                    );
     
                     return res.status(200).json({
                         message: 'Submit successful',
@@ -991,7 +997,7 @@ const withdrawal3 = async (req, res) => {
     let auth = req.cookies.auth;
     let money = req.body.money;
     let password = req.body.password;
-    if (!auth || !money || !password || money < 299) {
+    if (!auth || !money || !password || money < 5500) {
         return res.status(200).json({
             message: 'Failed',
             status: false,
@@ -1483,7 +1489,10 @@ const callback_bank = async (req, res) => {
     if (status == 2) {
         await connection.query(`UPDATE recharge SET status = 1 WHERE id_order = ?`, [client_transaction_id]);
         const [info] = await connection.query(`SELECT * FROM recharge WHERE id_order = ?`, [client_transaction_id]);
-        await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ? ', [info[0].money, info[0].money, info[0].phone]);
+        await connection.query(
+            'UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ?, total_money = total_money + ? WHERE phone = ? ',
+            [info[0].money, info[0].money, info[0].money, info[0].phone]
+        );
         return res.status(200).json({
             message: 0,
             status: true,
@@ -1552,7 +1561,10 @@ const confirmRecharge = async (req, res) => {
                     // let selfBonus = info[0].money * (data[0].recharge_bonus_2 / 100);
                     // let money = info[0].money + selfBonus;
                     let money = apiRecord.amount;
-                    await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ? ', [money, money, apiRecord.customer_mobile]);
+                    await connection.query(
+                        'UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ?, total_money = total_money + ? WHERE phone = ? ',
+                        [money, money, money, apiRecord.customer_mobile]
+                    );
                     // let rechargeBonus;
                     // if (code[0].total_money <= 0) {
                     //     rechargeBonus = apiRecord.customer_mobile * (data[0].recharge_bonus / 100);

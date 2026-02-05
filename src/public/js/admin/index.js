@@ -354,105 +354,110 @@ function showListOrder3(list_orders, x) {
     // $(`.game-list .con-box:eq(${x}) .hb .c-tc`).last().remove();
 }
 
+function refreshAdminData() {
+    $.ajax({
+        type: "POST",
+        url: "/api/webapi/admin/totalJoin",
+        data: {
+            typeid: typeid,
+        },
+        dataType: "json",
+        success: function (response) {
+            var red = 0;
+            var green = 0;
+            var violet = 0;
+            var n0 = 0;
+            var n1 = 0;
+            var n2 = 0;
+            var n3 = 0;
+            var n4 = 0;
+            var n5 = 0;
+            var n6 = 0;
+            var n7 = 0;
+            var n8 = 0;
+            var n9 = 0;
+            var n = 0;
+            var l = 0;
+            var ns = 0;
+            var length = response.datas.length;
+            var datas = response.datas;
+            for (let i = 0; i < length; i++) {
+                if (datas[i].bet == '0') n0 += datas[i].money;
+                if (datas[i].bet == '1') n1 += datas[i].money;
+                if (datas[i].bet == '2') n2 += datas[i].money;
+                if (datas[i].bet == '3') n3 += datas[i].money;
+                if (datas[i].bet == '4') n4 += datas[i].money;
+                if (datas[i].bet == '5') n5 += datas[i].money;
+                if (datas[i].bet == '6') n6 += datas[i].money;
+                if (datas[i].bet == '7') n7 += datas[i].money;
+                if (datas[i].bet == '8') n8 += datas[i].money;
+                if (datas[i].bet == '9') n9 += datas[i].money;
+                if (datas[i].bet == 'x') green += datas[i].money;
+                if (datas[i].bet == 't') violet += datas[i].money;
+                if (datas[i].bet == 'd') red += datas[i].money;
+                if (datas[i].bet == 'l') l += datas[i].money;
+                if (datas[i].bet == 'n') n += datas[i].money;
+            }
+            ns = n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9;
+            $('.orderRed').text(formatMoney(red, ','));
+            $('.orderViolet').text(formatMoney(violet, ','));
+            $('.orderGreen').text(formatMoney(green, ','));
+            $('.orderNumber:eq(0)').text(formatMoney(n0, ','));
+            $('.orderNumber:eq(1)').text(formatMoney(n1, ','));
+            $('.orderNumber:eq(2)').text(formatMoney(n2, ','));
+            $('.orderNumber:eq(3)').text(formatMoney(n3, ','));
+            $('.orderNumber:eq(4)').text(formatMoney(n4, ','));
+            $('.orderNumber:eq(5)').text(formatMoney(n5, ','));
+            $('.orderNumber:eq(6)').text(formatMoney(n6, ','));
+            $('.orderNumber:eq(7)').text(formatMoney(n7, ','));
+            $('.orderNumber:eq(8)').text(formatMoney(n8, ','));
+            $('.orderNumber:eq(9)').text(formatMoney(n9, ','));
+            $('.orderNumber:eq(10)').text(formatMoney(l, ','));
+            $('.orderNumber:eq(11)').text(formatMoney(n, ','));
+            $('.orderNumbers').text(formatMoney(ns, ','));
 
-$.ajax({
-    type: "POST",
-    url: "/api/webapi/admin/totalJoin",
-    data: {
-        typeid: typeid,
-    },
-    dataType: "json",
-    success: function (response) {
-        var red = 0;
-        var green = 0;
-        var violet = 0;
-        var n0 = 0;
-        var n1 = 0;
-        var n2 = 0;
-        var n3 = 0;
-        var n4 = 0;
-        var n5 = 0;
-        var n6 = 0;
-        var n7 = 0;
-        var n8 = 0;
-        var n9 = 0;
-        var n = 0;
-        var l = 0;
-        var ns = 0;
-        var length = response.datas.length;
-        var datas = response.datas;
-        for (let i = 0; i < length; i++) {
-            if (datas[i].bet == '0') n0 += datas[i].money;
-            if (datas[i].bet == '1') n1 += datas[i].money;
-            if (datas[i].bet == '2') n2 += datas[i].money;
-            if (datas[i].bet == '3') n3 += datas[i].money;
-            if (datas[i].bet == '4') n4 += datas[i].money;
-            if (datas[i].bet == '5') n5 += datas[i].money;
-            if (datas[i].bet == '6') n6 += datas[i].money;
-            if (datas[i].bet == '7') n7 += datas[i].money;
-            if (datas[i].bet == '8') n8 += datas[i].money;
-            if (datas[i].bet == '9') n9 += datas[i].money;
-            if (datas[i].bet == 'x') green += datas[i].money;
-            if (datas[i].bet == 't') violet += datas[i].money;
-            if (datas[i].bet == 'd') red += datas[i].money;
-            if (datas[i].bet == 'l') l += datas[i].money;
-            if (datas[i].bet == 'n') n += datas[i].money;
+            $('.orderRed').attr('totalmoney', red);
+            $('.orderViolet').attr('totalmoney', violet);
+            $('.orderGreen').attr('totalmoney', green);
+            $('.orderNumber:eq(0)').attr('totalmoney', n0);
+            $('.orderNumber:eq(1)').attr('totalmoney', n1);
+            $('.orderNumber:eq(2)').attr('totalmoney', n2);
+            $('.orderNumber:eq(3)').attr('totalmoney', n3);
+            $('.orderNumber:eq(4)').attr('totalmoney', n4);
+            $('.orderNumber:eq(5)').attr('totalmoney', n5);
+            $('.orderNumber:eq(6)').attr('totalmoney', n6);
+            $('.orderNumber:eq(7)').attr('totalmoney', n7);
+            $('.orderNumber:eq(8)').attr('totalmoney', n8);
+            $('.orderNumber:eq(9)').attr('totalmoney', n9);
+            $('.orderNumber:eq(10)').attr('totalmoney', l);
+            $('.orderNumber:eq(11)').attr('totalmoney', n);
+            $('.orderNumbers').attr('totalmoney', ns);
+
+            $('.direct-chat-msg').html('');
+            response.datas.map((data) => {
+                showJoinMember(data);
+            });
+            showListOrder3(response.list_orders);
+            $(".direct-chat-warning .direct-chat-messages").animate({
+                scrollTop: $(".direct-chat-msg").prop("scrollHeight")
+            }, 750);
+            $('.reservation-chunk-sub-num').text(response.lotterys[0].period);
+            let is = ''
+            if (typeid == '1') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo1 == '-1') ? 'Random' : response.setting[0].wingo1}`);
+            if (typeid == '2') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo3 == '-1') ? 'Random' : response.setting[0].wingo3}`);
+            if (typeid == '3') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo5 == '-1') ? 'Random' : response.setting[0].wingo5}`);
+            if (typeid == '4') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo10 == '-1') ? 'Random' : response.setting[0].wingo10}`);
+
+            if (typeid == '1') $('#winrate').text(`Next Result: ${(response.setting[0].bs1 == '-1') ? 'Random' : response.setting[0].bs1}`);
+            if (typeid == '2') $('#winrate').text(`Next Result: ${(response.setting[0].bs3 == '-1') ? 'Random' : response.setting[0].bs3}`);
+            if (typeid == '3') $('#winrate').text(`Next Result: ${(response.setting[0].bs5 == '-1') ? 'Random' : response.setting[0].bs5}`);
+            if (typeid == '4') $('#winrate').text(`Next Result: ${(response.setting[0].bs10 == '-1') ? 'Random' : response.setting[0].bs10}`);
         }
-        ns = n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9;
-        $('.orderRed').text(formatMoney(red, ','));
-        $('.orderViolet').text(formatMoney(violet, ','));
-        $('.orderGreen').text(formatMoney(green, ','));
-        $('.orderNumber:eq(0)').text(formatMoney(n0, ','));
-        $('.orderNumber:eq(1)').text(formatMoney(n1, ','));
-        $('.orderNumber:eq(2)').text(formatMoney(n2, ','));
-        $('.orderNumber:eq(3)').text(formatMoney(n3, ','));
-        $('.orderNumber:eq(4)').text(formatMoney(n4, ','));
-        $('.orderNumber:eq(5)').text(formatMoney(n5, ','));
-        $('.orderNumber:eq(6)').text(formatMoney(n6, ','));
-        $('.orderNumber:eq(7)').text(formatMoney(n7, ','));
-        $('.orderNumber:eq(8)').text(formatMoney(n8, ','));
-        $('.orderNumber:eq(9)').text(formatMoney(n9, ','));
-        $('.orderNumber:eq(10)').text(formatMoney(l, ','));
-        $('.orderNumber:eq(11)').text(formatMoney(n, ','));
-        $('.orderNumbers').text(formatMoney(ns, ','));
+    });
+}
 
-        $('.orderRed').attr('totalmoney', red);
-        $('.orderViolet').attr('totalmoney', violet);
-        $('.orderGreen').attr('totalmoney', green);
-        $('.orderNumber:eq(0)').attr('totalmoney', n0);
-        $('.orderNumber:eq(1)').attr('totalmoney', n1);
-        $('.orderNumber:eq(2)').attr('totalmoney', n2);
-        $('.orderNumber:eq(3)').attr('totalmoney', n3);
-        $('.orderNumber:eq(4)').attr('totalmoney', n4);
-        $('.orderNumber:eq(5)').attr('totalmoney', n5);
-        $('.orderNumber:eq(6)').attr('totalmoney', n6);
-        $('.orderNumber:eq(7)').attr('totalmoney', n7);
-        $('.orderNumber:eq(8)').attr('totalmoney', n8);
-        $('.orderNumber:eq(9)').attr('totalmoney', n9);
-        $('.orderNumber:eq(10)').attr('totalmoney', l);
-        $('.orderNumber:eq(11)').attr('totalmoney', n);
-        $('.orderNumbers').attr('totalmoney', ns);
-
-        response.datas.map((data) => {
-            showJoinMember(data);
-        });
-        showListOrder3(response.list_orders);
-        $(".direct-chat-warning .direct-chat-messages").animate({
-            scrollTop: $(".direct-chat-msg").prop("scrollHeight")
-        }, 750);
-        $('.reservation-chunk-sub-num').text(response.lotterys[0].period);
-        let is = ''
-        if (typeid == '1') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo1 == '-1') ? 'Random' : response.setting[0].wingo1}`);
-        if (typeid == '2') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo3 == '-1') ? 'Random' : response.setting[0].wingo3}`);
-        if (typeid == '3') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo5 == '-1') ? 'Random' : response.setting[0].wingo5}`);
-        if (typeid == '4') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo10 == '-1') ? 'Random' : response.setting[0].wingo10}`);
-
-        if (typeid == '1') $('#winrate').text(`Next Result: ${(response.setting[0].bs1 == '-1') ? 'Random' : response.setting[0].bs1}`);
-        if (typeid == '2') $('#winrate').text(`Next Result: ${(response.setting[0].bs3 == '-1') ? 'Random' : response.setting[0].bs3}`);
-        if (typeid == '3') $('#winrate').text(`Next Result: ${(response.setting[0].bs5 == '-1') ? 'Random' : response.setting[0].bs5}`);
-        if (typeid == '4') $('#winrate').text(`Next Result: ${(response.setting[0].bs10 == '-1') ? 'Random' : response.setting[0].bs10}`);
-    }
-});
+refreshAdminData();
+setInterval(refreshAdminData, 1000);
 
 $('.start-order').click(function (e) {
     e.preventDefault();

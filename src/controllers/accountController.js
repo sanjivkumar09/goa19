@@ -103,11 +103,12 @@ const register = async (req, res) => {
     const { username, pwd, invitecode } = req.body;
 
     const id_user = randomNumber(10000, 99999);
-    const otp2 = randomNumber(100000, 999999);
     const name_user = "Member" + randomNumber(10000, 99999);
     const code = randomString(5) + randomNumber(10000, 99999);
     const ip = ipAddress(req);
     const time = timeCreate();
+
+    console.log(`[REGISTER] Attempting registration for phone: ${username}`);
 
     if (!username || !pwd)
         return res.status(200).json({ message: 'ERROR!!!', status: false });
@@ -124,30 +125,45 @@ const register = async (req, res) => {
             [check_i] = await connection.query('SELECT * FROM users WHERE code = ?', [invitecode]);
         }
 
-        if (check_u.length === 1 && check_u[0].veri === 1)
+        if (check_u.length === 1 && check_u[0].veri === 1) {
+            console.log(`[REGISTER] Phone already registered: ${username}`);
             return res.status(200).json({ message: 'Registered phone number', status: false });
+        }
 
-        if (invitecode && check_i.length !== 1)
+        if (invitecode && check_i.length !== 1) {
+            console.log(`[REGISTER] Invalid referrer code: ${invitecode}`);
             return res.status(200).json({ message: 'Referrer code does not exist', status: false });
+        }
 
-        if (check_ip.length > 3)
+        if (check_ip.length > 3) {
+            console.log(`[REGISTER] IP address has too many registrations: ${ip}`);
             return res.status(200).json({ message: 'Registered IP address', status: false });
+        }
 
         let ctv = '';
         if (check_i.length === 1)
             ctv = check_i[0].level === 2 ? check_i[0].phone : check_i[0].ctv;
 
         const sql = `INSERT INTO users 
-        (id_user,phone,name_user,password,money,code,invite,ctv,veri,otp,ip_address,status,time)
+        (id_user,phone,name_user,password,money,money_user,code,invite,ctv,veri,ip_address,status,time)
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+        console.log(`[REGISTER] Inserting user with data:`, { id_user, phone: username, name_user, code });
 
         await connection.execute(sql, [
             id_user, username, name_user, md5(pwd),
-            0, code, invitecode || '', ctv, 1, otp2, ip, 1, time
+            0, 0, code, invitecode || '', ctv, 1, ip, 1, time
         ]);
 
-        await connection.execute('INSERT INTO point_list SET phone = ?', [username]);
+        // Try to insert into point_list (optional - doesn't block registration if it fails)
+        try {
+            await connection.execute('INSERT INTO point_list (phone, money) VALUES (?, ?)', [username, 0]);
+        } catch (pointListErr) {
+            console.warn(`[REGISTER] Warning: Could not insert into point_list for ${username}:`, pointListErr.message);
+            // Continue anyway - this is not critical
+        }
 
+        console.log(`[REGISTER] Registration successful for phone: ${username}`);
         return res.status(200).json({ message: "Registered successfully", status: true });
 
     } catch (err) {
