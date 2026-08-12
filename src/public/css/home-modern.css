@@ -1,4 +1,4 @@
-/* BDG WIN Premium Theme - Dark with Rich Golden Accents */
+/* DiuWin Premium Theme - Dark with Rich Golden Accents */
 
 :root {
     --primary-gold: #D4AF37;
@@ -24,7 +24,7 @@ body.home-page {
     padding: 0;
 }
 
-/* Logo & Header - BDG WIN Style */
+/* Logo & Header - DiuWin Style */
 .diuwin-logo {
     display: flex;
     align-items: center;
@@ -131,7 +131,7 @@ body.home-page {
     box-shadow: 0 10px 30px rgba(212, 175, 55, 0.7), 0 0 50px rgba(212, 175, 55, 0.5);
 }
 
-/* Welcome Text - BDG WIN Alert Bar Style */
+/* Welcome Text - DiuWin Alert Bar Style */
 .welcome-text {
     display: flex;
     align-items: center;
@@ -179,7 +179,7 @@ body.home-page {
     box-shadow: 0 6px 18px rgba(212, 175, 55, 0.6);
 }
 
-/* Category Icons - BDG WIN Compact Row Style */
+/* Category Icons - DiuWin Compact Row Style */
 .category-section {
     padding: 0 10px 30px;
 }
@@ -261,7 +261,7 @@ body.home-page {
     white-space: nowrap;
 }
 
-/* Section Header - BDG WIN Style */
+/* Section Header - DiuWin Style */
 .section-header {
     display: flex;
     align-items: center;
@@ -306,7 +306,7 @@ body.home-page {
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
-/* Game Cards - BDG WIN Premium Grey Theme */
+/* Game Cards - DiuWin Premium Grey Theme */
 .home-page {
     background: #2a2a2a;
     min-height: 100vh;
@@ -387,7 +387,7 @@ body.home-page {
     margin-top: -6px;
 }
 
-/* Super Jackpot Section - BDG WIN Gold Theme */
+/* Super Jackpot Section - DiuWin Gold Theme */
 .jackpot-section {
     padding: 20px;
     margin: 0 10px 20px;
@@ -449,7 +449,7 @@ body.home-page {
     border-color: var(--primary-gold);
 }
 
-/* Bottom Navigation - BDG WIN Premium Grey Theme */
+/* Bottom Navigation - DiuWin Premium Grey Theme */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -517,7 +517,7 @@ body.home-page {
     font-weight: 600;
 }
 
-/* Responsive - BDG WIN Mobile Optimization */
+/* Responsive - DiuWin Mobile Optimization */
 @media (max-width: 600px) {
     .category-grid {
         gap: 8px;
@@ -611,7 +611,7 @@ body.home-page {
     background-size: 800px 100px;
 }
 
-/* Support Button - BDG WIN Premium Style */
+/* Support Button - DiuWin Premium Style */
 .support-btn {
     position: fixed;
     bottom: 100px;
@@ -653,7 +653,7 @@ body.home-page {
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-/* Additional BDG WIN Premium Styles */
+/* Additional DiuWin Premium Styles */
 * {
     scrollbar-width: thin;
     scrollbar-color: var(--primary-gold) var(--bg-darker);
