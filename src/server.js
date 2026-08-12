@@ -17,6 +17,17 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Request & Response Logger Middleware
+app.use((req, res, next) => {
+    console.log(`[REQUEST] ${req.method} ${req.url} - Body:`, req.body);
+    const oldJson = res.json;
+    res.json = function(data) {
+        console.log(`[RESPONSE] ${req.method} ${req.url} - Status: ${res.statusCode} - Data:`, data);
+        return oldJson.apply(res, arguments);
+    };
+    next();
+});
+
 // setup viewEngine
 configViewEngine(app);
 // init Web Routes

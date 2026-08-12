@@ -6,13 +6,14 @@ const middlewareController = async(req, res, next) => {
     if (!auth) return res.redirect("/login");
     try {
         const [rows] = await connection.execute('SELECT `token`, `status` FROM `users` WHERE `token` = ? AND `veri` = 1', [auth]);
-        if(!rows) {
+        if (!rows || rows.length === 0) {
             res.clearCookie("auth");
-            return res.end();
+            return res.redirect("/login");
         };
         if (auth == rows[0].token && rows[0].status == '1') {
             next();
         } else {
+            res.clearCookie("auth");
             return res.redirect("/login");
         }
     } catch (error) {

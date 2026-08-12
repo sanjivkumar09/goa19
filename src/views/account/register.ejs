@@ -1,197 +1,429 @@
 <!DOCTYPE html>
 <html translate="no" data-dpr="1" style="font-size: 49.36px;">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="robots" content="noindex,nofollow">
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
-    <title>lotus lottery</title>
+    <title>DiuWin Games - Register</title>
     <link href="/css/account/chunk-vendors.css" rel="stylesheet" /> 
     <link href="/css/account/app.css" rel="stylesheet" />
     <link href="/css/account/chunk.css" rel="stylesheet" />
     <link href="/css/account/chunk-3abb8cfe.27bda068.css" rel="stylesheet" />
     <link href="/css/main.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/images/bitbug_favicon.ico" type="image/x-icon" />
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        html,
-        body {
+        html, body {
             height: 100%;
             width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 0;
             margin: 0;
-            font-family: var(--font-family-base);
+            font-family: 'Outfit', sans-serif;
+            background-color: #071224;
+            color: #ffffff;
         }
-        
+
+        body {
+            background-image: linear-gradient(rgba(7, 18, 36, 0.93), rgba(15, 41, 74, 0.93)), url('/images/dark_blue_damask.jpg');
+            background-size: cover, 320px 320px;
+            background-repeat: no-repeat, repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+        }
+
+        #app {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: transparent;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+            padding: 24px 20px;
+            box-sizing: border-box;
+        }
+
+        /* Top Nav Header */
+        .nav-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            font-size: 28px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            color: #FFD700;
+            transform: translateX(-3px);
+        }
+
+        .nav-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            flex: 1;
+            margin-right: 40px; /* offset back-btn width to center title */
+        }
+
+        /* Logo Area */
+        .raja-logo-container {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        .raja-logo-title {
+            font-family: 'Cinzel', serif;
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: 5px;
+            background: linear-gradient(180deg, #FFF 10%, #FFD700 60%, #E5A93B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.25));
+            line-height: 1.1;
+        }
+
+        .raja-logo-sub {
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 7px;
+            color: #D4AF37;
+            margin-top: 2px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Main Form Box */
         .forgot-box {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            backdrop-filter: none;
         }
-        
-        .item {
-            border-radius: 12px !important;
-            border: 2px solid #e2e8f0 !important;
+
+        .forgot-box .tit {
+            font-size: 26px;
+            font-weight: 700;
+            color: #FFD700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .forgot-box .sub-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        /* Input Labels */
+        .input-label-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .input-label-container i {
+            color: #FFD700;
+            font-size: 16px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(10, 25, 47, 0.7);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            border-radius: 12px;
+            padding: 4px 14px;
+            margin-bottom: 20px;
+            min-height: 52px;
             transition: all 0.3s ease;
         }
-        
-        .item:focus-within {
-            border-color: #6366f1 !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+
+        .input-wrapper:focus-within {
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
+            background: rgba(10, 25, 47, 0.85);
         }
-        
-        input[type="tel"],
-        input[type="password"],
-        input[type="text"] {
+
+        .country-select {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            padding-right: 12px;
+            margin-right: 12px;
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .input-field {
+            flex: 1;
+            background: transparent !important;
             border: none !important;
             outline: none !important;
+            color: #ffffff !important;
+            font-size: 15px;
+            font-family: 'Outfit', sans-serif;
+            height: 44px;
+            padding: 0;
         }
-        
-        .van-button {
-            border-radius: 12px !important;
-            transition: all 0.3s ease !important;
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
-        
-        .van-button:hover {
+
+        .toggle-password {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            padding: 10px;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: #FFD700;
+        }
+
+        /* Checkbox Agreement */
+        .agreement-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 4px; /* square checkbox */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .agreement-container.checked .checkbox-custom {
+            border-color: #FFD700;
+            background: #FFD700;
+        }
+
+        .checkbox-custom::after {
+            content: '✓';
+            color: #071224;
+            font-size: 12px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .agreement-container.checked .checkbox-custom::after {
+            display: block;
+        }
+
+        .policy-link {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .policy-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Action Buttons */
+        .btn-action-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn-primary-gold {
+            background: linear-gradient(180deg, #1d3d63 0%, #0f294a 100%);
+            border: 1.5px solid #D4AF37;
+            color: #FFD700;
+            height: 52px;
+            border-radius: 26px;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary-gold:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            background: linear-gradient(180deg, #244975 0%, #13335c 100%);
+        }
+
+        .btn-secondary-outlined {
+            background: rgba(10, 25, 47, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.85);
+            height: 52px;
+            border-radius: 26px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary-outlined:hover {
+            border-color: #FFD700;
+            color: #FFD700;
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Alert Toast */
+        .alert-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            width: 80%;
+            max-width: 320px;
         }
         .msg-content {
-            animation: zoom-in 0.45s ease reverse;
-        }
-
-        .block-click {
-            pointer-events: none;
-        }
-
-        @keyframes zoom-in {
-            0% {
-                opacity: 1;
-                transform: scale(1, 1);
-            }
-
-            50% {
-                transform: scale(0.6, 0.6);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(1, 1);
-            }
+            background: rgba(10, 25, 47, 0.95);
+            border: 1px solid #FFD700;
+            border-radius: 12px;
+            color: #ffffff;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
         }
     </style>
 </head>
 
 <body style="font-size: 12px;">
     <div id="app">
-        <div data-v-7ee4aaeb="" class="mian forgot">
-            <div data-v-106b99c8="" data-v-7ee4aaeb="" class="navbar">
-                <div data-v-106b99c8="" class="navbar-left" onclick="location.href='/login'">
-                    <div data-v-106b99c8="" class="bank c-row c-row-middle-center">
-                        <img data-v-106b99c8="" src="/images/back.c3244ab0.png" class="navbar-back">
-                    </div>
-                </div>
-                <div data-v-106b99c8="" class="navbar-title">SignUp</div>
-                <div data-v-106b99c8="" class="navbar-right"></div>
+        <!-- Top Nav Header -->
+        <div class="nav-header">
+            <div class="back-btn" onclick="location.href='/login'">
+                <i class="fa fa-angle-left"></i>
             </div>
- 
- 
- 
-<div data-v-7ee4aaeb="" class="forgot-box">
-    <div data-v-7ee4aaeb="" class="mian-from m-t-20">
-        <div data-v-7ee4aaeb="" class="lab"><span data-v-7ee4aaeb="" class="c-row ">
-                    <img data-v-7ee4aaeb="" height="22px" width="15px" src="/images/phone.png" class="mobile">
-               <span data-v-7ee4aaeb=""><p style="
-    margin: 0.3vw 0 0 1vw;"> Phone Number</p></span>
-        </span>
+            <div class="nav-title">Register</div>
         </div>
-        
-        <div data-v-7ee4aaeb="" class="item c-row c-row-center c-row-middle m-t-15 m-b-30 first">
-            <div data-v-7ee4aaeb="" class="c-row number">
-               
-                <div data-v-7ee4aaeb="" class="p-l-5">+91</div>
-            </div>
-            <input data-v-7ee4aaeb="" id="username" type="tel" maxlength="10" placeholder="Please Enter The Phone number" oninput="value=value.replace(/\D/g,'')">
-        </div>
-        <!---->
-        <!-- <div data-v-51f72da1="" class="item c-row c-row-center c-row-middle m-b-30">
-            <span data-v-51f72da1="" class="img c-row c-row-middle-center">
-                <img data-v-51f72da1="" height="22px" width="15px" src="/images/smart_phone.png" class="mobile">
-            </span>
-            <input data-v-51f72da1="" type="number" id="otp" placeholder="Verification code">
-            <button data-v-51f72da1="" class="otp">OTP</button>
-        </div>
-        <div data-v-51f72da1="" class="tip">Didn't receive the OTP code? Please contact customer support.</div> -->
-        <!---->
-        <span data-v-7ee4aaeb="" class="img c-row">
-                <img data-v-7ee4aaeb="" height="20px" width="18px" src="/images/password.png" class="password">
-                <span data-v-7ee4aaeb=""><p style="
-    margin: 0.3vw 0 0 1vw;">Set Password</p></span>
-            </span>
-        <div data-v-7ee4aaeb="" class="item c-row c-row-center c-row-middle m-b-30">
-            
-            <input data-v-d8986e5e="" id="password" data-v-7ee4aaeb="" type="password" placeholder="Please Enter The Password" οnkeyup="value=value.replace(/[^\w\.\/]/ig,'')" class="pw-input">
-            <span toggle="#password-field" class="fa fa-fw fa-eye field_icon toggle-password" style="margin: 10px;"></span>
-        </div>
-        <div data-v-7ee4aaeb="" class="c-row c-row-middle">
-            <div data-v-7ee4aaeb="" role="checkbox" tabindex="0" aria-checked="true" class="van-checkbox">
-                <div class="van-checkbox__icon van-checkbox__icon--square van-checkbox__icon--checked">
-                    <i class="van-icon van-icon-success" style="border-color: rgb(244, 69, 62); background-color: rgb(244, 69, 62);"></i>
-                </div>
-                <span class="van-checkbox__label">
-                    <div data-v-7ee4aaeb="" class="agree p-r-10">I agree</div>
-                </span>
-            </div>
-            <div data-v-7ee4aaeb="" class="txt">Privacy policy</div>
-        </div>
-        <div data-v-7ee4aaeb="" class="mian-btn m-t-40">
-            <button data-v-7ee4aaeb="" id="submit" class="gradient van-button van-button--default van-button--normal van-button--block van-button--round" style="color: rgb(255, 255, 255); background: #e51919; border-color: #e51919;">
-                <div data-v-7ee4aaeb="" class="van-button__content">
-                    <span data-v-7ee4aaeb="" class="van-button__text">
-                        <span data-v-7ee4aaeb="">Register</span>
-                    </span>
-                </div>
-            </button>
-        </div>
-         <div data-v-7ee4aaeb="" class="mian-btn m-t-20">
-            <button data-v-7ee4aaeb="" id="" class="gradient van-button van-button--default van-button--normal van-button--block van-button--round" style="color: #e51919;border-color: #e51919;" onclick="location.href='/login'">
-                <div data-v-7ee4aaeb="" class="van-button__content">
-                    <span data-v-7ee4aaeb="" class="van-button__text">
-                   <span data-v-7ee4aaeb="">Login</span>
-                    </span>
-                </div>
-            </button>
-        </div>
-    </div>
-</div>
 
- 
- 
- 
- 
- 
- 
- 
-            <!---->
-            <div data-v-7692a079="" data-v-7ee4aaeb="" class="Loading c-row c-row-middle-center" style="display: none;">
-                <div data-v-7692a079="" class="van-loading van-loading--circular">
-                    <span data-v-7692a079="" class="van-loading__spinner van-loading__spinner--circular"
-                        style="color: rgb(242, 65, 59);">
-                        <svg data-v-7692a079="" viewBox="25 25 50 50" class="van-loading__circular">
-                            <circle data-v-7692a079="" cx="50" cy="50" r="20" fill="none"></circle>
-                        </svg>
-                    </span>
+        <!-- Dynamic DiuWin GAMES Logo -->
+        <div class="raja-logo-container" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 15px; margin-bottom: 25px;">
+            <img src="/images/diuwin_logo.jpg" alt="DiuWin Logo" style="width: 44px; height: 44px; object-fit: cover; object-position: 50% 12%; border-radius: 50%; border: 1.5px solid rgba(229, 192, 96, 0.4); box-shadow: 0 0 10px rgba(229, 192, 96, 0.3);">
+            <div style="display: flex; flex-direction: column; text-align: left;">
+                <div class="raja-logo-title" style="font-size: 32px; letter-spacing: 2px; line-height: 1;">DiuWin</div>
+                <div class="raja-logo-sub" style="font-size: 13px; letter-spacing: 5px; margin-top: 2px;">GAMES</div>
+            </div>
+        </div>
+
+        <!-- Register Box -->
+        <div class="forgot-box">
+            <div class="tit">Create Account</div>
+            <div class="sub-desc">Register with your mobile phone number. Set up a secure password to protect your funds.</div>
+
+            <div class="mian-from">
+                <!-- Phone input label -->
+                <div class="input-label-container">
+                    <i class="fa fa-mobile" style="font-size: 20px;"></i>
+                    <span>Phone number</span>
+                </div>
+                <!-- Phone input wrapper -->
+                <div class="input-wrapper">
+                    <div class="country-select">
+                        <span>+91</span>
+                    </div>
+                    <input id="username" type="tel" maxlength="10" placeholder="Please Enter The Phone number" class="input-field" oninput="value=value.replace(/\D/g,'')">
+                </div>
+
+                <!-- Password label -->
+                <div class="input-label-container">
+                    <i class="fa fa-lock"></i>
+                    <span>Set Password</span>
+                </div>
+                <!-- Password input wrapper -->
+                <div class="input-wrapper">
+                    <input id="password" type="password" placeholder="Please Enter The Password" class="input-field pw-input">
+                    <span class="fa fa-fw fa-eye field_icon toggle-password"></span>
+                </div>
+
+                <!-- Agree Policy Checkbox -->
+                <div class="agreement-container checked" id="agreement-checkbox-trigger">
+                    <div class="checkbox-custom"></div>
+                    <span>I agree to the <a href="#" class="policy-link" onclick="event.stopPropagation(); alert('Privacy Policy is being updated.');">Privacy policy</a></span>
+                </div>
+
+                <!-- Submit / Buttons -->
+                <div class="btn-action-container">
+                    <button id="submit" class="btn-primary-gold">
+                        Register
+                    </button>
+                    <button class="btn-secondary-outlined" onclick="location.href='/login'">
+                        Login
+                    </button>
                 </div>
             </div>
         </div>
-        <div data-v-7692a079="" data-v-7ee4aaeb="" class="Loading c-row c-row-middle-center" style="display: none;"><div data-v-7692a079="" class="van-loading van-loading--circular"><span data-v-7692a079="" class="van-loading__spinner van-loading__spinner--circular" style="color: rgb(242, 65, 59);"><svg data-v-7692a079="" viewBox="25 25 50 50" class="van-loading__circular"><circle data-v-7692a079="" cx="50" cy="50" r="20" fill="none"></circle></svg></span></div></div>
     </div>
-    <div class="van-overlay" style="z-index: 2003; display: none;"></div>
+
+    <!-- Overlay Loader -->
+    <div class="van-overlay" style="z-index: 2003; display: none; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <div class="van-loading__spinner" style="color: #FFD700; width: 30px; height: 30px; border: 3px solid rgba(255,215,0,0.2); border-top-color: #FFD700; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        </div>
+    </div>
     <div class="alert-toast"></div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         function setCookie(cname, cvalue, exdays) {
@@ -215,61 +447,33 @@
             }
             return "";
         }
-
         function unsetCookie() {
             setCookie('token', '', 0);
             setCookie('auth', '', 0);
         }
-        // fetch('/api/webapi/GetUserInfo')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         if (data.status === false) {
-        //             unsetCookie();
-        //             return false;
-        //         };
-        //         location.href = "/";
-        //     });
     </script>
     <script>
-        let i = 1;
-        $('.van-checkbox').click(function (e) { 
-            e.preventDefault();
-            if (i == 1) {
-                $('.van-checkbox__icon').removeClass('van-checkbox__icon--square van-checkbox__icon--checked');
-                document.querySelector('.van-checkbox__icon i').style = '';   
-            } else {
-                i = 0;
-                $('.van-checkbox__icon').addClass('van-checkbox__icon--square van-checkbox__icon--checked');
-                document.querySelector('.van-checkbox__icon i').style = 'border-color: rgb(244, 69, 62); background-color: rgb(244, 69, 62);';  
-            }
-            i++;
-        });
-
-        function setCookie(cname, cvalue, exdays) {
-            const d = new Date();
-            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-            let expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        }
-
         function alertMess(text) {
             let length = $('.alert-toast .msg').length;
             if (length == 0) {
                 $('.alert-toast').append(
                     `
-                    <div data-v-1dcba851="" class="msg">
-                        <div data-v-1dcba851="" class="msg-content" style=""> ${text} </div>
+                    <div class="msg" style="animation: zoom-in 0.3s ease;">
+                        <div class="msg-content"> ${text} </div>
                     </div>
                     `
                 );
                 setTimeout(() => {
-                    $('.msg').fadeOut();
-                    setTimeout(() => {
+                    $('.msg').fadeOut(200, function() {
                         $('.alert-toast .msg').remove();
-                    }, 100);
-                }, 1500);
+                    });
+                }, 1800);
             }
         }
+
+        $('#agreement-checkbox-trigger').click(function() {
+            $(this).toggleClass('checked');
+        });
 
         function validateForm(username, password, invite, checkbox, text) {
             if (!username || !checkbox || !password) {
@@ -280,16 +484,22 @@
             }
         }
 
+        $(document).on('click', '.toggle-password', function() {
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $("#password");
+            input.attr('type') === 'password' ? input.attr('type','text') : input.attr('type','password');
+        });
+
         $('#submit').click(async (e) => { 
             e.preventDefault();
             let username = $('#username').val().trim();
-            // let otp = $('#otp').val().trim();
             let password = $('#password').val().trim();
             let invite = '';
-            let checkbox = $('.van-checkbox__icon').hasClass('van-checkbox__icon--checked');
-            let status = validateForm(username, password, invite, checkbox, 'Please fill in the required section');
+            let checkbox = $('#agreement-checkbox-trigger').hasClass('checked');
+            let status = validateForm(username, password, invite, checkbox, 'Please fill in all fields and accept the policies');
+            
             if (status) {
-                $('.van-overlay').fadeIn(10);
+                $('.van-overlay').fadeIn(100);
                 $.ajax({
                     type: "POST",
                     url: "/api/webapi/register",
@@ -297,84 +507,41 @@
                         username: username,
                         pwd: password,
                         invitecode: invite,
-                        // otp: otp,
                     },
                     dataType: "json", 
                     success: function (response) {
                         if (response.status === true) {
-                            $('.van-overlay').fadeOut(300);
-                            $('.Loading').fadeIn(10);
-                            setTimeout(() => {
-                                $('.Loading').fadeOut(10);
-                                alertMess(response.message);
-                            }, 100);
+                            $('.van-overlay').fadeOut(100);
+                            alertMess(response.message);
                             setTimeout(() => {
                                 location.href = '/login';
-                            }, 900);
+                            }, 1000);
                         } else {
-                            $('.van-overlay').fadeOut(300);
+                            $('.van-overlay').fadeOut(100);
                             alertMess(response.message);
                         }
+                    },
+                    error: function() {
+                        $('.van-overlay').fadeOut(100);
+                        alertMess('Network error, please try again.');
                     }
                 });
             }
-
         });
-
-        // $('.otp').click(function (e) { 
-        //     e.preventDefault();
-        //     let phone = $('input:eq(0)').val().trim();
-        //     $(this).addClass('block-click');
-        //     setTimeout(() => {
-        //         $(this).removeClass('block-click');
-        //     }, 1600);
-        //     if (phone) {
-        //         $.ajax({
-        //             type: "POST",
-        //             url: "/api/sent/otp/verify",
-        //             data: {
-        //                 phone: phone,
-        //             },
-        //             dataType: "json",
-        //             success: function (response) {
-        //                 alertMess(response.message);
-        //             }
-        //         });
-        //     } else {
-        //         alertMess('Please fill in the required section');
-        //     }
-        // });
     </script>
     <script>
-        let getWBody = $('.mian').width();
-
+        let getWBody = $('#app').width();
         $('html').css('font-size', `${getWBody / 10}px`);
-        $('.van-tabbar .van-tabbar-item').css({
-            'transform': 'scale(0.9)',
-        });
         $(window).resize(() => {
-            let getWBody = $('.mian').width();
+            let getWBody = $('#app').width();
             $('html').css('font-size', `${getWBody / 10}px`);
-            $('.van-tabbar .van-tabbar-item').css({
-                'transform': 'scale(0.9)',
-            });
         });
+
         var url = new URL(window.location.href);
         var c = url.searchParams.get("r_code");
         if (c) {
             setCookie('invite_code', c, 7);
         }
     </script>
-    <script>
-    $(document).on('click', '.toggle-password', function() {
-
-    $(this).toggleClass("fa-eye fa-eye-slash");
-    
-    var input = $("#password");
-    input.attr('type') === 'password' ? input.attr('type','text') : input.attr('type','password')
-});
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </body>
-
 </html>

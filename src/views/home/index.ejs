@@ -6,63 +6,200 @@
 	<meta name="google" content="notranslate">
 	<meta name="robots" content="noindex,nofollow">
 	<link rel="icon" type="image/x-icon" href="/images/bitbug_favicon.ico">
-	<title>BDG Win</title>
+	<title>Raja Games - Lobby</title>
 	<link rel="stylesheet" href="/css/main.css">
-	<link rel="stylesheet" href="/css/home-modern.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	<style>
-		@keyframes shineEffect {
-			0% {
-				background-position: -200% center;
-			}
-			100% {
-				background-position: 200% center;
-			}
-		}
-		
-		.game-card-shine {
-			position: relative;
-			overflow: hidden;
-		}
-		
-		.game-card-shine::before {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: -100%;
-			width: 100%;
+		/* Reset and Base Styles */
+		html, body {
 			height: 100%;
-			background: linear-gradient(
-				90deg,
-				transparent 0%,
-				rgba(255, 255, 255, 0.3) 40%,
-				rgba(255, 255, 255, 0.5) 50%,
-				rgba(255, 255, 255, 0.3) 60%,
-				transparent 100%
-			);
-			animation: shineEffect 3s infinite;
-			pointer-events: none;
-			z-index: 10;
+			width: 100%;
+			padding: 0;
+			margin: 0;
+			font-family: 'Outfit', sans-serif;
+			background-color: #071224;
+			color: #ffffff;
 		}
-		
-		.game-card-shine:hover::before {
-			animation: shineEffect 1.5s infinite;
+
+		body {
+			background-image: linear-gradient(rgba(7, 18, 36, 0.94), rgba(15, 41, 74, 0.94)), url('/images/dark_blue_damask.jpg');
+			background-size: cover, 300px 300px;
+			background-repeat: no-repeat, repeat;
+			background-attachment: fixed;
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+			overflow-y: auto;
 		}
-		
-		/* Banner Carousel Styles */
+
+		#app {
+			width: 100%;
+			max-width: 480px;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			position: relative;
+			background: transparent;
+			box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+			box-sizing: border-box;
+			padding-bottom: 75px; /* Leave space for bottom nav */
+		}
+
+		/* Header Section */
+		.header-container {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 12px 20px;
+			background: rgba(10, 25, 47, 0.6);
+			backdrop-filter: blur(10px);
+			border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);
+			position: sticky;
+			top: 0;
+			z-index: 1000;
+		}
+
+		.raja-logo-container {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			cursor: pointer;
+		}
+
+		.diuwin-logo-img {
+			width: 32px;
+			height: 32px;
+			object-fit: cover;
+			object-position: 50% 12%;
+			border-radius: 50%;
+			border: 1.5px solid rgba(229, 192, 96, 0.4);
+			box-shadow: 0 0 10px rgba(229, 192, 96, 0.3);
+		}
+
+		.logo-text-wrapper {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.raja-logo-title {
+			font-family: 'Outfit', sans-serif;
+			font-size: 19px;
+			font-weight: 800;
+			letter-spacing: 0.5px;
+			background: linear-gradient(180deg, #FFF 0%, #FFD700 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			line-height: 1.1;
+			text-transform: uppercase;
+		}
+
+		.raja-logo-sub {
+			font-family: 'Outfit', sans-serif;
+			font-size: 9px;
+			font-weight: 700;
+			letter-spacing: 2px;
+			color: #D4AF37;
+			text-transform: uppercase;
+		}
+
+		.header-actions {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+		}
+
+		.lang-dropdown {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(255, 255, 255, 0.08);
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			border-radius: 8px;
+			width: 38px;
+			height: 32px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.lang-dropdown:hover {
+			border-color: #E5C060;
+			background: rgba(229, 192, 96, 0.1);
+		}
+
+		.header-profile-icon-wrapper {
+			width: 32px;
+			height: 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.header-profile-icon-wrapper:hover {
+			transform: scale(1.1);
+		}
+
+		/* Guest Actions Section */
+		.guest-actions-container {
+			display: flex;
+			gap: 15px;
+			padding: 15px 20px;
+		}
+
+		.guest-btn {
+			flex: 1;
+			padding: 12px;
+			border-radius: 12px;
+			font-size: 15px;
+			font-weight: 700;
+			text-align: center;
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.guest-btn-login {
+			background: linear-gradient(180deg, #E5C060 0%, #B8860B 100%);
+			color: #071224;
+			border: none;
+			box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+		}
+
+		.guest-btn-login:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(184, 134, 11, 0.6);
+		}
+
+		.guest-btn-register {
+			background: rgba(10, 25, 47, 0.6);
+			color: #E5C060;
+			border: 1.5px solid #E5C060;
+		}
+
+		.guest-btn-register:hover {
+			background: rgba(229, 192, 96, 0.1);
+			transform: translateY(-2px);
+		}
+
+		/* Banner section */
+		.banner-section {
+			padding: 0 20px 20px 20px;
+		}
+
 		.banner-carousel {
 			position: relative;
 			width: 100%;
-			max-width: 1040px;
-			margin: 0 auto;
 			overflow: hidden;
-			border-radius: 12px;
-			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+			border-radius: 16px;
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+			border: 1px solid rgba(255, 255, 255, 0.05);
 		}
 		
 		.banner-slide {
 			display: none;
 			width: 100%;
-			animation: fadeIn 0.8s ease-in-out;
+			animation: fadeIn 0.6s ease-in-out;
 		}
 		
 		.banner-slide.active {
@@ -74,539 +211,1206 @@
 			height: auto;
 			display: block;
 			object-fit: cover;
-			max-height: 280px;
+			max-height: 200px;
 		}
 		
 		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: scale(1.05);
-			}
-			to {
-				opacity: 1;
-				transform: scale(1);
-			}
+			from { opacity: 0; transform: scale(1.03); }
+			to { opacity: 1; transform: scale(1); }
 		}
 		
-		/* Navigation Arrows */
-		.banner-prev,
-		.banner-next {
-			position: absolute;
-			top: 50%;
-			transform: translateY(-50%);
-			background: rgba(0, 0, 0, 0.5);
-			color: #FFD700;
-			border: none;
-			font-size: 24px;
-			padding: 12px 16px;
-			cursor: pointer;
-			border-radius: 50%;
-			transition: all 0.3s ease;
-			z-index: 10;
-			backdrop-filter: blur(5px);
-		}
-		
-		.banner-prev:hover,
-		.banner-next:hover {
-			background: rgba(212, 175, 55, 0.8);
-			color: #000;
-			transform: translateY(-50%) scale(1.1);
-		}
-		
-		.banner-prev {
-			left: 10px;
-		}
-		
-		.banner-next {
-			right: 10px;
-		}
-		
-		/* Dots Indicator */
 		.banner-dots {
 			position: absolute;
-			bottom: 15px;
+			bottom: 12px;
 			left: 50%;
 			transform: translateX(-50%);
 			display: flex;
-			gap: 8px;
+			gap: 6px;
 			z-index: 10;
 		}
 		
 		.dot {
-			width: 10px;
-			height: 10px;
+			width: 8px;
+			height: 8px;
 			border-radius: 50%;
-			background: rgba(255, 255, 255, 0.5);
+			background: rgba(255, 255, 255, 0.4);
 			cursor: pointer;
 			transition: all 0.3s ease;
-			border: 2px solid transparent;
-		}
-		
-		.dot:hover {
-			background: rgba(255, 255, 255, 0.8);
-			transform: scale(1.2);
 		}
 		
 		.dot.active {
 			background: #FFD700;
-			border-color: #fff;
-			transform: scale(1.3);
+			transform: scale(1.2);
+			box-shadow: 0 0 6px #FFD700;
 		}
-		
-		/* Responsive Design */
-		@media (max-width: 768px) {
-			.banner-carousel {
-				border-radius: 8px;
-			}
-			
-			.banner-slide img {
-				max-height: 180px;
-			}
-			
-			.banner-prev,
-			.banner-next {
-				font-size: 18px;
-				padding: 8px 12px;
-			}
-			
-			.dot {
-				width: 8px;
-				height: 8px;
-			}
+
+		/* Welcome announcement bar */
+		.welcome-text {
+			display: flex;
+			align-items: center;
+			background: rgba(10, 25, 47, 0.5);
+			margin: 15px 20px;
+			padding: 10px 16px;
+			border-radius: 12px;
+			border: 1px solid rgba(255, 255, 255, 0.05);
+			gap: 12px;
 		}
-		
-		/* Games Carousel Styles */
-		.games-carousel {
+
+		.speaker-icon {
+			width: 20px;
+			height: 20px;
+			object-fit: contain;
+			filter: drop-shadow(0 0 4px #FFD700);
+		}
+
+		.welcome-text p {
+			flex: 1;
+			margin: 0;
+			font-size: 12.5px;
+			color: rgba(255, 255, 255, 0.8);
+			line-height: 1.4;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.detail-btn {
+			background: linear-gradient(180deg, #1d3d63 0%, #0f294a 100%);
+			border: 1px solid #D4AF37;
+			color: #FFD700;
+			padding: 4px 10px;
+			border-radius: 10px;
+			font-size: 11px;
+			font-weight: 700;
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.detail-btn:hover {
+			box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+		}
+
+		/* Feature Promo Banners */
+		.feature-promo-container {
+			display: flex;
+			gap: 15px;
+			padding: 0 20px 20px 20px;
+		}
+
+		.promo-card {
+			flex: 1;
+			background: linear-gradient(135deg, rgba(17, 34, 64, 0.8) 0%, rgba(10, 25, 47, 0.8) 100%);
+			border: 1px solid rgba(229, 192, 96, 0.2);
+			border-radius: 16px;
+			padding: 12px 15px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			text-decoration: none;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+			transition: all 0.3s ease;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.promo-card:hover {
+			transform: translateY(-3px);
+			border-color: #E5C060;
+			box-shadow: 0 6px 20px rgba(229, 192, 96, 0.25);
+		}
+
+		.promo-card-info {
+			display: flex;
+			flex-direction: column;
+			z-index: 2;
+		}
+
+		.promo-card-title {
+			font-size: 12px;
+			font-weight: 800;
+			color: #ffffff;
+			letter-spacing: 0.5px;
+			margin: 0 0 2px 0;
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+		}
+
+		.promo-card-desc {
+			font-size: 9px;
+			color: #E5C060;
+			font-weight: 700;
+			text-transform: uppercase;
+		}
+
+		.promo-card-img {
+			width: 44px;
+			height: 44px;
+			object-fit: contain;
+			z-index: 2;
+			transition: transform 0.5s ease;
+		}
+
+		.promo-card:hover .promo-card-img {
+			transform: scale(1.1) rotate(5deg);
+		}
+
+		/* Category Switch Tabs */
+		.category-nav-bar {
+			display: flex;
+			gap: 8px;
+			padding: 0 20px 25px 20px;
+			overflow-x: auto;
+		}
+
+		.category-nav-bar::-webkit-scrollbar {
+			display: none;
+		}
+
+		.category-tab-item {
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 8px 16px;
+			border-radius: 20px;
+			background: rgba(255, 255, 255, 0.04);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			cursor: pointer;
+			transition: all 0.3s ease;
+			color: rgba(255, 255, 255, 0.6);
+		}
+
+		.category-tab-item img {
+			width: 22px;
+			height: 22px;
+			object-fit: contain;
+			transition: all 0.3s ease;
+		}
+
+		.category-tab-item span {
+			font-size: 13.5px;
+			font-weight: 600;
+		}
+
+		.category-tab-item.active {
+			background: linear-gradient(135deg, #1d3d63 0%, #0f294a 100%);
+			border-color: #D4AF37;
+			color: #FFD700;
+			box-shadow: 0 4px 10px rgba(212, 175, 55, 0.25);
+		}
+
+		.category-tab-item.active img {
+			filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.6));
+		}
+
+		/* Sections Base */
+		.section-container {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 30px;
+			padding: 0 20px;
+		}
+
+		.section-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+		}
+
+		.section-title-badge {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			background: rgba(10, 25, 47, 0.7);
+			border: 1px solid rgba(212, 175, 55, 0.3);
+			padding: 6px 14px;
+			border-radius: 15px;
+		}
+
+		.section-title-badge i {
+			color: #FFD700;
+			font-size: 14px;
+		}
+
+		.section-title-badge h3 {
+			margin: 0;
+			font-size: 13.5px;
+			font-weight: 700;
+			letter-spacing: 0.5px;
+			color: #ffffff;
+			text-transform: uppercase;
+		}
+
+		.more-link {
+			font-size: 13px;
+			color: #FFD700;
+			text-decoration: none;
+			font-weight: 600;
+		}
+
+		.more-link:hover {
+			text-decoration: underline;
+		}
+
+		/* Game Cards Styling */
+		.games-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 12px;
+		}
+
+		.game-card {
+			display: flex;
+			flex-direction: column;
+			background: linear-gradient(180deg, #112240 0%, #0a192f 100%);
+			border: 1px solid rgba(212, 175, 55, 0.15);
+			border-radius: 16px;
+			overflow: hidden;
+			text-decoration: none;
+			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+			position: relative;
+		}
+
+		.game-card:hover {
+			transform: translateY(-5px);
+			border-color: #D4AF37;
+			box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
+		}
+
+		/* Highlight Shine Effect */
+		.game-card::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -60%;
+			width: 30%;
+			height: 200%;
+			background: rgba(255, 255, 255, 0.13);
+			transform: rotate(30deg);
+			transition: all 0.5s ease;
+			pointer-events: none;
+		}
+
+		.game-card:hover::after {
+			left: 130%;
+			transition: all 0.7s ease;
+		}
+
+		.game-card-img-wrapper {
 			position: relative;
 			width: 100%;
-			max-width: 1040px;
-			margin: 0 auto;
-			padding: 20px 0;
-		}
-		
-		.game-slide {
-			display: none;
-			width: 100%;
-			animation: fadeIn 0.8s ease-in-out;
-			padding: 0 50px;
-		}
-		
-		.game-slide.active {
+			aspect-ratio: 1;
 			display: flex;
+			align-items: center;
 			justify-content: center;
+			overflow: hidden;
 		}
-		
-		.game-slide .game-card {
+
+		/* Wingo Graphic details */
+		.wingo-card-bg {
+			background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
 			width: 100%;
-			max-width: 400px;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			position: relative;
 		}
-		
-		.game-prev,
-		.game-next {
-			position: absolute;
-			top: 40%;
-			transform: translateY(-50%);
-			background: rgba(0, 0, 0, 0.5);
-			color: #FFD700;
-			border: none;
-			font-size: 24px;
-			padding: 12px 16px;
-			cursor: pointer;
+
+		.lottery-ball-circle {
+			width: 48px;
+			height: 48px;
 			border-radius: 50%;
-			transition: all 0.3s ease;
-			z-index: 10;
-			backdrop-filter: blur(5px);
-		}
-		
-		.game-prev:hover,
-		.game-next:hover {
-			background: rgba(212, 175, 55, 0.8);
-			color: #000;
-			transform: translateY(-50%) scale(1.1);
-		}
-		
-		.game-prev {
-			left: 10px;
-		}
-		
-		.game-next {
-			right: 10px;
-		}
-		
-		.game-dots {
-			text-align: center;
-			padding: 15px 0;
+			background: radial-gradient(circle at 30% 30%, #ff5e62, #ff9966);
+			box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 			display: flex;
+			align-items: center;
 			justify-content: center;
-			gap: 8px;
+			font-size: 20px;
+			font-weight: 800;
+			color: white;
+			border: 2px solid white;
 		}
-		
-		@media (max-width: 768px) {
-			.game-slide {
-				padding: 0 45px;
-			}
-			
-			.game-prev,
-			.game-next {
-				font-size: 18px;
-				padding: 8px 12px;
-			}
+
+		.lottery-ball-circle-alt {
+			position: absolute;
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 12px;
+			font-weight: 800;
+			color: white;
+			border: 1px solid white;
+			bottom: 15px;
+			right: 15px;
 		}
-		
-		/* Winning Information Styles */
+
+		.gold-crown-overlay {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			color: #FFD700;
+			font-size: 16px;
+			filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+			animation: bounce 2s infinite alternate;
+		}
+
+		@keyframes bounce {
+			0% { transform: translateY(0); }
+			100% { transform: translateY(-4px); }
+		}
+
+		/* K3 Dice graphic details */
+		.k3-card-bg {
+			background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+		}
+
+		.k3-dice-wrapper {
+			display: flex;
+			gap: 4px;
+		}
+
+		.k3-dice {
+			width: 24px;
+			height: 24px;
+			background: #ffffff;
+			border-radius: 4px;
+			box-shadow: inset 0 0 5px rgba(0,0,0,0.2), 0 3px 6px rgba(0,0,0,0.3);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+		}
+
+		.dice-dot-center {
+			width: 6px;
+			height: 6px;
+			background: red;
+			border-radius: 50%;
+		}
+
+		.dice-dot-multi {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 4px;
+			padding: 3px;
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		.dice-dot-multi::before,
+		.dice-dot-multi::after {
+			content: '';
+			background: #333;
+			border-radius: 50%;
+		}
+
+		.gold-coins-overlay {
+			position: absolute;
+			bottom: 8px;
+			left: 8px;
+			color: #FFD700;
+			font-size: 12px;
+			display: flex;
+			gap: 2px;
+		}
+
+		/* 5D Spheres details */
+		.five-d-card-bg {
+			background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+		}
+
+		.fived-sphere {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			background: radial-gradient(circle at 30% 30%, #a8ff78, #78ffd6);
+			border: 2px solid white;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 800;
+			color: #134e5e;
+			font-size: 18px;
+			box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+		}
+
+		/* Standard game images styling */
+		.game-image-element {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.game-card-name-wrapper {
+			padding: 8px 10px;
+			text-align: center;
+			background: rgba(10, 25, 47, 0.9);
+			border-top: 1px solid rgba(255, 255, 255, 0.05);
+		}
+
+		.game-card-title {
+			font-size: 12px;
+			font-weight: 700;
+			color: #FFD700;
+			margin: 0 0 2px 0;
+			letter-spacing: 0.5px;
+		}
+
+		.game-card-desc {
+			font-size: 10px;
+			color: rgba(255, 255, 255, 0.5);
+			margin: 0;
+		}
+
+		/* Live Activity / Winners Feed */
 		.live-activity-section {
-			margin: 20px 10px;
-			background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-			border-radius: 15px;
-			padding: 20px 15px;
-			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+			background: rgba(10, 25, 47, 0.5);
+			border: 1px solid rgba(212, 175, 55, 0.15);
+			border-radius: 16px;
+			padding: 16px;
+			margin: 0 20px 20px 20px;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 		}
-		
+
 		.activity-header {
 			display: flex;
 			align-items: center;
 			gap: 8px;
-			margin-bottom: 20px;
-			padding-bottom: 12px;
-			border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+			margin-bottom: 15px;
+			padding-bottom: 8px;
+			border-bottom: 1px solid rgba(255, 215, 0, 0.15);
 		}
-		
-		.activity-header h3 {
+
+		.activity-header h4 {
 			color: #FFD700;
-			font-size: 18px;
+			font-size: 14px;
 			font-weight: 700;
 			margin: 0;
-			letter-spacing: 0.5px;
+			text-transform: uppercase;
 		}
-		
-		.activity-header::before {
-			content: '|';
-			color: #FFD700;
-			font-size: 20px;
-			font-weight: 700;
-		}
-		
+
 		.activity-feed {
-			max-height: 400px;
-			overflow-y: auto;
-			overflow-x: hidden;
-			padding-right: 5px;
+			max-height: 260px;
+			overflow-y: hidden;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
 		}
-		
-		.activity-feed::-webkit-scrollbar {
-			width: 6px;
-		}
-		
-		.activity-feed::-webkit-scrollbar-track {
-			background: rgba(255, 255, 255, 0.05);
-			border-radius: 10px;
-		}
-		
-		.activity-feed::-webkit-scrollbar-thumb {
-			background: linear-gradient(180deg, #FFD700, #FFA500);
-			border-radius: 10px;
-		}
-		
+
 		.activity-item {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			padding: 15px 12px;
-			margin-bottom: 10px;
-			background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-			border-radius: 12px;
-			border: 1px solid rgba(255, 215, 0, 0.1);
-			animation: slideInWinner 0.6s ease-out;
-			transition: transform 0.2s ease, box-shadow 0.2s ease;
+			padding: 10px 12px;
+			background: rgba(255, 255, 255, 0.03);
+			border-radius: 10px;
+			border: 1px solid rgba(255, 255, 255, 0.05);
+			animation: slideInWinner 0.5s ease-out;
 		}
-		
-		.activity-item:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
-		}
-		
+
 		@keyframes slideInWinner {
-			from {
-				opacity: 0;
-				transform: translateX(-30px);
-			}
-			to {
-				opacity: 1;
-				transform: translateX(0);
-			}
+			from { opacity: 0; transform: translateY(-10px); }
+			to { opacity: 1; transform: translateY(0); }
 		}
-		
+
 		.activity-user {
 			display: flex;
 			align-items: center;
-			gap: 12px;
-			flex: 1;
+			gap: 10px;
 		}
-		
+
 		.activity-avatar {
-			width: 45px;
-			height: 45px;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			width: 32px;
+			height: 32px;
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			color: white;
 			font-weight: 700;
-			font-size: 18px;
-			border: 2px solid rgba(255, 215, 0, 0.3);
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+			font-size: 13px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
 		}
-		
-		.activity-info {
-			flex: 1;
-		}
-		
+
 		.activity-username {
-			color: #fff;
-			font-size: 14px;
+			color: #ffffff;
+			font-size: 12.5px;
 			font-weight: 600;
-			margin-bottom: 4px;
 		}
-		
-		.activity-game {
-			display: flex;
-			align-items: center;
-			gap: 5px;
-		}
-		
-		.activity-game-icon {
-			width: 18px;
-			height: 18px;
-			background: #FFD700;
-			border-radius: 3px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
+
+		.activity-game-badge {
+			display: inline-block;
+			background: rgba(255, 215, 0, 0.15);
+			color: #FFD700;
+			padding: 1px 6px;
+			border-radius: 8px;
 			font-size: 10px;
 			font-weight: 700;
-			color: #1a1a2e;
+			margin-top: 2px;
 		}
-		
+
 		.activity-win {
 			text-align: right;
 		}
-		
+
 		.activity-amount {
 			color: #FFD700;
 			font-weight: 700;
-			font-size: 15px;
-			margin-bottom: 4px;
+			font-size: 13px;
 		}
-		
+
 		.activity-status {
+			color: rgba(255, 255, 255, 0.4);
+			font-size: 10px;
+			margin-top: 1px;
+		}
+
+		/* Sticky Support Button */
+		.support-btn {
+			position: fixed;
+			bottom: 85px;
+			right: 20px;
+			width: 48px;
+			height: 48px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+			border: 2px solid #ffffff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+			cursor: pointer;
+			z-index: 999;
+			transition: all 0.3s ease;
+		}
+
+		.support-btn:hover {
+			transform: scale(1.1) rotate(5deg);
+		}
+
+		.support-btn img {
+			width: 24px;
+			height: 24px;
+			object-fit: contain;
+			filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+		}
+
+		/* Bottom Navigation Bar */
+		.bottom-nav {
+			position: fixed;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: 480px;
+			background: #0a192f;
+			border-top: 1.5px solid #D4AF37;
+			box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+			z-index: 1000;
+		}
+
+		.nav-container {
+			display: flex;
+			justify-content: space-around;
+			padding: 8px 0;
+		}
+
+		.nav-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-decoration: none;
 			color: rgba(255, 255, 255, 0.5);
 			font-size: 11px;
-			font-weight: 400;
+			font-weight: 500;
+			gap: 4px;
+			transition: all 0.3s ease;
+		}
+
+		.nav-item i {
+			font-size: 18px;
+			transition: all 0.3s ease;
+		}
+
+		.nav-item span {
+			font-size: 11px;
+		}
+
+		.nav-item.active {
+			color: #FFD700;
+		}
+
+		.nav-item.active i {
+		}
+
+		.game-card-title {
+			font-size: 12px;
+			font-weight: 700;
+			color: #FFD700;
+			margin: 0 0 2px 0;
+			letter-spacing: 0.5px;
+		}
+
+		.game-card-desc {
+			font-size: 10px;
+			color: rgba(255, 255, 255, 0.5);
+			margin: 0;
+		}
+
+		/* Live Activity / Winners Feed */
+		.live-activity-section {
+			background: rgba(10, 25, 47, 0.5);
+			border: 1px solid rgba(212, 175, 55, 0.15);
+			border-radius: 16px;
+			padding: 16px;
+			margin: 0 20px 20px 20px;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+		}
+
+		.activity-header {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 15px;
+			padding-bottom: 8px;
+			border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+		}
+
+		.activity-header h4 {
+			color: #FFD700;
+			font-size: 14px;
+			font-weight: 700;
+			margin: 0;
+			text-transform: uppercase;
+		}
+
+		.activity-feed {
+			max-height: 260px;
+			overflow-y: hidden;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.activity-item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 10px 12px;
+			background: rgba(255, 255, 255, 0.03);
+			border-radius: 10px;
+			border: 1px solid rgba(255, 255, 255, 0.05);
+			animation: slideInWinner 0.5s ease-out;
+		}
+
+		@keyframes slideInWinner {
+			from { opacity: 0; transform: translateY(-10px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		.activity-user {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.activity-avatar {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-weight: 700;
+			font-size: 13px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+		}
+
+		.activity-username {
+			color: #ffffff;
+			font-size: 12.5px;
+			font-weight: 600;
+		}
+
+		.activity-game-badge {
+			display: inline-block;
+			background: rgba(255, 215, 0, 0.15);
+			color: #FFD700;
+			padding: 1px 6px;
+			border-radius: 8px;
+			font-size: 10px;
+			font-weight: 700;
+			margin-top: 2px;
+		}
+
+		.activity-win {
+			text-align: right;
+		}
+
+		.activity-amount {
+			color: #FFD700;
+			font-weight: 700;
+			font-size: 13px;
+		}
+
+		.activity-status {
+			color: rgba(255, 255, 255, 0.4);
+			font-size: 10px;
+			margin-top: 1px;
+		}
+
+		/* Sticky Support Button */
+		.support-btn {
+			position: fixed;
+			bottom: 85px;
+			right: 20px;
+			width: 48px;
+			height: 48px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+			border: 2px solid #ffffff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+			cursor: pointer;
+			z-index: 999;
+			transition: all 0.3s ease;
+		}
+
+		.support-btn:hover {
+			transform: scale(1.1) rotate(5deg);
+		}
+
+		.support-btn img {
+			width: 24px;
+			height: 24px;
+			object-fit: contain;
+			filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+		}
+
+		/* Bottom Navigation Bar */
+		.bottom-nav {
+			position: fixed;
+			bottom: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 100%;
+			max-width: 480px;
+			background: #0a192f;
+			border-top: 1.5px solid #D4AF37;
+			box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+			z-index: 1000;
+		}
+
+		.nav-container {
+			display: flex;
+			justify-content: space-around;
+			padding: 8px 0;
+		}
+
+		.nav-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-decoration: none;
+			color: rgba(255, 255, 255, 0.5);
+			font-size: 11px;
+			font-weight: 500;
+			gap: 4px;
+			transition: all 0.3s ease;
+		}
+
+		.nav-item i {
+			font-size: 18px;
+			transition: all 0.3s ease;
+		}
+
+		.nav-item span {
+			font-size: 11px;
+		}
+
+		.nav-item.active {
+			color: #FFD700;
+		}
+
+		.nav-item.active i {
+			transform: translateY(-2px);
+			filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));
 		}
 	</style>
 </head>
 <body class="home-page">
-	<!-- Logo Header -->
-	<div class="diuwin-logo">
-		<a href="/" style="display: inline-block; cursor: pointer;">
-			<img src="/images/logo-bdgwin.png" alt="BDG Win" style="height: 60px; width: auto;">
+	<div id="app">
+		<!-- Sticky Top Header -->
+		<div class="header-container">
+			<div class="raja-logo-container" onclick="location.href='/'">
+				<img src="/images/diuwin_logo.jpg" alt="DiuWin Logo" class="diuwin-logo-img">
+				<div class="logo-text-wrapper">
+					<span class="raja-logo-title">DiuWin</span>
+					<span class="raja-logo-sub">GAMES</span>
+				</div>
+			</div>
+			
+			<!-- Dynamic actions based on Auth Cookie -->
+			<div class="header-actions" id="header-user-status">
+				<div class="lang-dropdown" onclick="location.href='/keFuMenu'">
+					<i class="fa fa-chevron-down" style="font-size: 11px; color: #a5a5a5;"></i>
+				</div>
+				<div class="header-profile-icon-wrapper" onclick="location.href='/mian'">
+					<i class="fa fa-user" style="font-size: 20px; color: #ffffff;"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Guest Actions Container -->
+		<div class="guest-actions-container" id="guest-actions-box" style="display: none;">
+			<a href="/login" class="guest-btn guest-btn-login">Log in</a>
+			<a href="/register" class="guest-btn guest-btn-register">Register</a>
+		</div>
+
+		<!-- Welcome Announcement Bar -->
+		<div class="welcome-text">
+			<img src="/images/audio.webp" alt="Speaker" class="speaker-icon">
+			<p>Welcome to DiuWin Games! Enjoy exciting games, huge cash rewards, and daily login bonuses.</p>
+			<a href="/promotion" class="detail-btn">Detail</a>
+		</div>
+
+		<!-- Banner Auto Carousel -->
+		<div class="banner-section">
+			<div class="banner-carousel">
+				<div class="banner-slide active">
+					<img src="/asset/bannner/Banner_20250421143852jhq6.png" alt="Banner 1">
+				</div>
+				<div class="banner-slide">
+					<img src="/asset/bannner/Banner_20250421000436dkos.png" alt="Banner 2">
+				</div>
+				<div class="banner-slide">
+					<img src="/asset/bannner/Banner_20250421000201vg67.jpg" alt="Banner 3">
+				</div>
+				<div class="banner-slide">
+					<img src="/asset/bannner/Banner_20250421000449bdyk.jpg" alt="Banner 4">
+				</div>
+				<div class="banner-slide">
+					<img src="/asset/bannner/Banner_202504210005233rj4.jpg" alt="Banner 5">
+				</div>
+				<div class="banner-slide">
+					<img src="/asset/bannner/Banner_20250423224406qkqg.jpg" alt="Banner 6">
+				</div>
+				<div class="banner-slide">
+					<img src="/asset/bannner/Banner_202504232247295viu.jpg" alt="Banner 7">
+				</div>
+				
+				<!-- Dots Indicator -->
+				<div class="banner-dots">
+					<span class="dot active" onclick="currentBanner(1)"></span>
+					<span class="dot" onclick="currentBanner(2)"></span>
+					<span class="dot" onclick="currentBanner(3)"></span>
+					<span class="dot" onclick="currentBanner(4)"></span>
+					<span class="dot" onclick="currentBanner(5)"></span>
+					<span class="dot" onclick="currentBanner(6)"></span>
+					<span class="dot" onclick="currentBanner(7)"></span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Feature Promo Banners -->
+		<div class="feature-promo-container">
+			<a href="/redenvelopes" class="promo-card">
+				<div class="promo-card-info">
+					<span class="promo-card-title">WHEEL OF FORTUNE</span>
+					<span class="promo-card-desc">Spin & Win</span>
+				</div>
+				<img src="/asset/ass/turn_icon-0c8307cf.png" alt="Wheel of Fortune" class="promo-card-img">
+			</a>
+			<a href="/checkIn" class="promo-card">
+				<div class="promo-card-info">
+					<span class="promo-card-title">VIP PRIVILEGES</span>
+					<span class="promo-card-desc">Exclusive Rewards</span>
+				</div>
+				<img src="/asset/ass/vip_icon-0ce6fe20.png" alt="VIP" class="promo-card-img">
+			</a>
+		</div>
+
+		<!-- Category Switcher Tabs -->
+		<div class="category-nav-bar">
+			<div class="category-tab-item active" data-filter="all">
+				<img src="/asset/svg/lobby_icon_a-d44b8b71.svg" data-active="/asset/svg/lobby_icon_a-d44b8b71.svg" data-inactive="/asset/svg/lobby_icon-f115f004.svg" alt="Lobby">
+				<span>Lobby</span>
+			</div>
+			<div class="category-tab-item" data-filter="lottery">
+				<img src="/asset/svg/lottery_icon-5ff664a9.svg" data-active="/asset/svg/lottery_icon_a-f4b1b254.svg" data-inactive="/asset/svg/lottery_icon-5ff664a9.svg" alt="Lottery">
+				<span>Lottery</span>
+			</div>
+			<div class="category-tab-item" data-filter="popular">
+				<img src="/asset/svg/popular_icon-f5d7ae51.svg" data-active="/asset/svg/popular_icon_a-6a0836fe.svg" data-inactive="/asset/svg/popular_icon-f5d7ae51.svg" alt="Popular">
+				<span>Popular</span>
+			</div>
+			<div class="category-tab-item" data-filter="minigames">
+				<img src="/asset/svg/miniGame_icon-834f27fe.svg" data-active="/asset/svg/mini_icon-f60f07f5.svg" data-inactive="/asset/svg/miniGame_icon-834f27fe.svg" alt="Mini Games">
+				<span>Mini Games</span>
+			</div>
+			<div class="category-tab-item" data-filter="slots">
+				<img src="/asset/svg/slot_icon-4d0489e6.svg" data-active="/asset/svg/slots_icon-4fc00bfb.svg" data-inactive="/asset/svg/slot_icon-4d0489e6.svg" alt="Slots">
+				<span>Slots</span>
+			</div>
+		</div>
+
+		<!-- Section: LOTTERY -->
+		<div class="section-container" id="sec-lottery">
+			<div class="section-header">
+				<div class="section-title-badge">
+					<i class="fa fa-money"></i>
+					<h3>Lottery</h3>
+				</div>
+				<a href="/win" class="more-link">7 Games ›</a>
+			</div>
+
+			<div class="games-grid">
+				<!-- WINGO Card -->
+				<a class="game-card" href="/win">
+					<div class="game-card-shine"></div>
+					<div class="game-card-img-wrapper" style="aspect-ratio: 0.95;">
+						<img src="/asset/lotterycategory/lotterycategory_202504211530201tr5.png" alt="WINGO" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">WINGO</h4>
+						<p class="game-card-desc">Win Go Lottery</p>
+					</div>
+				</a>
+				
+				<!-- K3 Card -->
+				<a class="game-card" href="/k3">
+					<div class="game-card-img-wrapper" style="aspect-ratio: 0.95;">
+						<img src="/asset/lotterycategory/lotterycategory_202504211530308pte.png" alt="K3" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">K3</h4>
+						<p class="game-card-desc">K3 Dice Lottery</p>
+					</div>
+				</a>
+
+				<!-- 5D Card -->
+				<a class="game-card" href="/5d">
+					<div class="game-card-img-wrapper" style="aspect-ratio: 0.95;">
+						<img src="/asset/lotterycategory/lotterycategory_20250421153042a2cb.png" alt="5D" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">5D</h4>
+						<p class="game-card-desc">5D Balls Lottery</p>
+					</div>
+				</a>
+			</div>
+		</div>
+
+		<!-- Section: POPULAR -->
+		<div class="section-container" id="sec-popular">
+			<div class="section-header">
+				<div class="section-title-badge">
+					<i class="fa fa-fire"></i>
+					<h3>Popular</h3>
+				</div>
+				<a href="/win" class="more-link">6 Games ›</a>
+			</div>
+
+			<div class="games-grid">
+				<!-- Aviator -->
+				<a class="game-card" href="/win">
+					<div class="game-card-img-wrapper">
+						<img src="/images/aviator_tile.jpg" alt="Aviator" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">AVIATOR</h4>
+						<p class="game-card-desc">TB Chess Aviator</p>
+					</div>
+				</a>
+
+				<!-- Cricket -->
+				<a class="game-card" href="/win">
+					<div class="game-card-img-wrapper">
+						<img src="/images/cricket_tile.jpg" alt="Cricket" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">CRICKET</h4>
+						<p class="game-card-desc">TB Chess Cricket</p>
+					</div>
+				</a>
+
+				<!-- Mines -->
+				<a class="game-card" href="/win">
+					<div class="game-card-img-wrapper">
+						<img src="/images/mines_tile.jpg" alt="Mines" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">MINES</h4>
+						<p class="game-card-desc">TB Chess Mines</p>
+					</div>
+				</a>
+			</div>
+		</div>
+
+		<!-- Section: MINI GAMES -->
+		<div class="section-container" id="sec-minigames">
+			<div class="section-header">
+				<div class="section-title-badge">
+					<i class="fa fa-gamepad"></i>
+					<h3>Mini Games</h3>
+				</div>
+				<a href="/win" class="more-link">48 Games ›</a>
+			</div>
+
+			<div class="games-grid">
+				<!-- Aviator -->
+				<a class="game-card" href="/win">
+					<div class="game-card-img-wrapper">
+						<img src="/images/aviator_tile.jpg" alt="Aviator" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">AVIATOR</h4>
+						<p class="game-card-desc">Mini Games Aviator</p>
+					</div>
+				</a>
+
+				<!-- Cricket -->
+				<a class="game-card" href="/win">
+					<div class="game-card-img-wrapper">
+						<img src="/images/cricket_tile.jpg" alt="Cricket" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">CRICKET</h4>
+						<p class="game-card-desc">Mini Games Cricket</p>
+					</div>
+				</a>
+
+				<!-- Mines -->
+				<a class="game-card" href="/win">
+					<div class="game-card-img-wrapper">
+						<img src="/images/mines_tile.jpg" alt="Mines" class="game-image-element">
+					</div>
+					<div class="game-card-name-wrapper">
+						<h4 class="game-card-title">MINES</h4>
+						<p class="game-card-desc">Mini Games Mines</p>
+					</div>
+				</a>
+			</div>
+		</div>
+
+		<!-- Winning Information List -->
+		<div class="live-activity-section" id="sec-winners">
+			<div class="activity-header">
+				<i class="fa fa-trophy" style="color:#FFD700"></i>
+				<h4>Winning information</h4>
+			</div>
+			<div class="activity-feed" id="activityFeed">
+				<!-- Simulated winners feed updated in script -->
+			</div>
+		</div>
+
+		<!-- Customer Support Float Button -->
+		<a href="/keFuMenu" class="support-btn" aria-label="Customer Support">
+			<img src="/images/customer-5ef38c22.png" alt="Support">
 		</a>
-	</div>
 
-	<!-- Banner Section - Auto-Rotating Carousel -->
-	<div class="banner-section">
-		<div class="banner-carousel">
-			<!-- Banner Slides -->
-			<div class="banner-slide active">
-				<img src="/banner/1.png" alt="Banner 1">
-			</div>
-			<div class="banner-slide">
-				<img src="/banner/2.png" alt="Banner 2">
-			</div>
-			<div class="banner-slide">
-				<img src="/banner/3.png" alt="Banner 3">
-			</div>
-			<div class="banner-slide">
-				<img src="/banner/4.png" alt="Banner 4">
-			</div>
-			<div class="banner-slide">
-				<img src="/banner/5.png" alt="Banner 5">
-			</div>
-			<div class="banner-slide">
-				<img src="/banner/6.png" alt="Banner 6">
-			</div>
-			<div class="banner-slide">
-				<img src="/banner/7.jpeg" alt="Banner 7">
-			</div>
-			
-			<!-- Navigation Arrows -->
-			<button class="banner-prev" onclick="changeBanner(-1)">❮</button>
-			<button class="banner-next" onclick="changeBanner(1)">❯</button>
-			
-			<!-- Dots Indicator -->
-			<div class="banner-dots">
-				<span class="dot active" onclick="currentBanner(1)"></span>
-				<span class="dot" onclick="currentBanner(2)"></span>
-				<span class="dot" onclick="currentBanner(3)"></span>
-				<span class="dot" onclick="currentBanner(4)"></span>
-				<span class="dot" onclick="currentBanner(5)"></span>
-				<span class="dot" onclick="currentBanner(6)"></span>
-				<span class="dot" onclick="currentBanner(7)"></span>
-			</div>
-		</div>
-	</div>
-
-	<!-- Welcome Message -->
-	<div class="welcome-text">
-		<img src="/images/audio.webp" alt="Speaker" class="speaker-icon">
-		<p>Welcome to BDG Win! Enjoy exciting games, rewards, and daily bonuses.</p>
-		<a href="/promotion" class="detail-btn">Detail</a>
-	</div>
-
-	<!-- Lottery Section -->
-	<div class="section-header">
-		<h3>Lottery</h3>
-		<a href="/win" class="more-link">More ›</a>
-	</div>
-
-	<div class="games-container">
-		<div class="games-carousel">
-			<!-- Game Slides -->
-			<div class="game-slide active">
-				<a class="game-card game-card-shine" href="/win" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
-					<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg3.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
-						<img src="/images/logo-wingo.webp" alt="WinGo" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
-					</div>
-					<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">WinGo</div>
+		<!-- Bottom Navigation Menu -->
+		<div class="bottom-nav">
+			<div class="nav-container">
+				<a href="/home" class="nav-item active">
+					<i class="fa fa-gamepad"></i>
+					<span>Games</span>
+				</a>
+				<a href="/promotion" class="nav-item">
+					<i class="fa fa-share-alt"></i>
+					<span>Affiliate</span>
+				</a>
+				<a href="/wallet" class="nav-item">
+					<i class="fa fa-credit-card"></i>
+					<span>Wallet</span>
+				</a>
+				<a href="/checkIn" class="nav-item">
+					<i class="fa fa-calendar-check-o"></i>
+					<span>Activity</span>
+				</a>
+				<a href="/mian" class="nav-item">
+					<i class="fa fa-user"></i>
+					<span>Profile</span>
 				</a>
 			</div>
-			<div class="game-slide">
-				<a class="game-card game-card-shine" href="/k3" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
-					<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg1.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
-						<img src="/images/logo-k333.webp" alt="K3" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
-					</div>
-					<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">K3</div>
-				</a>
-			</div>
-			<div class="game-slide">
-				<a class="game-card game-card-shine" href="/5d" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
-					<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
-						<img src="/images/logo-lottery.webp" alt="5D" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
-					</div>
-					<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">5D</div>
-				</a>
-			</div>
-			
-			<!-- Navigation Arrows -->
-			<button class="game-prev" onclick="changeGame(-1)">❮</button>
-			<button class="game-next" onclick="changeGame(1)">❯</button>
-			
-			<!-- Dots Indicator -->
-			<div class="game-dots">
-				<span class="dot active" onclick="currentGame(1)"></span>
-				<span class="dot" onclick="currentGame(2)"></span>
-				<span class="dot" onclick="currentGame(3)"></span>
-			</div>
-		</div>
-		
-		<!-- Static Games Grid Below Carousel -->
-		<div class="games-grid" style="margin-top: 30px;">
-			<a class="game-card game-card-shine" href="/win" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
-				<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg3.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
-					<img src="/images/logo-wingo.webp" alt="WinGo" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
-				</div>
-				<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">WinGo</div>
-			</a>
-			<a class="game-card game-card-shine" href="/k3" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
-				<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg1.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
-					<img src="/images/logo-k333.webp" alt="K3" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
-				</div>
-				<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">K3</div>
-			</a>
-			<a class="game-card game-card-shine" href="/5d" style="background: linear-gradient(180deg, rgba(10, 10, 30, 0.85) 0%, rgba(20, 20, 40, 0.95) 100%);">
-				<div class="game-image" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.15) 50%, rgba(212, 175, 55, 0.15) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: overlay;">
-					<img src="/images/logo-lottery.webp" alt="5D" style="position: relative; z-index: 2; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
-				</div>
-				<div class="game-name" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%), url('/images/bdg.png'); background-size: cover; background-position: center; background-blend-mode: multiply; position: relative; z-index: 1; color: #FFD700; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 1px;">5D</div>
-			</a>
 		</div>
 	</div>
 
-	<!-- Category Icons (Moved Below Games) -->
-	<div class="category-section">
-		<div class="category-grid">
-			<a href="/win" class="category-item">
-				<div class="category-icon">
-					<img src="/images/s1.png" alt="Lottery">
-				</div>
-				<span class="category-name">Lottery</span>
-			</a>
-		<!-- Jackpot category removed -->
-			<a href="/win/3" class="category-item">
-				<div class="category-icon">
-					<img src="/images/s3.png" alt="Slots">
-				</div>
-				<span class="category-name">Slots</span>
-			</a>
-			<a href="/k3" class="category-item">
-				<div class="category-icon">
-					<img src="/images/s4.png" alt="Original">
-				</div>
-				<span class="category-name">Original</span>
-			</a>
-			<a href="/5d" class="category-item">
-				<div class="category-icon">
-					<img src="/images/s5.png" alt="Sports">
-				</div>
-				<span class="category-name">Sports</span>
-			</a>
-		</div>
-	</div>
-
-	<!-- Winning Information -->
-	<div class="live-activity-section">
-		<div class="activity-header">
-			<h3>Winning information</h3>
-		</div>
-		<div class="activity-feed" id="activityFeed">
-			<!-- Winners will be dynamically added here -->
-		</div>
-	</div>
-
-	<!-- Support Button -->
-	<a href="/keFuMenu" class="support-btn" aria-label="Customer Support">
-		<img src="/images/customer-5ef38c22.png" alt="Support">
-	</a>
-
-	<!-- Bottom Navigation -->
-	<div class="bottom-nav">
-		<div class="nav-container">
-			<a href="/home" class="nav-item active">
-				<img src="/images/home.png" alt="Home">
-				<span>Home</span>
-			</a>
-			<a href="/checkIn" class="nav-item">
-				<img src="/images/checkIn.png" alt="Activity">
-				<span>Activity</span>
-			</a>
-			<a href="/promotion" class="nav-item">
-				<img src="/images/invite.webp" alt="Promotion">
-				<span>Promotion</span>
-			</a>
-			<a href="/wallet" class="nav-item">
-				<img src="/images/wallet.png" alt="Wallet">
-				<span>Wallet</span>
-			</a>
-			<a href="/mian" class="nav-item">
-				<img src="/images/my.png" alt="Account">
-				<span>Account</span>
-			</a>
-		</div>
-	</div>
-
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
+		// Cookie helper to read logged in state
+		function getCookie(cname) {
+			let name = cname + "=";
+			let decodedCookie = decodeURIComponent(document.cookie);
+			let ca = decodedCookie.split(';');
+			for (let i = 0; i < ca.length; i++) {
+				let c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+
+		// Dynamically render header buttons or profile avatar
+		function updateHeaderStatus() {
+			const token = getCookie('token');
+			const auth = getCookie('auth');
+			const headerContainer = $('#header-user-status');
+			
+			if (token && auth) {
+				// User is logged in: show profile circle
+				headerContainer.html(`
+					<div class="header-profile" onclick="location.href='/mian'">
+						<div class="header-profile-icon" style="border-radius: 50%; background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: #071224;">
+							<i class="fa fa-user"></i>
+						</div>
+					</div>
+				`);
+				$('#guest-actions-box').hide();
+			} else {
+				// User is not logged in: show lang dropdown and user icon
+				headerContainer.html(`
+					<div class="lang-dropdown" onclick="location.href='/keFuMenu'">
+						<i class="fa fa-chevron-down" style="font-size: 11px; color: #a5a5a5;"></i>
+					</div>
+					<div class="header-profile-icon-wrapper" onclick="location.href='/login'">
+						<i class="fa fa-user" style="font-size: 20px; color: #ffffff;"></i>
+					</div>
+				`);
+				$('#guest-actions-box').show();
+			}
+		}
+
+		$(document).ready(function() {
+			updateHeaderStatus();
+			
+			// Highlight bottom nav active item based on current page
 			const currentPath = window.location.pathname;
 			document.querySelectorAll('.nav-item').forEach(item => {
 				const href = item.getAttribute('href');
@@ -618,198 +1422,118 @@
 			});
 		});
 		
+		// Category switcher filtering
+		$('.category-tab-item').click(function() {
+			$('.category-tab-item').removeClass('active');
+			
+			// Reset all images to inactive state
+			$('.category-tab-item').each(function() {
+				const img = $(this).find('img');
+				if (img.length) {
+					img.attr('src', img.data('inactive'));
+				}
+			});
+			
+			$(this).addClass('active');
+			
+			// Set current image to active state
+			const activeImg = $(this).find('img');
+			if (activeImg.length) {
+				activeImg.attr('src', activeImg.data('active'));
+			}
+			
+			const filter = $(this).data('filter');
+			
+			if (filter === 'all') {
+				$('#sec-lottery').fadeIn(200);
+				$('#sec-popular').fadeIn(200);
+				$('#sec-minigames').fadeIn(200);
+				$('#sec-winners').fadeIn(200);
+			} else if (filter === 'lottery') {
+				$('#sec-lottery').fadeIn(200);
+				$('#sec-popular').hide();
+				$('#sec-minigames').hide();
+				$('#sec-winners').hide();
+			} else if (filter === 'popular') {
+				$('#sec-popular').fadeIn(200);
+				$('#sec-lottery').hide();
+				$('#sec-minigames').hide();
+				$('#sec-winners').hide();
+			} else if (filter === 'minigames') {
+				$('#sec-minigames').fadeIn(200);
+				$('#sec-lottery').hide();
+				$('#sec-popular').hide();
+				$('#sec-winners').hide();
+			} else if (filter === 'slots') {
+				// Slots placeholder
+				$('#sec-lottery').hide();
+				$('#sec-popular').hide();
+				$('#sec-minigames').hide();
+				$('#sec-winners').hide();
+			}
+		});
+
 		// Banner Carousel Auto-Rotation
 		let currentBannerIndex = 1;
 		let bannerInterval;
 		
-		// Show specific banner
 		function showBanner(n) {
 			const slides = document.querySelectorAll('.banner-slide');
 			const dots = document.querySelectorAll('.dot');
 			
-			if (n > slides.length) {
-				currentBannerIndex = 1;
+			if (n > slides.length) { currentBannerIndex = 1; }
+			if (n < 1) { currentBannerIndex = slides.length; }
+			
+			slides.forEach(slide => slide.classList.remove('active'));
+			dots.forEach(dot => dot.classList.remove('active'));
+			
+			if(slides[currentBannerIndex - 1]) {
+				slides[currentBannerIndex - 1].classList.add('active');
 			}
-			if (n < 1) {
-				currentBannerIndex = slides.length;
+			if(dots[currentBannerIndex - 1]) {
+				dots[currentBannerIndex - 1].classList.add('active');
 			}
-			
-			// Hide all slides
-			slides.forEach(slide => {
-				slide.classList.remove('active');
-			});
-			
-			// Remove active from all dots
-			dots.forEach(dot => {
-				dot.classList.remove('active');
-			});
-			
-			// Show current slide and dot
-			slides[currentBannerIndex - 1].classList.add('active');
-			dots[currentBannerIndex - 1].classList.add('active');
 		}
 		
-		// Next/Previous controls
 		function changeBanner(n) {
-			// Reset auto-rotation timer
 			clearInterval(bannerInterval);
 			currentBannerIndex += n;
 			showBanner(currentBannerIndex);
 			startBannerAutoRotation();
 		}
 		
-		// Dot controls
 		function currentBanner(n) {
-			// Reset auto-rotation timer
 			clearInterval(bannerInterval);
 			currentBannerIndex = n;
 			showBanner(currentBannerIndex);
 			startBannerAutoRotation();
 		}
 		
-		// Auto-rotation function
 		function autoBanner() {
 			currentBannerIndex++;
 			showBanner(currentBannerIndex);
 		}
 		
-		// Start auto-rotation
 		function startBannerAutoRotation() {
-			bannerInterval = setInterval(autoBanner, 3000); // Change banner every 3 seconds
+			bannerInterval = setInterval(autoBanner, 3000);
 		}
 		
-		// Initialize carousel when page loads
-		document.addEventListener('DOMContentLoaded', function() {
-			showBanner(currentBannerIndex);
-			startBannerAutoRotation();
-		});
+		showBanner(currentBannerIndex);
+		startBannerAutoRotation();
 		
-		// Pause on hover
-		document.querySelector('.banner-carousel')?.addEventListener('mouseenter', function() {
-			clearInterval(bannerInterval);
-		});
-		
-		// Resume on mouse leave
-		document.querySelector('.banner-carousel')?.addEventListener('mouseleave', function() {
-			startBannerAutoRotation();
-		});
-		
-		// Touch swipe support for mobile
+		// Touch swipes support for banner
 		let touchStartX = 0;
 		let touchEndX = 0;
-		
 		document.querySelector('.banner-carousel')?.addEventListener('touchstart', function(e) {
 			touchStartX = e.changedTouches[0].screenX;
 		});
-		
 		document.querySelector('.banner-carousel')?.addEventListener('touchend', function(e) {
 			touchEndX = e.changedTouches[0].screenX;
-			handleSwipe();
-		});
-		
-		function handleSwipe() {
-			if (touchEndX < touchStartX - 50) {
-				// Swipe left - next banner
-				changeBanner(1);
-			}
-			if (touchEndX > touchStartX + 50) {
-				// Swipe right - previous banner
-				changeBanner(-1);
-			}
-		}
-		
-		// Games Carousel Auto-Rotation
-		let currentGameIndex = 1;
-		let gameInterval;
-
-		// Show specific game
-		function showGame(n) {
-			const slides = document.querySelectorAll('.game-slide');
-			const dots = document.querySelectorAll('.game-dots .dot');
-
-			if (n > slides.length) {
-				currentGameIndex = 1;
-			}
-			if (n < 1) {
-				currentGameIndex = slides.length;
-			}
-
-			// Hide all slides
-			slides.forEach(slide => {
-				slide.classList.remove('active');
-			});
-
-			// Remove active class from dots
-			dots.forEach(dot => {
-				dot.classList.remove('active');
-			});
-
-			// Show current slide
-			slides[currentGameIndex - 1].classList.add('active');
-			dots[currentGameIndex - 1].classList.add('active');
-		}
-
-		// Next/previous controls
-		function changeGame(n) {
-			clearInterval(gameInterval);
-			currentGameIndex += n;
-			showGame(currentGameIndex);
-			startGameAutoRotation();
-		}
-
-		// Dot controls
-		function currentGame(n) {
-			clearInterval(gameInterval);
-			currentGameIndex = n;
-			showGame(currentGameIndex);
-			startGameAutoRotation();
-		}
-
-		// Auto rotation
-		function autoGame() {
-			currentGameIndex++;
-			showGame(currentGameIndex);
-		}
-
-		// Start auto-rotation
-		function startGameAutoRotation() {
-			gameInterval = setInterval(autoGame, 4000); // Change game every 4 seconds
-		}
-
-		// Initialize games carousel
-		if (document.querySelector('.games-carousel')) {
-			showGame(currentGameIndex);
-			startGameAutoRotation();
-		}
-
-		// Pause on hover
-		document.querySelector('.games-carousel')?.addEventListener('mouseenter', function() {
-			clearInterval(gameInterval);
+			if (touchEndX < touchStartX - 50) changeBanner(1);
+			if (touchEndX > touchStartX + 50) changeBanner(-1);
 		});
 
-		// Resume on mouse leave
-		document.querySelector('.games-carousel')?.addEventListener('mouseleave', function() {
-			startGameAutoRotation();
-		});
-
-		// Touch support for games carousel
-		let gameStartX = 0;
-		let gameEndX = 0;
-
-		document.querySelector('.games-carousel')?.addEventListener('touchstart', function(e) {
-			gameStartX = e.changedTouches[0].screenX;
-		});
-
-		document.querySelector('.games-carousel')?.addEventListener('touchend', function(e) {
-			gameEndX = e.changedTouches[0].screenX;
-			if (gameStartX - gameEndX > 50) {
-				changeGame(1);
-			} else if (gameStartX - gameEndX < -50) {
-				changeGame(-1);
-			}
-		});
-		
-		// Winning Information Feed
+		// Winning Information Feed simulation
 		const memberSuffixes = [
 			'KGG', 'LKM', 'CTR', 'NKE', 'UTD', 'FCB', 'RMA', 'PSG', 'BAY', 'JUV',
 			'ARS', 'CHE', 'LIV', 'MCI', 'TOT', 'INT', 'MIL', 'NAP', 'ROM', 'ATL',
@@ -820,8 +1544,7 @@
 		const gameNumbers = ['1', '3', '5', '7', '9'];
 		
 		function getRandomMember() {
-			const suffix = memberSuffixes[Math.floor(Math.random() * memberSuffixes.length)];
-			return 'Mem***' + suffix;
+			return 'Mem***' + memberSuffixes[Math.floor(Math.random() * memberSuffixes.length)];
 		}
 		
 		function getRandomGame() {
@@ -840,7 +1563,7 @@
 		}
 		
 		function getUserInitial(username) {
-			return username.charAt(0).toUpperCase();
+			return username.replace('Mem***', '').charAt(0).toUpperCase();
 		}
 		
 		function getRandomAvatarColor() {
@@ -865,49 +1588,54 @@
 			const initial = getUserInitial(username);
 			const avatarColor = getRandomAvatarColor();
 			
-			const activityHTML = '<div class="activity-item">' +
-				'<div class="activity-user">' +
-					'<div class="activity-avatar" style="background: ' + avatarColor + ';">' + initial + '</div>' +
-					'<div class="activity-info">' +
-						'<div class="activity-username">' + username + '</div>' +
-						'<div class="activity-game"><span class="activity-game-icon">' + gameNum + '</span></div>' +
-					'</div>' +
-				'</div>' +
-				'<div class="activity-win">' +
-					'<div class="activity-amount">Receive ₹' + amount + '</div>' +
-					'<div class="activity-status">Winning amount</div>' +
-				'</div>' +
-			'</div>';
+			const activityHTML = `
+				<div class="activity-item">
+					<div class="activity-user">
+						<div class="activity-avatar" style="background: ${avatarColor};">${initial}</div>
+						<div>
+							<div class="activity-username">${username}</div>
+							<div class="activity-game-badge">${game} ${gameNum}Min</div>
+						</div>
+					</div>
+					<div class="activity-win">
+						<div class="activity-amount">Receive ₹${amount}</div>
+						<div class="activity-status">Winning amount</div>
+					</div>
+				</div>
+			`;
 			
 			const feed = document.getElementById('activityFeed');
 			if (feed) {
 				feed.insertAdjacentHTML('afterbegin', activityHTML);
-				
 				const items = feed.querySelectorAll('.activity-item');
-				if (items.length > 20) {
+				if (items.length > 8) {
 					items[items.length - 1].remove();
 				}
 			}
 		}
 		
 		function initializeActivities() {
-			for (let i = 0; i < 10; i++) {
-				setTimeout(() => {
-					createActivityItem();
-				}, i * 300);
+			for (let i = 0; i < 5; i++) {
+				setTimeout(createActivityItem, i * 200);
 			}
 		}
 		
 		function startActivityFeed() {
-			setInterval(() => {
-				createActivityItem();
-			}, Math.random() * 6000 + 4000);
+			setInterval(createActivityItem, Math.random() * 3000 + 2000);
 		}
 		
 		if (document.getElementById('activityFeed')) {
 			initializeActivities();
 			startActivityFeed();
 		}
+
+		// Adapt root font-size based on screen width
+		let getWBody = $('#app').width();
+		$('html').css('font-size', `${getWBody / 10}px`);
+		$(window).resize(() => {
+			let getWBody = $('#app').width();
+			$('html').css('font-size', `${getWBody / 10}px`);
+		});
 	</script>
 </body>
 </html>

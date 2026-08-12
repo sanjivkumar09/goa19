@@ -91,11 +91,12 @@ const middlewareAdminController = async (req, res, next) => {
     if (!auth) {
         return res.redirect("/login");
     }
-    const [rows] = await connection.execute('SELECT `token`,`level`, `status` FROM `users` WHERE `token` = ? AND veri = 1', [auth]);
-    if (!rows) {
-        return res.redirect("/login");
-    }
     try {
+        const [rows] = await connection.execute('SELECT `token`,`level`, `status` FROM `users` WHERE `token` = ? AND veri = 1', [auth]);
+        if (!rows || rows.length === 0) {
+            res.clearCookie("auth");
+            return res.redirect("/login");
+        }
         if (auth == rows[0].token && rows[0].status == 1) {
             if (rows[0].level == 1) {
                 next();
@@ -103,9 +104,12 @@ const middlewareAdminController = async (req, res, next) => {
                 return res.redirect("/home");
             }
         } else {
+            res.clearCookie("auth");
             return res.redirect("/login");
         }
     } catch (error) {
+        console.error("Admin middleware error:", error);
+        res.clearCookie("auth");
         return res.redirect("/login");
     }
 }
@@ -1871,7 +1875,6 @@ const getSalary = async (req, res) => {
         rows: rows
   })
 };
-
 
 module.exports = {
     adminPage,
