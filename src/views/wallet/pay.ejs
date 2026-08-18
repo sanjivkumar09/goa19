@@ -838,14 +838,11 @@
                     return;
                 }
                 $('.submit').attr('id', data.id_order);
-                let i = 0;
-                // Update UPI ID
-                $('#upiC').text(infoBank[i].stk);
-                $('#idup').text(infoBank[i].stk);
-                
-                // Update QR Code
-                if (infoBank[i].qr_code_image) {
-                    $('#qrcodeImg').html(`<img src="/images/qr-payment.jpeg" alt="QR Code" style="width: 200px; height: 200px;">`);
+                let bankInfo = infoBank.find(b => b.type === 'bank') || infoBank[0];
+                if (bankInfo) {
+                    // Update Bank Account STK
+                    $('#upiC').text(bankInfo.stk);
+                    $('#idup').text(bankInfo.stk);
                 }
                 
                 $('#amount').text('₹ ' + data.money);
@@ -857,7 +854,7 @@
         $('.submit').click(function (e) {
             e.preventDefault();
             let id = $(this).attr('id');
-            let utr = $('input:eq(0)').val().trim();;
+            let utr = $('#upi-input').val().trim();
             console.log("utr"+utr);
             $.ajax({
                 type: "POST",

@@ -16,7 +16,7 @@ const verifyCode = async (req, res) => {
     let timeEnd = (+new Date) + 1000 * (60 * 2 + 0) + 500;
     let otp = randomNumber(100000, 999999);
 
-    conswit [rows] = await connection.query('SELECT * FROM users WHERE `token` = ? ', [auth]);
+    const [rows] = await connection.query('SELECT * FROM users WHERE `token` = ? ', [auth]);
     if (!rows) {
         return res.status(200).json({
             message: 'Account does not exist',
@@ -207,7 +207,7 @@ const checkInHandling = async (req, res) => {
             let point_list = point_lists[0];
             let get = 500;
             if (check >= data && point_list.total1 != 0) {
-                await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [point_list.total1, rows[0].phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [point_list.total1, point_list.total1, rows[0].phone]);
                 await connection.query('UPDATE point_list SET total1 = ? WHERE phone = ? ', [0, rows[0].phone]);
                 return res.status(200).json({
                     message: `You just received ₹ ${point_list.total1}.00`,
@@ -234,7 +234,7 @@ const checkInHandling = async (req, res) => {
             let point_list = point_lists[0];
             let get = 2000;
             if (check >= get && point_list.total2 != 0) {
-                await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [point_list.total2, rows[0].phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [point_list.total2, point_list.total2, rows[0].phone]);
                 await connection.query('UPDATE point_list SET total2 = ? WHERE phone = ? ', [0, rows[0].phone]);
                 return res.status(200).json({
                     message: `You just received ₹ ${point_list.total2}.00`,
@@ -261,7 +261,7 @@ const checkInHandling = async (req, res) => {
             let point_list = point_lists[0];
             let get = 5000;
             if (check >= get && point_list.total3 != 0) {
-                await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [point_list.total3, rows[0].phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [point_list.total3, point_list.total3, rows[0].phone]);
                 await connection.query('UPDATE point_list SET total3 = ? WHERE phone = ? ', [0, rows[0].phone]);
                 return res.status(200).json({
                     message: `You just received ₹ ${point_list.total3}.00`,
@@ -288,7 +288,7 @@ const checkInHandling = async (req, res) => {
             let point_list = point_lists[0];
             let get = 10000;
             if (check >= get && point_list.total4 != 0) {
-                await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [point_list.total4, rows[0].phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [point_list.total4, point_list.total4, rows[0].phone]);
                 await connection.query('UPDATE point_list SET total4 = ? WHERE phone = ? ', [0, rows[0].phone]);
                 return res.status(200).json({
                     message: `You just received ₹ ${point_list.total4}.00`,
@@ -315,7 +315,7 @@ const checkInHandling = async (req, res) => {
             let point_list = point_lists[0];
             let get = 25000;
             if (check >= get && point_list.total5 != 0) {
-                await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [point_list.total5, rows[0].phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [point_list.total5, point_list.total5, rows[0].phone]);
                 await connection.query('UPDATE point_list SET total5 = ? WHERE phone = ? ', [0, rows[0].phone]);
                 return res.status(200).json({
                     message: `You just received ₹ ${point_list.total5}.00`,
@@ -342,7 +342,7 @@ const checkInHandling = async (req, res) => {
             let point_list = point_lists[0];
             let get = 50000;
             if (check >= get && point_list.total6 != 0) {
-                await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [point_list.total6, rows[0].phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [point_list.total6, point_list.total6, rows[0].phone]);
                 await connection.query('UPDATE point_list SET total6 = ? WHERE phone = ? ', [0, rows[0].phone]);
                 return res.status(200).json({
                     message: `You just received ₹ ${point_list.total6}.00`,
@@ -369,7 +369,7 @@ const checkInHandling = async (req, res) => {
             let point_list = point_lists[0];
             let get = 100000;
             if (check >= get && point_list.total7 != 0) {
-                await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [point_list.total7, rows[0].phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [point_list.total7, point_list.total7, rows[0].phone]);
                 await connection.query('UPDATE point_list SET total7 = ? WHERE phone = ? ', [0, rows[0].phone]);
                 return res.status(200).json({
                     message: `You just received ₹ ${point_list.total7}.00`,
@@ -978,9 +978,9 @@ const infoUserBank = async (req, res) => {
         fee += parseFloat(data.fee);
     });
 
-    result = Math.max(result, 0);
     let result = 0;
     if (total - total2 > 0) result = total - total2 - fee;
+    result = Math.max(result, 0);
 
     const [userBank] = await connection.query('SELECT * FROM user_bank WHERE phone = ? ', [userInfo.phone]);
     return res.status(200).json({
@@ -997,14 +997,14 @@ const withdrawal3 = async (req, res) => {
     let auth = req.cookies.auth;
     let money = req.body.money;
     let password = req.body.password;
-    if (!auth || !money || !password || money < 5500) {
+    if (!auth || !money || !password) {
         return res.status(200).json({
             message: 'Failed',
             status: false,
             timeStamp: timeNow,
         })
     }
-    const [user] = await connection.query('SELECT `phone`, `code`,`invite`, `money` FROM users WHERE `token` = ? AND password = ?', [auth, md5(password)]);
+    const [user] = await connection.query('SELECT `phone`, `code`,`invite`, `money`, `money_user` FROM users WHERE `token` = ? AND password = ?', [auth, md5(password)]);
 
     if (user.length == 0) {
         return res.status(200).json({
@@ -1014,6 +1014,8 @@ const withdrawal3 = async (req, res) => {
         });
     };
     let userInfo = user[0];
+    let userBalance = userInfo.money_user !== null ? Number(userInfo.money_user) : Number(userInfo.money);
+
     const date = new Date();
     let id_time = date.getUTCFullYear() + '' + date.getUTCMonth() + 1 + '' + date.getUTCDate();
     let id_order = Math.floor(Math.random() * (99999999999999 - 10000000000000 + 1)) + 10000000000000;
@@ -1058,76 +1060,65 @@ const withdrawal3 = async (req, res) => {
     minutes_1.forEach((data) => {
         total2 += parseFloat(data.money);
     });
-    let result = 0;
-    if (total - total2 > 0) result = total - total2;
-    result = Math.max(result, 0);
+
     const [user_bank] = await connection.query('SELECT * FROM user_bank WHERE `phone` = ?', [userInfo.phone]);
     const [withdraw] = await connection.query('SELECT * FROM withdraw WHERE `phone` = ? AND today = ?', [userInfo.phone, checkTime]);
-    if (user_bank.length != 0) {
-        if (withdraw.length < 3) {
-            if (userInfo.money - money >= 0) {
-                if (result == 0) {
-                    if (total - total2 >= 0) {
-                        if (result == 0) {
-                            return res.status(200).json({
-                                message: 'The total bet is not enough to fulfill the request',
-                                status: false,
-                                timeStamp: timeNow,
-                            });
-                        }
-                    } else {
-                        let infoBank = user_bank[0];
-                        const sql = `INSERT INTO withdraw SET 
-                    id_order = ?,
-                    phone = ?,
-                    money = ?,
-                    stk = ?,
-                    name_bank = ?,
-                    ifsc = ?,
-                    sdt = ?,
-                    tp = ?,
-                    name_user = ?,
-                    status = ?,
-                    today = ?,
-                    time = ?`;
-                        await connection.execute(sql, [id_time + '' + id_order, userInfo.phone, money, infoBank.stk, infoBank.name_bank, infoBank.email, infoBank.sdt, infoBank.tp, infoBank.name_user, 0, checkTime, dates]);
-                        await connection.query('UPDATE users SET money = money - ? WHERE phone = ? ', [money, userInfo.phone]);
-                        return res.status(200).json({
-                            message: 'Withdrawal successful',
-                            status: true,
-                            money: userInfo.money - money,
-                            timeStamp: timeNow,
-                        });
-                    }
-                } else {
-                    return res.status(200).json({
-                        message: 'The total bet is not enough to fulfill the request',
-                        status: false,
-                        timeStamp: timeNow,
-                    });
-                }
-            } else {
-                return res.status(200).json({
-                    message: 'The balance is not enough to fulfill the request',
-                    status: false,
-                    timeStamp: timeNow,
-                });
-            }
-        } else {
-            return res.status(200).json({
-                message: 'You can only make 3 withdrawals per day',
-                status: false,
-                timeStamp: timeNow,
-            });
-        }
-    } else {
+
+    if (user_bank.length == 0) {
         return res.status(200).json({
-            message: 'Please link your bank first',
+            message: 'Please bind bank account details first',
             status: false,
             timeStamp: timeNow,
         });
     }
 
+    if (withdraw.length >= 3) {
+        return res.status(200).json({
+            message: 'You can only make 3 withdrawals per day',
+            status: false,
+            timeStamp: timeNow,
+        });
+    }
+
+    if (userBalance < money) {
+        return res.status(200).json({
+            message: 'The balance is not enough to fulfill the request',
+            status: false,
+            timeStamp: timeNow,
+        });
+    }
+
+    if (total > 0 && total2 < total) {
+        return res.status(200).json({
+            message: 'The total bet is not enough to fulfill the request',
+            status: false,
+            timeStamp: timeNow,
+        });
+    }
+
+    let infoBank = user_bank[0];
+    const sql = `INSERT INTO withdraw SET 
+        id_order = ?,
+        phone = ?,
+        money = ?,
+        stk = ?,
+        name_bank = ?,
+        ifsc = ?,
+        sdt = ?,
+        tp = ?,
+        name_user = ?,
+        status = ?,
+        today = ?,
+        time = ?`;
+    await connection.execute(sql, [id_time + '' + id_order, userInfo.phone, money, infoBank.stk, infoBank.name_bank, infoBank.email, infoBank.sdt, infoBank.tp, infoBank.name_user, 0, checkTime, dates]);
+    await connection.query('UPDATE users SET money = IFNULL(money_user, money) - ?, money_user = IFNULL(money_user, money) - ? WHERE phone = ? ', [money, money, userInfo.phone]);
+
+    return res.status(200).json({
+        message: 'Withdrawal successful',
+        status: true,
+        money: userBalance - money,
+        timeStamp: timeNow,
+    });
 }
 const transfer = async (req, res) => {
     let auth = req.cookies.auth;
@@ -1203,8 +1194,8 @@ const transfer = async (req, res) => {
             if (receiver.length === 1 && sender_phone !== receiver_phone) {
                 let money = sender_money - amount;
                 let total_money = amount + receiver[0].total_money;
-                // await connection.query('UPDATE users SET money = ? WHERE phone = ?', [money, sender_phone]);
-                // await connection.query(`UPDATE users SET money = money + ? WHERE phone = ?`, [amount, receiver_phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) - ?, money_user = IFNULL(money_user, money) - ? WHERE phone = ?', [amount, amount, sender_phone]);
+                await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ?', [amount, amount, receiver_phone]);
                 const sql = "INSERT INTO balance_transfer (sender_phone, receiver_phone, amount) VALUES (?, ?, ?)";
                 await connection.execute(sql, [sender_phone, receiver_phone, amount]);
                 const sql_recharge = "INSERT INTO recharge (id_order, transaction_id, phone, money, type, status, today, url, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -1453,7 +1444,7 @@ const useRedenvelope = async (req, res) => {
         const time = d.getTime();
         if (infoRe.status == 0) {
             await connection.query('UPDATE redenvelopes SET used = ?, status = ? WHERE `id_redenvelope` = ? ', [0, 1, infoRe.id_redenvelope]);
-            await connection.query('UPDATE users SET money = money + ? WHERE `phone` = ? ', [infoRe.money, userInfo.phone]);
+            await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE `phone` = ? ', [infoRe.money, infoRe.money, userInfo.phone]);
             let sql = 'INSERT INTO redenvelopes_used SET phone = ?, phone_used = ?, id_redenvelops = ?, money = ?, `time` = ? ';
             await connection.query(sql, [infoRe.phone, userInfo.phone, infoRe.id_redenvelope, infoRe.money, time]);
             return res.status(200).json({

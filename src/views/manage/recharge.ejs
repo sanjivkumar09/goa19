@@ -112,13 +112,14 @@
       if (params.length == 0) {
         $('tbody').html(`
             <tr class="text-center">
-              <td colspan="7">No More...</td>
+              <td colspan="9">No More...</td>
             </tr>
           `);
         return;
       }
       let html = '';
       let show = params.map((data) => {
+        let utrDisplay = (data.utr && data.utr !== '0' && data.utr !== 0) ? `<b>${data.utr}</b>` : `<span class="badge badge-secondary">Not Submitted</span>`;
         html += `<tr class="text-center">
                   <td id="${data.id}">
                     ${data.id}
@@ -136,7 +137,7 @@
                     <b>${data.id_order}</b>
                   </td>
                   <td style="min-width: 190px;">
-                    <b>${data.utr}</b>
+                    ${utrDisplay}
                   </td>
                   <td style="min-width: 190px;">
                     <b>${timerJoin(data.time)}</b>

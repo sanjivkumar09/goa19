@@ -109,17 +109,19 @@
             data: "data",
             dataType: "json",
             success: function (response) {
-                let bank = response.datas[0];
-                let momo = response.datas[1];
-                $('#edit-momo-name_bank').val(momo.name_bank);
-                $('#edit-momo-name').val(momo.name_user);
-                $('#edit-momo-info').val(momo.stk);
-                $('#edit-momo-qr').val(momo.qr_code_image);
-
-                $('#edit-banking-name_bank').val(bank.name_bank);
-                $('#edit-banking-name').val(bank.name_user);
-                $('#edit-banking-info').val(bank.stk);
-                $('#edit-momo-qr').val(momo.qr_code_image);
+                let bank = response.datas.find(d => d.type === 'bank') || response.datas[0];
+                let momo = response.datas.find(d => d.type === 'momo' || d.type === 'upi') || response.datas[1];
+                if (momo) {
+                    $('#edit-momo-name_bank').val(momo.name_bank || '');
+                    $('#edit-momo-name').val(momo.name_user || '');
+                    $('#edit-momo-info').val(momo.stk || '');
+                    $('#edit-momo-qr').val(momo.qr_code_image || '');
+                }
+                if (bank) {
+                    $('#edit-banking-name_bank').val(bank.name_bank || '');
+                    $('#edit-banking-name').val(bank.name_user || '');
+                    $('#edit-banking-info').val(bank.stk || '');
+                }
 
                 $('#telegram').val(response.settings[0].telegram);
                 $('#cskh').val(response.settings[0].cskh);
@@ -208,7 +210,7 @@
             const name_bank = $('#edit-banking-name_bank').val();
             const name = $('#edit-banking-name').val();
             const info = $('#edit-banking-info').val();
-            sendRequestBank(name_bank, name, info, "bank");
+            sendRequestBank(name_bank, name, info, '', "bank");
         });
         $('.telegram').click(function(e) {
             e.preventDefault();

@@ -321,7 +321,7 @@ const changeAdmin = async (req, res) => {
             });
             break;
         case 'change-win_rate':
-            await connection.query(`UPDATE admin SET ${bs} = ? `, [value]);
+            await connection.query(`UPDATE admin SET win_rate = ? `, [value]);
             return res.status(200).json({
                 message: 'Editing win rate successfully',
                 status: true,
@@ -558,14 +558,20 @@ const rechargeDuyet = async (req, res) => {
         });
     }
     if (type == 'confirm') {
-        await connection.query(`UPDATE recharge SET status = 1 WHERE id = ?`, [id]);
         const [info] = await connection.query(`SELECT * FROM recharge WHERE id = ?`, [id]);
-        await connection.query('UPDATE users SET money = money + ?, total_money = total_money + ? WHERE phone = ? ', [info[0].money, info[0].money, info[0].phone]);
-        return res.status(200).json({
-            message: 'Successful application confirmation',
-            status: true,
-            datas: recharge,
-        });
+        if (info.length > 0 && info[0].status == 0) {
+            await connection.query(`UPDATE recharge SET status = 1 WHERE id = ?`, [id]);
+            await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ?, total_money = total_money + ? WHERE phone = ? ', [info[0].money, info[0].money, info[0].money, info[0].phone]);
+            return res.status(200).json({
+                message: 'Successful application confirmation',
+                status: true,
+            });
+        } else {
+            return res.status(200).json({
+                message: 'Order already processed or invalid',
+                status: false,
+            });
+        }
     }
     if (type == 'delete') {
         await connection.query(`UPDATE recharge SET status = 2 WHERE id = ?`, [id]);
@@ -573,7 +579,6 @@ const rechargeDuyet = async (req, res) => {
         return res.status(200).json({
             message: 'Cancellation successful',
             status: true,
-            datas: recharge,
         });
     }
 }
@@ -621,24 +626,41 @@ const handlWithdraw = async (req, res) => {
             timeStamp: timeNow,
         });
     }
-    if (type == 'confirm') {
-        await connection.query(`UPDATE withdraw SET status = 1 WHERE id = ?`, [id]);
-        const [info] = await connection.query(`SELECT * FROM withdraw WHERE id = ?`, [id]);
+    const [info] = await connection.query(`SELECT * FROM withdraw WHERE id = ?`, [id]);
+    if (info.length === 0) {
         return res.status(200).json({
-            message: 'Successful application confirmation',
-            status: true,
-            datas: recharge,
+            message: 'Withdraw record not found',
+            status: false,
         });
     }
+    if (type == 'confirm') {
+        if (info[0].status == 0) {
+            await connection.query(`UPDATE withdraw SET status = 1 WHERE id = ?`, [id]);
+            return res.status(200).json({
+                message: 'Successful application confirmation',
+                status: true,
+            });
+        } else {
+            return res.status(200).json({
+                message: 'Withdraw request already processed',
+                status: false,
+            });
+        }
+    }
     if (type == 'delete') {
-        await connection.query(`UPDATE withdraw SET status = 2 WHERE id = ?`, [id]);
-        const [info] = await connection.query(`SELECT * FROM withdraw WHERE id = ?`, [id]);
-        await connection.query('UPDATE users SET money = money + ? WHERE phone = ? ', [info[0].money, info[0].phone]);
-        return res.status(200).json({
-            message: 'Cancel successfully',
-            status: true,
-            datas: recharge,
-        });
+        if (info[0].status == 0) {
+            await connection.query(`UPDATE withdraw SET status = 2 WHERE id = ?`, [id]);
+            await connection.query('UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE phone = ? ', [info[0].money, info[0].money, info[0].phone]);
+            return res.status(200).json({
+                message: 'Cancel successfully',
+                status: true,
+            });
+        } else {
+            return res.status(200).json({
+                message: 'Withdraw request already processed',
+                status: false,
+            });
+        }
     }
 }
 
@@ -661,15 +683,13 @@ const settingBank = async (req, res) => {
         return res.status(200).json({
             message: 'Successful change',
             status: true,
-            datas: recharge,
         });
     }
     if (typer == 'momo') {
-        await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ?, qr_code_image = ? WHERE type = 'upi'`, [name_bank, name, info, qr]);
+        await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ?, qr_code_image = ? WHERE type = 'momo' OR type = 'upi'`, [name_bank, name, info, qr]);
         return res.status(200).json({
             message: 'Successful change',
             status: true,
-            datas: recharge,
         });
     }
 }
@@ -886,10 +906,10 @@ const settingbuff = async (req, res) => {
 
     if (user_id.length > 0) {
         if (buff_acc == '1') {
-            await connection.query(`UPDATE users SET money = money + ? WHERE id_user = ?`, [money_value, id_user]);
+            await connection.query(`UPDATE users SET money = IFNULL(money_user, money) + ?, money_user = IFNULL(money_user, money) + ? WHERE id_user = ?`, [money_value, money_value, id_user]);
         }
         if (buff_acc == '2') {
-            await connection.query(`UPDATE users SET money = money - ? WHERE id_user = ?`, [money_value, id_user]);
+            await connection.query(`UPDATE users SET money = IFNULL(money_user, money) - ?, money_user = IFNULL(money_user, money) - ? WHERE id_user = ?`, [money_value, money_value, id_user]);
         }
         return res.status(200).json({
             message: 'Successful change',
@@ -1818,10 +1838,10 @@ const CreatedSalary = async (req, res) => {
             hour12: true
         });
 
-        // Check if the phone number is a 10-digit number
-        if (!/^\d{10}$/.test(phone)) {
+        // Check if the phone number is a valid 9 or 10-digit number
+        if (!/^\d{9,10}$/.test(phone)) {
             return res.status(400).json({
-                message: 'ERROR!!! Invalid phone number. Please provide a 10-digit phone number.',
+                message: 'ERROR!!! Invalid phone number. Please provide a valid phone number.',
                 status: false
             });
         }
@@ -1839,8 +1859,8 @@ const CreatedSalary = async (req, res) => {
         }
 
         // If user exists, update the 'users' table
-        const updateUserQuery = 'UPDATE `users` SET `money` = `money` + ? WHERE phone = ?';
-        await connection.execute(updateUserQuery, [amount, phone]);
+        const updateUserQuery = 'UPDATE `users` SET `money` = IFNULL(`money_user`, `money`) + ?, `money_user` = IFNULL(`money_user`, `money`) + ? WHERE phone = ?';
+        await connection.execute(updateUserQuery, [amount, amount, phone]);
 
 
         // Insert record into 'salary' table
