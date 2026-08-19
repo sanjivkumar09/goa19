@@ -8,6 +8,7 @@ const adminController = require('../controllers/adminController.js');
 const dailyController = require('../controllers/dailyController.js');
 const k5Controller = require('../controllers/k5Controller.js');
 const k3Controller = require('../controllers/k3Controller.js');
+const aviatorController = require('../controllers/aviatorController.js');
 let router = express.Router();
 
 const initWebRouter = (app) => {
@@ -79,6 +80,13 @@ const initWebRouter = (app) => {
     router.post('/api/webapi/action/k3/join', middlewareController, k3Controller.betK3); // register
     router.post('/api/webapi/k3/GetNoaverageEmerdList', middlewareController, k3Controller.listOrderOld); // register
     router.post('/api/webapi/k3/GetMyEmerdList', middlewareController, k3Controller.GetMyEmerdList); // register
+
+    // BET AVIATOR
+    router.get('/aviator', middlewareController, aviatorController.aviatorPage);
+    router.post('/api/webapi/aviator/bet', middlewareController, aviatorController.betAviator);
+    router.post('/api/webapi/aviator/cashout', middlewareController, aviatorController.cashoutAviator);
+    router.get('/api/webapi/aviator/history', middlewareController, aviatorController.getAviatorHistory);
+    router.get('/api/webapi/aviator/my_bets', middlewareController, aviatorController.getAviatorMyBets);
 
     // login | register 
     router.post('/api/webapi/login', accountController.login); // login
@@ -157,6 +165,9 @@ const initWebRouter = (app) => {
 
     router.get('/admin/manager/5d', adminController.middlewareAdminController, adminController.adminPage5d); // get info account
     router.get('/admin/manager/k3', adminController.middlewareAdminController, adminController.adminPageK3); // get info account
+    router.get('/admin/manager/aviator', adminController.middlewareAdminController, adminController.aviatorPage);
+    router.post('/api/webapi/admin/aviator/set_next_crash', adminController.middlewareAdminController, adminController.setAviatorNextCrash);
+    router.get('/api/webapi/admin/aviator/current_state', adminController.middlewareAdminController, adminController.getAviatorAdminState);
 
     router.get('/admin/manager/members', adminController.middlewareAdminController, adminController.membersPage); // get info account
     router.get('/admin/manager/createBonus', adminController.middlewareAdminController, adminController.giftPage); // get info account

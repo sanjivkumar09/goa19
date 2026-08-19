@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aviator | Control & Management</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    .aviator-multiplier-badge {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #00e676;
+      text-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
+    }
+    .badge-crashed {
+      color: #ff1744 !important;
+      text-shadow: 0 0 10px rgba(255, 23, 68, 0.4) !important;
+    }
+    .status-pill {
+      font-size: 0.9rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+  <div class="wrapper">
+    <%- include('nav') %>
+
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0"><i class="fas fa-plane text-danger mr-2"></i> Aviator Control Dashboard</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="content">
+        <div class="container-fluid">
+          
+          <!-- Row 1: Live Status & Override Controls -->
+          <div class="row">
+            <!-- Live Round Card -->
+            <div class="col-md-6">
+              <div class="card card-outline card-danger">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-broadcast-tower mr-2"></i> Real-Time Game Round</h3>
+                </div>
+                <div class="card-body text-center">
+                  <div class="mb-2">
+                    <span class="text-muted">Current Period: </span>
+                    <strong id="live-period" class="text-warning font-weight-bold" style="font-size: 1.3rem;">#---</strong>
+                  </div>
+                  
+                  <div class="my-3">
+                    <span id="live-status-pill" class="badge badge-secondary status-pill">WAITING</span>
+                  </div>
+
+                  <div class="my-3">
+                    <div id="live-multiplier" class="aviator-multiplier-badge">1.00x</div>
+                  </div>
+
+                  <div class="mt-3">
+                    <span class="text-muted">Active Override: </span>
+                    <span id="active-override-badge" class="badge badge-info font-weight-bold" style="font-size: 1rem;">None (Random)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Override Control Card -->
+            <div class="col-md-6">
+              <div class="card card-outline card-warning">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-sliders-h mr-2"></i> Next Round Crash Override</h3>
+                </div>
+                <div class="card-body">
+                  <p class="text-muted">Set the exact multiplier at which the next Aviator round will crash (e.g. <code>1.50</code>, <code>5.00</code>, <code>10.00</code>). Leave blank for default random calculation.</p>
+                  
+                  <form id="override-form">
+                    <div class="form-group">
+                      <label for="next-crash-input">Next Round Crash Multiplier (x):</label>
+                      <div class="input-group">
+                        <input type="number" step="0.01" min="1.00" max="100.00" class="form-control form-control-lg" id="next-crash-input" placeholder="e.g. 5.50" required>
+                        <div class="input-group-append">
+                          <button type="submit" class="btn btn-warning font-weight-bold px-4">Set Next Crash</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                  <div id="override-msg" class="mt-2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Live Active Bets Table -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card card-outline card-primary">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-users mr-2"></i> Active Bets in Current Round</h3>
+                </div>
+                <div class="card-body table-responsive p-0">
+                  <table class="table table-hover text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Player Name / Phone</th>
+                        <th>Bet Amount</th>
+                        <th>Auto Cashout</th>
+                        <th>Multiplier Won</th>
+                        <th>Payout Amount</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="active-bets-tbody">
+                      <tr>
+                        <td colspan="6" class="text-center text-muted">No active bets in this round.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: History Tables -->
+          <div class="row">
+            <!-- Recent Rounds -->
+            <div class="col-md-5">
+              <div class="card card-outline card-info">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-history mr-2"></i> Recent Game Rounds</h3>
+                </div>
+                <div class="card-body table-responsive p-0" style="max-height: 400px;">
+                  <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Period</th>
+                        <th>Crash Point</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recent-rounds-tbody">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Player Bets -->
+            <div class="col-md-7">
+              <div class="card card-outline card-success">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-list-alt mr-2"></i> Recent All Players Bet History</h3>
+                </div>
+                <div class="card-body table-responsive p-0" style="max-height: 400px;">
+                  <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Period</th>
+                        <th>Phone</th>
+                        <th>Bet (₹)</th>
+                        <th>Multiplier</th>
+                        <th>Payout (₹)</th>
+                        <th>Result</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recent-bets-tbody">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <footer class="main-footer">
+      <strong>Copyright &copy; Aviator Control Panel.</strong> All rights reserved.
+    </footer>
+  </div>
+
+  <script src="/plugins/jquery/jquery.min.js"></script>
+  <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/dist/js/adminlte.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/js/admin/admin.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('#preloader').fadeOut(0);
+      const socket = io();
+
+      socket.on('aviator:state', function(state) {
+        updateLiveState(state);
+      });
+
+      socket.on('aviator:multiplier', function(data) {
+        $('#live-multiplier').removeClass('badge-crashed').text(parseFloat(data.multiplier).toFixed(2) + 'x');
+      });
+
+      socket.on('aviator:crashed', function(data) {
+        $('#live-multiplier').addClass('badge-crashed').text(parseFloat(data.crashMultiplier).toFixed(2) + 'x');
+        $('#live-status-pill').attr('class', 'badge badge-danger status-pill').text('CRASHED');
+      });
+
+      function updateLiveState(state) {
+        if (!state) return;
+        $('#live-period').text('#' + state.currentPeriod);
+        
+        let pillClass = 'badge-secondary';
+        if (state.status === 'BETTING_OPEN') pillClass = 'badge-success';
+        else if (state.status === 'FLYING') pillClass = 'badge-info';
+        else if (state.status === 'CRASHED') pillClass = 'badge-danger';
+        else if (state.status === 'RESULT') pillClass = 'badge-warning';
+
+        $('#live-status-pill').attr('class', 'badge ' + pillClass + ' status-pill').text(state.status);
+
+        if (state.status !== 'CRASHED' && state.status !== 'RESULT') {
+          $('#live-multiplier').removeClass('badge-crashed').text(parseFloat(state.currentMultiplier || 1.0).toFixed(2) + 'x');
+        }
+
+        // Render Active Bets
+        let betsHtml = '';
+        if (state.activeBets && state.activeBets.length > 0) {
+          state.activeBets.forEach(function(b) {
+            let statusBadge = '<span class="badge badge-warning">PENDING</span>';
+            if (b.status === 1) statusBadge = '<span class="badge badge-success">WON</span>';
+            else if (b.status === 2) statusBadge = '<span class="badge badge-danger">LOST</span>';
+
+            betsHtml += `
+              <tr>
+                <td><strong>${b.username || b.phone || 'Player'}</strong></td>
+                <td>₹${parseFloat(b.money || b.amount || 0).toFixed(2)}</td>
+                <td>${b.autoCashout ? parseFloat(b.autoCashout).toFixed(2) + 'x' : '-'}</td>
+                <td>${b.cashoutMultiplier ? parseFloat(b.cashoutMultiplier).toFixed(2) + 'x' : '-'}</td>
+                <td>₹${parseFloat(b.payout || 0).toFixed(2)}</td>
+                <td>${statusBadge}</td>
+              </tr>
+            `;
+          });
+        } else {
+          betsHtml = '<tr><td colspan="6" class="text-center text-muted">No active bets in this round.</td></tr>';
+        }
+        $('#active-bets-tbody').html(betsHtml);
+      }
+
+      function fetchAdminData() {
+        $.ajax({
+          url: '/api/webapi/admin/aviator/current_state',
+          type: 'GET',
+          success: function(res) {
+            if (res.status) {
+              if (res.nextCrashOverride) {
+                $('#active-override-badge').attr('class', 'badge badge-warning font-weight-bold').text(parseFloat(res.nextCrashOverride).toFixed(2) + 'x (SET)');
+              } else {
+                $('#active-override-badge').attr('class', 'badge badge-info font-weight-bold').text('None (Random)');
+              }
+
+              // Render Recent Rounds
+              if (res.recentRounds) {
+                let roundsHtml = '';
+                res.recentRounds.forEach(function(r) {
+                  const crashVal = parseFloat(r.crash_point).toFixed(2);
+                  let colorClass = 'text-info';
+                  if (crashVal >= 2.0) colorClass = 'text-warning';
+                  if (crashVal >= 10.0) colorClass = 'text-success';
+
+                  roundsHtml += `
+                    <tr>
+                      <td>#${r.period}</td>
+                      <td><strong class="${colorClass}">${crashVal}x</strong></td>
+                      <td>${new Date(Number(r.time)).toLocaleTimeString()}</td>
+                    </tr>
+                  `;
+                });
+                $('#recent-rounds-tbody').html(roundsHtml);
+              }
+
+              // Render Recent Bets
+              if (res.recentBets) {
+                let recentBetsHtml = '';
+                res.recentBets.forEach(function(b) {
+                  let resBadge = '<span class="badge badge-danger">LOST</span>';
+                  if (b.status === 1) resBadge = '<span class="badge badge-success">WIN</span>';
+                  else if (b.status === 0) resBadge = '<span class="badge badge-warning">PENDING</span>';
+
+                  recentBetsHtml += `
+                    <tr>
+                      <td>#${b.period}</td>
+                      <td>${b.phone}</td>
+                      <td>₹${parseFloat(b.money).toFixed(2)}</td>
+                      <td>${b.cashout_multiplier > 0 ? parseFloat(b.cashout_multiplier).toFixed(2) + 'x' : '-'}</td>
+                      <td>₹${parseFloat(b.get).toFixed(2)}</td>
+                      <td>${resBadge}</td>
+                    </tr>
+                  `;
+                });
+                $('#recent-bets-tbody').html(recentBetsHtml);
+              }
+            }
+          }
+        });
+      }
+
+      fetchAdminData();
+      setInterval(fetchAdminData, 3000);
+
+      // Handle Override Form Submit
+      $('#override-form').submit(function(e) {
+        e.preventDefault();
+        const mult = $('#next-crash-input').val();
+        $.ajax({
+          url: '/api/webapi/admin/aviator/set_next_crash',
+          type: 'POST',
+          data: JSON.stringify({ crash_multiplier: mult }),
+          contentType: 'application/json',
+          success: function(res) {
+            if (res.status) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Override Set!',
+                text: res.message,
+                timer: 2000
+              });
+              $('#next-crash-input').val('');
+              fetchAdminData();
+            } else {
+              Swal.fire({ icon: 'error', title: 'Error', text: res.message });
+            }
+          },
+          error: function(err) {
+            Swal.fire({ icon: 'error', title: 'Error', text: err.responseJSON ? err.responseJSON.message : 'Server error' });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

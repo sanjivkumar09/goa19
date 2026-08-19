@@ -1896,6 +1896,56 @@ const getSalary = async (req, res) => {
   })
 };
 
+const aviatorPage = async (req, res) => {
+    return res.render("manage/aviator.ejs");
+};
+
+const setAviatorNextCrash = async (req, res) => {
+    const { crash_multiplier } = req.body;
+    const mult = parseFloat(crash_multiplier);
+    if (isNaN(mult) || mult < 1.00) {
+        return res.status(400).json({ status: false, message: 'Crash multiplier must be >= 1.00' });
+    }
+    try {
+        await connection.execute(
+            'INSERT INTO admin_settings (setting_key, setting_value, updated_at) VALUES ("aviator_next_crash", ?, ?) ON DUPLICATE KEY UPDATE setting_value = ?, updated_at = ?',
+            [String(mult), Date.now(), String(mult), Date.now()]
+        );
+        return res.status(200).json({ status: true, message: `Next crash point set to ${mult.toFixed(2)}x!` });
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const getAviatorAdminState = async (req, res) => {
+    try {
+        const aviatorController = require("./aviatorController.js");
+        const state = aviatorController.getPublicState();
+        const [settings] = await connection.execute(
+            'SELECT setting_value FROM admin_settings WHERE setting_key = "aviator_next_crash"'
+        );
+        const nextCrash = (settings && settings.length > 0) ? settings[0].setting_value : null;
+
+        const [recentBets] = await connection.execute(
+            'SELECT * FROM aviator_bets ORDER BY id DESC LIMIT 30'
+        );
+
+        const [recentRounds] = await connection.execute(
+            'SELECT * FROM aviator ORDER BY id DESC LIMIT 20'
+        );
+
+        return res.status(200).json({
+            status: true,
+            gameState: state,
+            nextCrashOverride: nextCrash,
+            recentBets,
+            recentRounds
+        });
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
 module.exports = {
     adminPage,
     adminPage3,
@@ -1949,4 +1999,7 @@ module.exports = {
     CreatedSalaryRecord,
     CreatedSalary,
     getSalary,
-};
+    aviatorPage,
+    setAviatorNextCrash,
+    getAviatorAdminState,
+};

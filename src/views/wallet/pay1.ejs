@@ -436,9 +436,8 @@
   let orderC = document.getElementById('orderC'); // 获取order容器
   // let min = document.getElementById('min'); // 获取分钟容器
   // let sec = document.getElementById('sec'); // 获取秒容器
-  let remarkC = document.getElementById('remarkC'); // 获取remark容器
-  // orderC.innerHTML = orderNo;
-  remarkC.innerHTML = orderNo;
+  if (orderC) orderC.innerHTML = orderNo;
+  if (remarkC) remarkC.innerHTML = orderNo;
 
 
   let contact = document.getElementById('contact')
@@ -450,11 +449,11 @@
   let mailHref = document.getElementById('mailHref')
   let conBarbox = document.querySelector('.conBarbox')
   // 给mailHref添加一个href属性放入mailUrl
-  mailHref.href = mailUrl
-  contact.onclick = function() {
-    // window.open(mailUrl)
-    // 判断conBarbox的高度 如果是0就设置成auto，否则就设置成0
-    conBarbox.style.height = conBarbox.style.height == '0px' ? 'auto' : '0px'
+  if (mailHref) mailHref.href = mailUrl;
+  if (contact) {
+    contact.onclick = function() {
+      if (conBarbox) conBarbox.style.height = conBarbox.style.height == '0px' ? 'auto' : '0px'
+    }
   }
 
   let returnUrl = ''
@@ -520,8 +519,8 @@
         a.download = 'qrcode.png'
         a.click()
       }
-      moneyC.innerHTML = list.payMoney;   // 将获取的金额赋值给div  
-      upiC.innerHTML = list.upi;  // 将获取的upi赋值给div
+      if (moneyC) moneyC.innerHTML = list.payMoney;
+      if (upiC) upiC.innerHTML = list.upi;
       returnUrl = list.returnUrl; // 获取returnUrl
       // *********************************************************倒计时函数开始*****************************************************
 
