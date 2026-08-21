@@ -9,6 +9,7 @@ const dailyController = require('../controllers/dailyController.js');
 const k5Controller = require('../controllers/k5Controller.js');
 const k3Controller = require('../controllers/k3Controller.js');
 const aviatorController = require('../controllers/aviatorController.js');
+const chickenController = require('../controllers/chickenController.js');
 let router = express.Router();
 
 const initWebRouter = (app) => {
@@ -87,6 +88,35 @@ const initWebRouter = (app) => {
     router.post('/api/webapi/aviator/cashout', middlewareController, aviatorController.cashoutAviator);
     router.get('/api/webapi/aviator/history', middlewareController, aviatorController.getAviatorHistory);
     router.get('/api/webapi/aviator/my_bets', middlewareController, aviatorController.getAviatorMyBets);
+
+    // BET CHICKEN ROAD
+    router.get('/chicken', chickenController.chickenPage);
+    router.get('/api/auth/me', chickenController.getMe);
+    router.post('/api/auth/login', chickenController.login);
+    router.post('/api/auth/register', chickenController.register);
+    router.get('/api/wallet', chickenController.getWallet);
+    router.post('/api/wallet/faucet', chickenController.claimFaucet);
+    router.get('/api/wallet/transactions', chickenController.getTransactions);
+    router.post('/api/game/start', chickenController.startGame);
+    router.post('/api/game/:id/jump', chickenController.jumpGame);
+    router.post('/api/game/:id/cashout', chickenController.cashoutGame);
+    router.post('/api/game/:id/crash', chickenController.crashGame);
+    router.get('/api/game/history', chickenController.getGameHistory);
+    router.get('/api/game/active', chickenController.getActiveRound);
+    router.get('/api/game/:id', chickenController.getGameById);
+    router.post('/api/webapi/chicken/start', chickenController.startGame);
+    router.post('/api/webapi/chicken/jump', chickenController.jumpGame);
+    router.post('/api/webapi/chicken/cashout', chickenController.cashoutGame);
+    router.get('/api/webapi/chicken/history', chickenController.getGameHistory);
+
+    // Admin endpoints called by React App and Admin Panel
+    router.get('/api/admin/metrics', chickenController.getAdminMetrics);
+    router.get('/api/admin/config', chickenController.getAdminConfig);
+    router.put('/api/admin/config', chickenController.updateAdminConfig);
+    router.get('/api/admin/users', chickenController.getAdminUsers);
+    router.post('/api/admin/users/:id/status', chickenController.updateUserStatus);
+    router.post('/api/admin/users/:id/wallet', chickenController.adjustUserWallet);
+    router.get('/api/admin/audit-logs', chickenController.getAdminAuditLogs);
 
     // login | register 
     router.post('/api/webapi/login', accountController.login); // login
@@ -168,6 +198,14 @@ const initWebRouter = (app) => {
     router.get('/admin/manager/aviator', adminController.middlewareAdminController, adminController.aviatorPage);
     router.post('/api/webapi/admin/aviator/set_next_crash', adminController.middlewareAdminController, adminController.setAviatorNextCrash);
     router.get('/api/webapi/admin/aviator/current_state', adminController.middlewareAdminController, adminController.getAviatorAdminState);
+
+    // CHICKEN ROAD ADMIN
+    router.get('/admin/manager/chicken', adminController.middlewareAdminController, adminController.chickenAdminPage);
+    router.post('/api/webapi/admin/chicken/settings', adminController.middlewareAdminController, adminController.setChickenAdminSettings);
+    router.get('/api/webapi/admin/chicken/state', adminController.middlewareAdminController, adminController.getChickenAdminData);
+    router.get('/api/admin/metrics', adminController.middlewareAdminController, chickenController.getAdminMetrics);
+    router.get('/api/admin/config', adminController.middlewareAdminController, chickenController.getAdminConfig);
+    router.put('/api/admin/config', adminController.middlewareAdminController, chickenController.updateAdminConfig);
 
     router.get('/admin/manager/members', adminController.middlewareAdminController, adminController.membersPage); // get info account
     router.get('/admin/manager/createBonus', adminController.middlewareAdminController, adminController.giftPage); // get info account

@@ -1946,6 +1946,28 @@ const getAviatorAdminState = async (req, res) => {
     }
 };
 
+const chickenAdminPage = async (req, res) => {
+    return res.render("manage/chicken.ejs");
+};
+
+const setChickenAdminSettings = async (req, res) => {
+    try {
+        const chickenController = require("./chickenController.js");
+        return await chickenController.updateAdminConfig(req, res);
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const getChickenAdminData = async (req, res) => {
+    try {
+        const chickenController = require("./chickenController.js");
+        return await chickenController.getAdminMetrics(req, res);
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
 module.exports = {
     adminPage,
     adminPage3,
@@ -2002,4 +2024,7 @@ module.exports = {
     aviatorPage,
     setAviatorNextCrash,
     getAviatorAdminState,
+    chickenAdminPage,
+    setChickenAdminSettings,
+    getChickenAdminData,
 };

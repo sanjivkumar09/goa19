@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chicken Road | Control & Management</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    .kpi-card {
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .status-pill {
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+  <div class="wrapper">
+    <%- include('nav') %>
+
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0"><i class="fas fa-gamepad text-warning mr-2"></i> Chicken Road Game Control</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="content">
+        <div class="container-fluid">
+          
+          <!-- KPI Stats Row -->
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-info">
+                <div class="inner">
+                  <h3 id="stat-total-rounds">0</h3>
+                  <p>Total Rounds Played</p>
+                </div>
+                <div class="icon"><i class="fas fa-trophy"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3 id="stat-total-wagered">₹0.00</h3>
+                  <p>Total Bet Volume</p>
+                </div>
+                <div class="icon"><i class="fas fa-coins"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3 id="stat-total-payouts">₹0.00</h3>
+                  <p>Total Payouts</p>
+                </div>
+                <div class="icon"><i class="fas fa-hand-holding-usd"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3 id="stat-profit">₹0.00</h3>
+                  <p>House Profit (<span id="stat-rtp">0% RTP</span>)</p>
+                </div>
+                <div class="icon"><i class="fas fa-chart-line"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuration & Controls Row -->
+          <div class="row">
+            <!-- Game Engine Settings Form -->
+            <div class="col-md-6">
+              <div class="card card-outline card-warning">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-cogs mr-2"></i> Win Rate & Risk Settings</h3>
+                </div>
+                <div class="card-body">
+                  <form id="form-chicken-settings">
+                    <div class="form-group">
+                      <label>Win Rate Multiplier (Modifier):</label>
+                      <input type="number" step="0.05" min="0.50" max="1.50" class="form-control" id="win-rate-modifier" placeholder="1.00 = Standard, 0.90 = 10% lower win rate">
+                      <small class="form-text text-muted">1.0 is standard provably fair. Values &lt; 1.0 increase house edge.</small>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Minimum Bet (₹):</label>
+                          <input type="number" class="form-control" id="min-bet" placeholder="10">
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Maximum Bet (₹):</label>
+                          <input type="number" class="form-control" id="max-bet" placeholder="10000">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="maintenance-mode">
+                        <label class="custom-control-label font-weight-bold text-danger" for="maintenance-mode">Maintenance Mode (Pause Game)</label>
+                      </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning font-weight-bold btn-block">Save Chicken Road Settings</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Difficulty Summary & Probabilities -->
+            <div class="col-md-6">
+              <div class="card card-outline card-info">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-info-circle mr-2"></i> Difficulty Tiers Summary</h3>
+                </div>
+                <div class="card-body p-0">
+                  <table class="table table-striped table-sm">
+                    <thead>
+                      <tr>
+                        <th>Difficulty</th>
+                        <th>Total Lanes</th>
+                        <th>Max Multiplier</th>
+                        <th>Starting Safe Prob</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="badge badge-success">Easy</span></td>
+                        <td>24 Lanes</td>
+                        <td><strong>24.50x</strong></td>
+                        <td>96% Safe</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge badge-info">Medium</span></td>
+                        <td>20 Lanes</td>
+                        <td><strong>100.00x</strong></td>
+                        <td>92% Safe</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge badge-warning">Hard</span></td>
+                        <td>18 Lanes</td>
+                        <td><strong>450.00x</strong></td>
+                        <td>85% Safe</td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge badge-danger">Hardcore</span></td>
+                        <td>15 Lanes</td>
+                        <td><strong>2,250.00x</strong></td>
+                        <td>75% Safe</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Rounds Ledger Table -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card card-outline card-primary">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h3 class="card-title"><i class="fas fa-list-alt mr-2"></i> Recent Game Rounds Ledger</h3>
+                  <button id="btn-refresh" class="btn btn-sm btn-outline-light ml-auto"><i class="fas fa-sync-alt mr-1"></i> Refresh</button>
+                </div>
+                <div class="card-body table-responsive p-0">
+                  <table class="table table-hover table-striped text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Round ID</th>
+                        <th>User Phone</th>
+                        <th>Difficulty</th>
+                        <th>Bet (₹)</th>
+                        <th>Lane Reached</th>
+                        <th>Multiplier</th>
+                        <th>Payout (₹)</th>
+                        <th>Status</th>
+                        <th>Timestamp</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recent-rounds-tbody">
+                      <tr>
+                        <td colspan="9" class="text-center text-muted py-3">Loading rounds...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/plugins/jquery/jquery.min.js"></script>
+  <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/dist/js/adminlte.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    async function loadAdminData() {
+      try {
+        const metricsRes = await $.get('/api/admin/metrics');
+        if (metricsRes.status) {
+          const m = metricsRes.metrics;
+          $('#stat-total-rounds').text(m.totalRounds);
+          $('#stat-total-wagered').text('₹' + m.totalWagered.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+          $('#stat-total-payouts').text('₹' + m.totalPayouts.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+          $('#stat-profit').text('₹' + m.profit.toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+          $('#stat-rtp').text(m.rtp + ' RTP');
+
+          // Render Recent Rounds Table
+          const tbody = $('#recent-rounds-tbody');
+          tbody.empty();
+
+          if (metricsRes.recentRounds && metricsRes.recentRounds.length > 0) {
+            metricsRes.recentRounds.forEach(r => {
+              const isWon = r.status === 'CASHED_OUT';
+              const statusBadge = isWon 
+                ? '<span class="badge badge-success">CASHED OUT</span>'
+                : (r.status === 'ACTIVE' ? '<span class="badge badge-warning">ACTIVE</span>' : '<span class="badge badge-danger">LOST</span>');
+
+              const dateStr = new Date(parseInt(r.time, 10)).toLocaleString();
+
+              const row = `
+                <tr>
+                  <td><code>${r.id}</code></td>
+                  <td>${r.phone}</td>
+                  <td><span class="badge badge-secondary">${r.difficulty}</span></td>
+                  <td>₹${parseFloat(r.bet_amount).toFixed(2)}</td>
+                  <td>Lane ${r.current_lane}</td>
+                  <td><strong>${parseFloat(r.current_multiplier).toFixed(2)}x</strong></td>
+                  <td>${r.cashout_amount ? '₹' + parseFloat(r.cashout_amount).toFixed(2) : '-'}</td>
+                  <td>${statusBadge}</td>
+                  <td><small class="text-muted">${dateStr}</small></td>
+                </tr>
+              `;
+              tbody.append(row);
+            });
+          } else {
+            tbody.html('<tr><td colspan="9" class="text-center text-muted py-3">No rounds recorded yet.</td></tr>');
+          }
+        }
+
+        // Load Config
+        const configRes = await $.get('/api/admin/config');
+        if (configRes.status) {
+          const cfg = configRes.config;
+          $('#win-rate-modifier').val(cfg.winRateModifier || 1.0);
+          $('#min-bet').val(cfg.minBet || 10);
+          $('#max-bet').val(cfg.maxBet || 10000);
+          $('#maintenance-mode').prop('checked', !!cfg.maintenanceMode);
+        }
+      } catch (err) {
+        console.error('Failed to load admin data:', err);
+      } finally {
+        $('#preloader').fadeOut(100);
+      }
+    }
+
+    // Save Settings
+    $('#form-chicken-settings').submit(async function(e) {
+      e.preventDefault();
+      const payload = {
+        winRateModifier: parseFloat($('#win-rate-modifier').val()),
+        minBet: parseFloat($('#min-bet').val()),
+        maxBet: parseFloat($('#max-bet').val()),
+        maintenanceMode: $('#maintenance-mode').is(':checked')
+      };
+
+      try {
+        const res = await $.ajax({
+          url: '/api/admin/config',
+          method: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify(payload)
+        });
+
+        if (res.status) {
+          Swal.fire({ icon: 'success', title: 'Settings Saved', text: res.message, timer: 1500 });
+        }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.responseJSON?.message || 'Failed to update settings' });
+      }
+    });
+
+    $('#btn-refresh').click(loadAdminData);
+
+    $(document).ready(function() {
+      $('#preloader').fadeOut(0);
+      loadAdminData();
+    });
+  </script>
+</body>
+</html>

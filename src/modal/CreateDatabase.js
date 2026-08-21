@@ -123,7 +123,52 @@ const CreateAviator = async(req, res) => {
     console.log("Create Success Database Aviator.");
 }
 
+const CreateChicken = async(req, res) => {
+    // Ensure chicken_rounds table
+    await connection.execute(`CREATE TABLE IF NOT EXISTS \`chicken_rounds\` (
+      \`id\` varchar(64) NOT NULL,
+      \`phone\` varchar(20) NOT NULL,
+      \`bet_amount\` decimal(10,2) NOT NULL DEFAULT 0.00,
+      \`difficulty\` varchar(20) NOT NULL DEFAULT 'Medium',
+      \`current_lane\` int(11) NOT NULL DEFAULT 0,
+      \`current_multiplier\` decimal(10,2) NOT NULL DEFAULT 1.00,
+      \`cashout_amount\` decimal(10,2) DEFAULT NULL,
+      \`status\` varchar(20) NOT NULL DEFAULT 'ACTIVE',
+      \`server_seed_hash\` varchar(128) NOT NULL,
+      \`server_seed\` varchar(128) NOT NULL,
+      \`time\` varchar(50) NOT NULL,
+      \`ended_at\` varchar(50) DEFAULT NULL,
+      PRIMARY KEY (\`id\`),
+      KEY \`idx_phone\` (\`phone\`),
+      KEY \`idx_status\` (\`status\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
+    // Ensure chicken_steps table
+    await connection.execute(`CREATE TABLE IF NOT EXISTS \`chicken_steps\` (
+      \`id\` int(11) NOT NULL AUTO_INCREMENT,
+      \`round_id\` varchar(64) NOT NULL,
+      \`lane\` int(11) NOT NULL,
+      \`result\` varchar(20) NOT NULL,
+      \`multiplier_before\` decimal(10,2) NOT NULL DEFAULT 1.00,
+      \`multiplier_after\` decimal(10,2) NOT NULL DEFAULT 1.00,
+      \`random_proof\` text DEFAULT NULL,
+      \`time\` varchar(50) NOT NULL,
+      PRIMARY KEY (\`id\`),
+      KEY \`idx_round_id\` (\`round_id\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
+    // Ensure default chicken admin settings
+    await connection.execute(`INSERT IGNORE INTO \`admin_settings\` (\`setting_key\`, \`setting_value\`, \`updated_at\`) VALUES
+      ('chicken_min_bet', '10', ${timeNow}),
+      ('chicken_max_bet', '10000', ${timeNow}),
+      ('chicken_win_rate_modifier', '1.0', ${timeNow}),
+      ('chicken_maintenance_mode', '0', ${timeNow});`);
+
+    console.log("Create Success Database Chicken Road.");
+}
+
 CreateWingo();
 Create5D();
 CreateK3();
 CreateAviator();
+CreateChicken();

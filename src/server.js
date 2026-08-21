@@ -4,6 +4,7 @@ const routes = require('./routes/web.js');
 const cronJobContronler = require('./controllers/cronJobContronler.js');
 const socketIoController = require('./controllers/socketIoController.js');
 const aviatorController = require('./controllers/aviatorController.js');
+const chickenController = require('./controllers/chickenController.js');
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const app = express();
@@ -50,6 +51,9 @@ socketIoController.sendMessageAdmin(io);
 
 // Initialize Aviator real-time Socket.IO game engine
 aviatorController.initAviatorEngine(io);
+
+// Initialize Chicken Road real-time Socket.IO game engine
+chickenController.initChickenEngine(io);
 
 // app.all('*', (req, res) => {
 //     return res.render("404.ejs"); 

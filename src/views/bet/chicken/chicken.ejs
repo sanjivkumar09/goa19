@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/images/bitbug_favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Chicken Road - Cross The Highway Crash Game</title>
+    <meta name="description" content="Chicken Road - Crossing risk-and-reward game with server-authoritative engine." />
+    <script>
+      // Automatically sync DIU-win auth cookie into localStorage for Chicken Road React App
+      (function() {
+        function getCookie(name) {
+          const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+          return match ? match[2] : null;
+        }
+        const authCookie = getCookie('auth');
+        if (authCookie) {
+          localStorage.setItem('chicken_road_token', authCookie);
+        } else if (!localStorage.getItem('chicken_road_token')) {
+          localStorage.setItem('chicken_road_token', 'demo_token_' + Date.now());
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-BuYGnQ5t.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-p0CHXjCf.css">
+  </head>
+  <body class="bg-slate-900 text-slate-100 antialiased font-sans overflow-hidden">
+    <div id="root"></div>
+  </body>
+</html>
