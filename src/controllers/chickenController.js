@@ -192,111 +192,77 @@ const getMe = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
         if (!user) {
-            return res.status(200).json({
-                id: 'guest',
-                username: 'Demo Player',
-                email: 'demo@diuwin.game',
-                role: 'USER',
-                status: 'ACTIVE',
-                balance: 10000.00,
-                isGuest: true
+            return res.status(401).json({
+                error: 'UNAUTHORIZED',
+                message: 'Authentication required. Please log in to DIU-win.'
             });
         }
 
-        const rawBal = (user.money_user !== null && user.money_user !== undefined) ? user.money_user : user.money;
+        const [freshUsers] = await connection.execute(
+            'SELECT `id`, `id_user`, `phone`, `name_user`, `money`, `money_user`, `status` FROM `users` WHERE `phone` = ?',
+            [user.phone]
+        );
+        const freshUser = (freshUsers && freshUsers.length > 0) ? freshUsers[0] : user;
+        const rawBal = (freshUser.money_user !== null && freshUser.money_user !== undefined) ? freshUser.money_user : freshUser.money;
         const balance = parseFloat(rawBal || 0);
 
         return res.status(200).json({
-            id: String(user.id_user || user.phone),
-            username: user.name_user || user.phone,
-            email: `${user.phone}@diuwin.game`,
-            role: 'USER',
-            status: user.status == 1 ? 'ACTIVE' : 'SUSPENDED',
+            id: String(freshUser.id_user || freshUser.phone),
+            username: freshUser.name_user || freshUser.phone,
+            email: `${freshUser.phone}@diuwin.game`,
+            role: (freshUser.phone === '9981474023' || freshUser.phone === '9981474025') ? 'ADMIN' : 'USER',
+            status: freshUser.status == 1 ? 'ACTIVE' : 'SUSPENDED',
             balance,
             isGuest: false
         });
     } catch (err) {
-        return res.status(200).json({
-            id: 'guest',
-            username: 'Demo Player',
-            balance: 10000.00,
-            isGuest: true
-        });
+        return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Authentication required.' });
     }
 };
 
-// API: Wallet Balance
+// API: Wallet Balance (Live from MySQL users table)
 const getWallet = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
         if (!user) {
-            return res.status(200).json({
-                id: 'guest',
-                userId: 'guest',
-                balance: 10000.00,
-                currency: 'INR'
+            return res.status(401).json({
+                error: 'UNAUTHORIZED',
+                message: 'Authentication required.'
             });
         }
 
-        const rawBal = (user.money_user !== null && user.money_user !== undefined) ? user.money_user : user.money;
+        const [freshUsers] = await connection.execute(
+            'SELECT `id_user`, `phone`, `money`, `money_user` FROM `users` WHERE `phone` = ?',
+            [user.phone]
+        );
+        const freshUser = (freshUsers && freshUsers.length > 0) ? freshUsers[0] : user;
+        const rawBal = (freshUser.money_user !== null && freshUser.money_user !== undefined) ? freshUser.money_user : freshUser.money;
         const balance = parseFloat(rawBal || 0);
 
         return res.status(200).json({
-            id: String(user.id_user || user.phone),
-            userId: String(user.id_user || user.phone),
+            id: String(freshUser.id_user || freshUser.phone),
+            userId: String(freshUser.id_user || freshUser.phone),
             balance,
             currency: 'INR'
         });
     } catch (err) {
-        return res.status(200).json({ id: 'guest', userId: 'guest', balance: 10000.00, currency: 'INR' });
+        return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Authentication error.' });
     }
 };
 
-// API: Claim Demo / Test Faucet
+// API: Claim Demo / Test Faucet (Disabled in production)
 const claimFaucet = async (req, res) => {
-    try {
-        const user = await getAuthenticatedUser(req);
-        if (!user) {
-            return res.status(200).json({
-                message: 'Demo balance set to ₹10,000 INR!',
-                wallet: {
-                    id: 'guest',
-                    userId: 'guest',
-                    balance: 10000.00,
-                    currency: 'INR'
-                }
-            });
-        }
-
-        const rawBal = (user.money_user !== null && user.money_user !== undefined) ? user.money_user : user.money;
-        const currentBal = parseFloat(rawBal || 0);
-        const added = 10000;
-        const newBal = currentBal + added;
-
-        await connection.execute(
-            'UPDATE `users` SET `money` = ?, `money_user` = ? WHERE `phone` = ?',
-            [newBal, newBal, user.phone]
-        );
-
-        return res.status(200).json({
-            message: 'Wallet reloaded with demo ₹10,000 INR!',
-            wallet: {
-                id: String(user.id_user || user.phone),
-                userId: String(user.id_user || user.phone),
-                balance: newBal,
-                currency: 'INR'
-            }
-        });
-    } catch (err) {
-        return res.status(500).json({ error: 'SERVER_ERROR', message: err.message });
-    }
+    return res.status(403).json({ error: 'FORBIDDEN', message: 'Faucet is disabled. Please deposit in your DIU-win wallet.' });
 };
 
 // API: Start Round
 const startGame = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
-        const userPhone = user ? user.phone : 'demo_guest';
+        if (!user) {
+            return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Please log in to play Chicken Road.' });
+        }
+        const userPhone = user.phone;
 
         // Check maintenance mode
         const [maintSetting] = await connection.execute(
@@ -403,7 +369,10 @@ const startGame = async (req, res) => {
 const jumpGame = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
-        const userPhone = user ? user.phone : 'demo_guest';
+        if (!user) {
+            return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Please log in to play.' });
+        }
+        const userPhone = user.phone;
 
         const gameId = req.params.id;
         const [rounds] = await connection.execute(
@@ -506,7 +475,10 @@ const jumpGame = async (req, res) => {
 const cashoutGame = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
-        const userPhone = user ? user.phone : 'demo_guest';
+        if (!user) {
+            return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Please log in to cash out.' });
+        }
+        const userPhone = user.phone;
 
         const gameId = req.params.id;
         const [rounds] = await connection.execute(
@@ -532,20 +504,20 @@ const cashoutGame = async (req, res) => {
         const payoutAmount = parseFloat((betAmount * multiplier).toFixed(2));
         const timeNow = Date.now().toString();
 
-        let newBal = 10000;
-        if (user) {
-            const rawBal = (user.money_user !== null && user.money_user !== undefined) ? user.money_user : user.money;
-            const currentBal = parseFloat(rawBal || 0);
-            newBal = currentBal + payoutAmount;
+        const [freshUsers] = await connection.execute(
+            'SELECT `money`, `money_user` FROM `users` WHERE `phone` = ?',
+            [userPhone]
+        );
+        const freshUser = (freshUsers && freshUsers.length > 0) ? freshUsers[0] : user;
+        const rawBal = (freshUser.money_user !== null && freshUser.money_user !== undefined) ? freshUser.money_user : freshUser.money;
+        const currentBal = parseFloat(rawBal || 0);
+        const newBal = currentBal + payoutAmount;
 
-            // Credit winnings to user wallet balance atomically
-            await connection.execute(
-                'UPDATE `users` SET `money` = ?, `money_user` = ? WHERE `phone` = ?',
-                [newBal, newBal, user.phone]
-            );
-        } else {
-            newBal = parseFloat(req.body.demoBalance || 10000) + payoutAmount;
-        }
+        // Credit winnings to user wallet balance atomically in MySQL
+        await connection.execute(
+            'UPDATE `users` SET `money` = ?, `money_user` = ? WHERE `phone` = ?',
+            [newBal, newBal, userPhone]
+        );
 
         // Update round status to CASHED_OUT
         await connection.execute(
@@ -556,7 +528,7 @@ const cashoutGame = async (req, res) => {
         if (ioInstance) {
             ioInstance.emit('chicken:cashout', {
                 gameId,
-                username: user ? ((user.name_user || user.phone).slice(0, 4) + '****') : 'Demo Player',
+                username: (user.name_user || user.phone).slice(0, 4) + '****',
                 multiplier,
                 payoutAmount,
                 time: timeNow
@@ -569,7 +541,7 @@ const cashoutGame = async (req, res) => {
             payoutAmount,
             multiplier,
             walletBalance: newBal,
-            serverSeed: round.server_seed // Revealed secret seed
+            serverSeed: round.server_seed
         });
     } catch (err) {
         console.error('cashoutGame error:', err);
@@ -577,11 +549,14 @@ const cashoutGame = async (req, res) => {
     }
 };
 
-// API: Crash Game (Collision handler)
+// API: Crash Game
 const crashGame = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
-        const userPhone = user ? user.phone : 'demo_guest';
+        if (!user) {
+            return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Please log in.' });
+        }
+        const userPhone = user.phone;
 
         const gameId = req.params.id;
         const [rounds] = await connection.execute(
@@ -618,7 +593,10 @@ const crashGame = async (req, res) => {
 const getGameById = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
-        const userPhone = user ? user.phone : 'demo_guest';
+        if (!user) {
+            return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Please log in.' });
+        }
+        const userPhone = user.phone;
 
         const gameId = req.params.id;
         const [rounds] = await connection.execute(
@@ -670,7 +648,10 @@ const getGameById = async (req, res) => {
 const getActiveRound = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
-        const userPhone = user ? user.phone : 'demo_guest';
+        if (!user) {
+            return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Please log in.' });
+        }
+        const userPhone = user.phone;
 
         const [rounds] = await connection.execute(
             'SELECT * FROM `chicken_rounds` WHERE `phone` = ? AND `status` = "ACTIVE" ORDER BY `time` DESC LIMIT 1',
@@ -709,7 +690,10 @@ const getActiveRound = async (req, res) => {
 const getGameHistory = async (req, res) => {
     try {
         const user = await getAuthenticatedUser(req);
-        const userPhone = user ? user.phone : 'demo_guest';
+        if (!user) {
+            return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Please log in to view history.' });
+        }
+        const userPhone = user.phone;
 
         const page = parseInt(req.query.page, 10) || 1;
         const limit = parseInt(req.query.limit, 10) || 20;

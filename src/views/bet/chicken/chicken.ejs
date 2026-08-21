@@ -16,12 +16,13 @@
         const authCookie = getCookie('auth');
         if (authCookie) {
           localStorage.setItem('chicken_road_token', authCookie);
-        } else if (!localStorage.getItem('chicken_road_token')) {
-          localStorage.setItem('chicken_road_token', 'demo_token_' + Date.now());
+        } else {
+          localStorage.removeItem('chicken_road_token');
+          window.location.href = '/login';
         }
       })();
     </script>
-    <script type="module" crossorigin src="/assets/index-HXgHRsC6.js"></script>
+    <script type="module" crossorigin src="/assets/index-aXN5YimO.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-p0CHXjCf.css">
   </head>
   <body class="bg-slate-900 text-slate-100 antialiased font-sans overflow-hidden">

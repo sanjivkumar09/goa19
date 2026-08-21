@@ -90,7 +90,7 @@ const initWebRouter = (app) => {
     router.get('/api/webapi/aviator/my_bets', middlewareController, aviatorController.getAviatorMyBets);
 
     // BET CHICKEN ROAD
-    router.get('/chicken', chickenController.chickenPage);
+    router.get('/chicken', middlewareController, chickenController.chickenPage);
     router.get('/api/auth/me', chickenController.getMe);
     router.post('/api/auth/login', chickenController.login);
     router.post('/api/auth/register', chickenController.register);
