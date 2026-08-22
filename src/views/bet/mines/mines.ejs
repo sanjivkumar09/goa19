@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/images/bitbug_favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>MINES — Modern Risk / Reward Casino Game</title>
+    <meta name="description" content="Play Mines game on DIU-win with custom betting, dynamic real-time multipliers, authoritative server logic, and instant wallet payouts." />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+      // Automatically sync DIU-win auth cookie into localStorage for Mines React App
+      (function() {
+        function getCookie(name) {
+          const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+          return match ? match[2] : null;
+        }
+        const authCookie = getCookie('auth');
+        if (authCookie) {
+          localStorage.setItem('mines_auth_token', authCookie);
+          localStorage.setItem('chicken_road_token', authCookie);
+        } else {
+          localStorage.removeItem('mines_auth_token');
+          window.location.href = '/login';
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-BuFssiZY.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-fwtDSVUv.css">
+  </head>
+  <body class="bg-[#0F172A] text-[#F8FAFC] min-h-screen font-['Outfit',sans-serif] selection:bg-[#06B6D4] selection:text-black overflow-x-hidden">
+    <div id="root"></div>
+  </body>
+</html>

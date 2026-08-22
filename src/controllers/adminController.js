@@ -1968,6 +1968,38 @@ const getChickenAdminData = async (req, res) => {
     }
 };
 
+const minesAdminPage = async (req, res) => {
+    return res.render("manage/mines.ejs");
+};
+
+const setMinesAdminSettings = async (req, res) => {
+    try {
+        const minesController = require("./minesController.js");
+        return await minesController.updateAdminConfig(req, res);
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const getMinesAdminData = async (req, res) => {
+    try {
+        const minesController = require("./minesController.js");
+        return await minesController.getAdminMetrics(req, res);
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
+const toggleMinesEmergencyStop = async (req, res) => {
+    try {
+        const minesController = require("./minesController.js");
+        req.body.emergencyStop = req.body.enabled !== undefined ? req.body.enabled : true;
+        return await minesController.updateAdminConfig(req, res);
+    } catch (err) {
+        return res.status(500).json({ status: false, message: err.message });
+    }
+};
+
 module.exports = {
     adminPage,
     adminPage3,
@@ -2027,4 +2059,8 @@ module.exports = {
     chickenAdminPage,
     setChickenAdminSettings,
     getChickenAdminData,
+    minesAdminPage,
+    setMinesAdminSettings,
+    getMinesAdminData,
+    toggleMinesEmergencyStop,
 };

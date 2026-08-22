@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mines Game | Control & Management</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    .kpi-card {
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .status-pill {
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-weight: 700;
+    }
+    #preloader {
+      display: none !important;
+    }
+  </style>
+  <script>
+    // Immediate preloader dismissal
+    document.addEventListener('DOMContentLoaded', function() {
+      var p = document.getElementById('preloader');
+      if (p) p.style.display = 'none';
+    });
+  </script>
+</head>
+
+<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+  <div class="wrapper">
+    <%- include('nav') %>
+
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0"><i class="fas fa-gem text-cyan mr-2"></i> Mines Game Management & Control</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="content">
+        <div class="container-fluid">
+          
+          <!-- KPI Stats Row -->
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-info">
+                <div class="inner">
+                  <h3 id="stat-total-rounds">0</h3>
+                  <p>Total Rounds Played</p>
+                </div>
+                <div class="icon"><i class="fas fa-trophy"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3 id="stat-total-wagered">₹0.00</h3>
+                  <p>Total Bet Volume</p>
+                </div>
+                <div class="icon"><i class="fas fa-coins"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3 id="stat-total-payouts">₹0.00</h3>
+                  <p>Total Payouts</p>
+                </div>
+                <div class="icon"><i class="fas fa-hand-holding-usd"></i></div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3 id="stat-profit">₹0.00</h3>
+                  <p>House Profit (<span id="stat-rtp">0% RTP</span>)</p>
+                </div>
+                <div class="icon"><i class="fas fa-chart-line"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuration & Controls Row -->
+          <div class="row">
+            <!-- Game Engine Settings Form -->
+            <div class="col-md-6">
+              <div class="card card-outline card-cyan">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-cogs mr-2"></i> House Edge & Betting Parameters</h3>
+                </div>
+                <div class="card-body">
+                  <form id="form-mines-settings">
+                    <div class="form-group">
+                      <label>House Edge (e.g. 0.05 = 5%, 0.08 = 8%):</label>
+                      <input type="number" step="0.01" min="0.01" max="0.30" class="form-control" id="house-edge" placeholder="0.05">
+                      <small class="form-text text-muted">Mathematical house edge applied to combination multiplier formulas.</small>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Minimum Bet (₹):</label>
+                          <input type="number" class="form-control" id="min-bet" placeholder="10">
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label>Maximum Bet (₹):</label>
+                          <input type="number" class="form-control" id="max-bet" placeholder="50000">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Max Allowed Multiplier:</label>
+                      <input type="number" class="form-control" id="max-multiplier" placeholder="10000">
+                    </div>
+
+                    <div class="row mb-3">
+                      <div class="col-6">
+                        <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="maintenance-mode">
+                          <label class="custom-control-label font-weight-bold text-warning" for="maintenance-mode">Maintenance Mode</label>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="emergency-stop">
+                          <label class="custom-control-label font-weight-bold text-danger" for="emergency-stop">Emergency Freeze</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-info font-weight-bold btn-block">Save Mines Settings</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mathematical Model Reference -->
+            <div class="col-md-6">
+              <div class="card card-outline card-info">
+                <div class="card-header">
+                  <h3 class="card-title"><i class="fas fa-calculator mr-2"></i> Mines Probability & Math Rules</h3>
+                </div>
+                <div class="card-body">
+                  <p class="text-sm">
+                    <strong>Combination Formula:</strong><br>
+                    <code>Multiplier = [ 1 / (C(S, P) / C(25, P)) ] × (1 - HouseEdge)</code>
+                  </p>
+                  <table class="table table-striped table-sm">
+                    <thead>
+                      <tr>
+                        <th>Mines Count</th>
+                        <th>Safe Gems (S)</th>
+                        <th>1st Pick Mult</th>
+                        <th>Max Multiplier</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="badge badge-success">1 Mine</span></td>
+                        <td>24 Gems</td>
+                        <td><strong>1.00×</strong></td>
+                        <td><strong>23.75×</strong></td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge badge-info">3 Mines</span></td>
+                        <td>22 Gems</td>
+                        <td><strong>1.07×</strong></td>
+                        <td><strong>2,185×</strong></td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge badge-primary">5 Mines (Std)</span></td>
+                        <td>20 Gems</td>
+                        <td><strong>1.18×</strong></td>
+                        <td><strong>50,488×</strong></td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge badge-warning">10 Mines</span></td>
+                        <td>15 Gems</td>
+                        <td><strong>1.58×</strong></td>
+                        <td><strong>3,097,000×</strong></td>
+                      </tr>
+                      <tr>
+                        <td><span class="badge badge-danger">24 Mines</span></td>
+                        <td>1 Gem</td>
+                        <td><strong>23.75×</strong></td>
+                        <td><strong>23.75×</strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <small class="text-muted">Mine placement is 100% server-authoritative and generated via <code>crypto.randomInt</code>.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Rounds Ledger Table -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card card-outline card-primary">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h3 class="card-title"><i class="fas fa-list-alt mr-2"></i> Recent Game Rounds Ledger</h3>
+                  <button id="btn-refresh" class="btn btn-sm btn-outline-light ml-auto"><i class="fas fa-sync-alt mr-1"></i> Refresh</button>
+                </div>
+                <div class="card-body table-responsive p-0">
+                  <table class="table table-hover table-striped text-nowrap">
+                    <thead>
+                      <tr>
+                        <th>Round ID</th>
+                        <th>User Phone</th>
+                        <th>Mines</th>
+                        <th>Gems Picked</th>
+                        <th>Bet (₹)</th>
+                        <th>Multiplier</th>
+                        <th>Payout (₹)</th>
+                        <th>Status</th>
+                        <th>Timestamp</th>
+                      </tr>
+                    </thead>
+                    <tbody id="recent-rounds-tbody">
+                      <tr>
+                        <td colspan="9" class="text-center text-muted py-3">Loading rounds...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/plugins/jquery/jquery.min.js"></script>
+  <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+  <script src="/dist/js/adminlte.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="/js/admin/admin.js"></script>
+
+  <script>
+    async function loadAdminData() {
+      try {
+        const metricsRes = await $.get('/api/webapi/admin/mines/state');
+        if (metricsRes.stats) {
+          const m = metricsRes.stats;
+          $('#stat-total-rounds').text(m.totalGames || 0);
+          $('#stat-total-wagered').text('₹' + (m.totalBets || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+          $('#stat-total-payouts').text('₹' + (m.totalPayouts || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+          $('#stat-profit').text('₹' + (m.houseProfit || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }));
+          $('#stat-rtp').text((m.rtpPercentage || 0) + '% RTP');
+
+          // Render Recent Rounds Table
+          const tbody = $('#recent-rounds-tbody');
+          tbody.empty();
+
+          if (metricsRes.recentRounds && metricsRes.recentRounds.length > 0) {
+            metricsRes.recentRounds.forEach(r => {
+              const isWon = r.status === 'CASHED_OUT' || r.status === 'WON';
+              const statusBadge = isWon 
+                ? '<span class="badge badge-success">' + r.status + '</span>'
+                : (r.status === 'PLAYING' ? '<span class="badge badge-warning">PLAYING</span>' : '<span class="badge badge-danger">LOST</span>');
+
+              const dateObj = new Date(parseInt(r.time, 10));
+              const dateStr = isNaN(dateObj.getTime()) ? r.time : dateObj.toLocaleTimeString();
+
+              const rowHtml = `
+                <tr>
+                  <td><code>${r.id}</code></td>
+                  <td><strong>${r.phone}</strong></td>
+                  <td><span class="badge badge-info">${r.mineCount} Mines</span></td>
+                  <td><span class="badge badge-secondary">${r.selectedCount || 0} Gems</span></td>
+                  <td>₹${parseFloat(r.betAmount || 0).toFixed(2)}</td>
+                  <td><strong class="text-cyan">${parseFloat(r.multiplier || 1).toFixed(2)}x</strong></td>
+                  <td class="${isWon ? 'text-success font-weight-bold' : 'text-muted'}">₹${parseFloat(r.payout || 0).toFixed(2)}</td>
+                  <td>${statusBadge}</td>
+                  <td class="text-muted text-sm">${dateStr}</td>
+                </tr>
+              `;
+              tbody.append(rowHtml);
+            });
+          } else {
+            tbody.append('<tr><td colspan="9" class="text-center text-muted py-3">No game rounds recorded yet.</td></tr>');
+          }
+        }
+
+        // Fill Configuration Form
+        if (metricsRes.config) {
+          const cfg = metricsRes.config;
+          $('#house-edge').val(cfg.houseEdge);
+          $('#min-bet').val(cfg.minBet);
+          $('#max-bet').val(cfg.maxBet);
+          $('#max-multiplier').val(cfg.maxAllowedMultiplier);
+          $('#maintenance-mode').prop('checked', !!cfg.maintenanceMode);
+          $('#emergency-stop').prop('checked', !!cfg.emergencyStop);
+        }
+      } catch (err) {
+        console.error('Error loading Mines admin data:', err);
+      }
+    }
+
+    $(document).ready(function() {
+      $('#preloader').fadeOut(0);
+      loadAdminData();
+
+      $('#btn-refresh').click(function() {
+        loadAdminData();
+      });
+
+      // Submit Settings Form
+      $('#form-mines-settings').submit(async function(e) {
+        e.preventDefault();
+        const payload = {
+          houseEdge: parseFloat($('#house-edge').val()),
+          minBet: parseFloat($('#min-bet').val()),
+          maxBet: parseFloat($('#max-bet').val()),
+          maxMultiplier: parseFloat($('#max-multiplier').val()),
+          maintenanceMode: $('#maintenance-mode').is(':checked'),
+          emergencyStop: $('#emergency-stop').is(':checked'),
+        };
+
+        try {
+          const res = await $.ajax({
+            url: '/api/webapi/admin/mines/settings',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload)
+          });
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Settings Saved',
+            text: res.message || 'Mines configuration updated successfully!',
+            timer: 2000
+          });
+          loadAdminData();
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error Saving Settings',
+            text: err.responseJSON?.message || 'Failed to update settings.'
+          });
+        }
+      });
+
+      // Auto poll every 10 seconds
+      setInterval(loadAdminData, 10000);
+    });
+
+    $(window).on('load', function() {
+      $('#preloader').fadeOut(0);
+    });
+  </script>
+</body>
+</html>

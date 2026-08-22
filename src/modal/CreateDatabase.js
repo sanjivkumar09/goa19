@@ -167,8 +167,45 @@ const CreateChicken = async(req, res) => {
     console.log("Create Success Database Chicken Road.");
 }
 
+const CreateMines = async(req, res) => {
+    // Ensure mines_rounds table
+    await connection.execute(`CREATE TABLE IF NOT EXISTS \`mines_rounds\` (
+      \`id\` varchar(64) NOT NULL,
+      \`phone\` varchar(20) NOT NULL,
+      \`bet_amount\` decimal(10,2) NOT NULL DEFAULT 0.00,
+      \`mine_count\` int(11) NOT NULL DEFAULT 5,
+      \`board_rows\` int(11) NOT NULL DEFAULT 5,
+      \`board_cols\` int(11) NOT NULL DEFAULT 5,
+      \`mine_positions\` text NOT NULL,
+      \`selected_tiles\` text NOT NULL,
+      \`house_edge\` decimal(5,4) NOT NULL DEFAULT 0.0500,
+      \`multiplier\` decimal(10,2) NOT NULL DEFAULT 1.00,
+      \`status\` varchar(20) NOT NULL DEFAULT 'PLAYING',
+      \`payout\` decimal(10,2) NOT NULL DEFAULT 0.00,
+      \`server_seed\` varchar(128) DEFAULT NULL,
+      \`server_seed_hash\` varchar(128) DEFAULT NULL,
+      \`time\` varchar(50) NOT NULL,
+      \`ended_at\` varchar(50) DEFAULT NULL,
+      PRIMARY KEY (\`id\`),
+      KEY \`idx_phone\` (\`phone\`),
+      KEY \`idx_status\` (\`status\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
+
+    // Ensure default mines admin settings
+    await connection.execute(`INSERT IGNORE INTO \`admin_settings\` (\`setting_key\`, \`setting_value\`, \`updated_at\`) VALUES
+      ('mines_min_bet', '10', ${timeNow}),
+      ('mines_max_bet', '50000', ${timeNow}),
+      ('mines_house_edge', '0.05', ${timeNow}),
+      ('mines_maintenance_mode', '0', ${timeNow}),
+      ('mines_emergency_stop', '0', ${timeNow}),
+      ('mines_max_multiplier', '10000', ${timeNow});`);
+
+    console.log("Create Success Database Mines.");
+}
+
 CreateWingo();
 Create5D();
 CreateK3();
 CreateAviator();
 CreateChicken();
+CreateMines();

@@ -10,6 +10,7 @@ const k5Controller = require('../controllers/k5Controller.js');
 const k3Controller = require('../controllers/k3Controller.js');
 const aviatorController = require('../controllers/aviatorController.js');
 const chickenController = require('../controllers/chickenController.js');
+const minesController = require('../controllers/minesController.js');
 let router = express.Router();
 
 const initWebRouter = (app) => {
@@ -116,7 +117,27 @@ const initWebRouter = (app) => {
     router.get('/api/admin/users', chickenController.getAdminUsers);
     router.post('/api/admin/users/:id/status', chickenController.updateUserStatus);
     router.post('/api/admin/users/:id/wallet', chickenController.adjustUserWallet);
-    router.get('/api/admin/audit-logs', chickenController.getAdminAuditLogs);
+    // MINES GAME ROUTES
+    router.get('/mines', middlewareController, minesController.minesPage);
+    router.post('/api/webapi/mines/start', minesController.startGame);
+    router.post('/api/webapi/mines/select-tile', minesController.selectTile);
+    router.post('/api/webapi/mines/cashout', minesController.cashout);
+    router.get('/api/webapi/mines/active', minesController.getActiveRound);
+    router.get('/api/webapi/mines/history', minesController.getGameHistory);
+    router.get('/api/webapi/mines/wallet', minesController.getWallet);
+    router.post('/api/webapi/mines/wallet/reset', minesController.resetWallet);
+    router.get('/api/webapi/mines/config', minesController.getGameConfig);
+    router.get('/api/webapi/mines/:id', minesController.getRoundById);
+
+    // Direct /api/mines aliases
+    router.post('/api/mines/start', minesController.startGame);
+    router.post('/api/mines/select-tile', minesController.selectTile);
+    router.post('/api/mines/cashout', minesController.cashout);
+    router.get('/api/mines/active', minesController.getActiveRound);
+    router.get('/api/mines/history', minesController.getGameHistory);
+    router.get('/api/mines/wallet', minesController.getWallet);
+    router.get('/api/mines/config', minesController.getGameConfig);
+    router.get('/api/mines/:id', minesController.getRoundById);
 
     // login | register 
     router.post('/api/webapi/login', accountController.login); // login
@@ -206,6 +227,14 @@ const initWebRouter = (app) => {
     router.get('/api/admin/metrics', adminController.middlewareAdminController, chickenController.getAdminMetrics);
     router.get('/api/admin/config', adminController.middlewareAdminController, chickenController.getAdminConfig);
     router.put('/api/admin/config', adminController.middlewareAdminController, chickenController.updateAdminConfig);
+
+    // MINES GAME ADMIN
+    router.get('/admin/manager/mines', adminController.middlewareAdminController, adminController.minesAdminPage);
+    router.post('/api/webapi/admin/mines/settings', adminController.middlewareAdminController, adminController.setMinesAdminSettings);
+    router.get('/api/webapi/admin/mines/state', adminController.middlewareAdminController, adminController.getMinesAdminData);
+    router.post('/api/webapi/admin/mines/emergency-stop', adminController.middlewareAdminController, adminController.toggleMinesEmergencyStop);
+    router.get('/api/webapi/mines/admin/stats', adminController.middlewareAdminController, adminController.getMinesAdminData);
+    router.post('/api/webapi/mines/admin/emergency-stop', adminController.middlewareAdminController, adminController.toggleMinesEmergencyStop);
 
     router.get('/admin/manager/members', adminController.middlewareAdminController, adminController.membersPage); // get info account
     router.get('/admin/manager/createBonus', adminController.middlewareAdminController, adminController.giftPage); // get info account
