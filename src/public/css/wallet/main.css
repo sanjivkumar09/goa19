@@ -704,7 +704,7 @@ img[data-v-7b9b9922] {
   top:0;
   height:1.33333rem;
   line-height:1.33333rem;
-  background-image:linear-gradient(90deg,#4781FF,#4781FF);
+  background-image:linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%);
   display:flex;
   align-items:center;
   justify-content:center;

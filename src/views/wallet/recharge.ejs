@@ -3,7 +3,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="robots" content="noindex,nofollow">
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
-    <title>Tslottery</title>
+    <title>DiuWin - Recharge</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/pages-global.css">
     <link href="/css/wallet/main.css" rel="stylesheet">
@@ -16,9 +16,10 @@
         body {
             height: 100%;
             width: 100%;
-            background-color: #2a2a2a !important;
+            background-color: #7b8494 !important;
             padding: 0;
             margin: 0;
+            font-family: 'Outfit', sans-serif;
         }
 
         .block-click {
@@ -28,7 +29,10 @@
         .mian[data-v-67caa467] {
             padding-bottom: 1.6rem;
             padding-top: 0 !important;
-            background-color: #2a2a2a !important;
+            background-color: #f4f5f8 !important;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
         }
 
         .mian[data-v-67caa467] .van-popup__close-icon--top-right {
@@ -44,24 +48,25 @@
             left: 0 !important;
             right: 0 !important;
             width: 100% !important;
+            max-width: 480px !important;
+            margin: 0 auto !important;
             height: 50px !important;
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%) !important;
+            background: linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%) !important;
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
             padding: 0 12px !important;
             z-index: 9999 !important;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5) !important;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3) !important;
+            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.3) !important;
+            border-bottom: none !important;
         }
 
         .navbar-title[data-v-106b99c8] {
             flex: 1 !important;
             text-align: center !important;
             font-size: 18px !important;
-            font-weight: 900 !important;
-            color: #000000 !important;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
         }
 
         .navbar-left[data-v-106b99c8],
@@ -72,7 +77,7 @@
             justify-content: center !important;
             font-size: 14px !important;
             font-weight: 700 !important;
-            color: #000000 !important;
+            color: #ffffff !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
         }
@@ -85,7 +90,7 @@
         .navbar-back[data-v-106b99c8] {
             width: 24px !important;
             height: 24px !important;
-            filter: brightness(0) !important;
+            filter: brightness(0) invert(1) !important;
         }
 
         .mian .selectBox[data-v-67caa467] {
@@ -97,33 +102,32 @@
         .mian .selectBox .colorBox[data-v-67caa467] {
             height: 1.06667rem;
             width: 100%;
-            background-image: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+            background-image: linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%);
+            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.3);
             margin-top: 0 !important;
         }
 
         .mian .selectBox .txtBox[data-v-67caa467] {
-            background-color: rgba(30, 30, 46, 0.9);
+            background-color: #ffffff;
             z-index: 99;
             margin-top: -.4rem !important;
             border-radius: .26667rem .26667rem 0 0;
             padding: .26667rem .53333rem;
             position: relative;
-            border: 2px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ebeef5;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
         }
 
         .mian .selectBox .txtBox .txt[data-v-67caa467] {
-            color: #e0e0e0;
+            color: #1e2329;
             font-size: .42667rem;
             font-weight: 600;
         }
 
         .mian .selectBox .txtBox .money[data-v-67caa467] {
-            color: #D4AF37;
+            color: #ff4d4f;
             font-weight: 900;
             font-size: .58667rem;
-            text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
         }
 
         .mian .selectBox .txtBox .img.action[data-v-67caa467] {
@@ -140,25 +144,16 @@
             }
         }
 
-        .mian .selectBox .txtBox .icon[data-v-67caa467] {
-            position: absolute;
-            right: .53333rem;
-            top: 0;
-            height: 1.46667rem;
-            width: .88rem;
-            background: url(data:image/png;base64,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) no-repeat 50%;
-            background-size: 100% 100%
-        }
-
         .mian .selectBox .recharge .title[data-v-67caa467] {
-            font-weight: 600
+            font-weight: 700;
+            color: #1e2329;
         }
 
         .mian .selectBox .recharge .rechargeType[data-v-67caa467] {
             padding: .26667rem .4rem .13333rem;
             height: 2rem;
-            background-color: rgba(30, 30, 46, 0.8);
-            border: 2px solid rgba(212, 175, 55, 0.2);
+            background-color: #ffffff;
+            border: 1px solid #ebeef5;
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox[data-v-67caa467] {
@@ -171,137 +166,115 @@
             position: relative;
             padding: .26667rem;
             white-space: nowrap;
-            background-image: linear-gradient(135deg, rgba(30, 30, 46, 0.8), rgba(40, 40, 56, 0.8));
+            background: #f9fafb;
             margin-right: .4rem;
-            border: 2px solid rgba(212, 175, 55, 0.2);
+            border: 1px solid #ebeef5;
             transition: all 0.3s ease;
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item .name[data-v-67caa467] {
-            color: #e0e0e0;
+            color: #1e2329;
             font-size: .34667rem;
             font-weight: 600;
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item .txt[data-v-67caa467] {
             font-size: .32rem;
-            color: #a0a0a0;
+            color: #8b96a5;
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item.action[data-v-67caa467] {
-            background-image: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            background-image: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
             position: relative;
-            border-color: rgba(212, 175, 55, 0.5);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-        }
-
-        .mian .selectBox .recharge .rechargeType .customerBox .item.action .icon[data-v-67caa467] {
-            text-align: right;
-            width: .53333rem;
-            line-height: .8rem;
-            height: .53333rem;
-            background-size: 100% 100%;
-            position: absolute;
-            right: 0;
-            bottom: 0
+            border-color: #ff4d4f;
+            box-shadow: 0 4px 15px rgba(255, 76, 76, 0.35);
         }
 
         .mian .selectBox .recharge .rechargeType .customerBox .item.action .name[data-v-67caa467],
         .mian .selectBox .recharge .rechargeType .customerBox .item.action .txt[data-v-67caa467] {
-            color: #000000;
+            color: #ffffff;
             font-weight: 700;
         }
 
         .mian .selectBox .recharge .conTxt[data-v-67caa467] {
             padding: .4rem;
-            background: rgba(30, 30, 46, 0.8);
+            background: #ffffff;
             border-radius: 12px;
             margin: 10px;
-            border: 2px solid rgba(212, 175, 55, 0.2);
+            border: 1px solid #ebeef5;
         }
 
         .mian .selectBox .recharge .conTxt .li[data-v-67caa467] {
             line-height: .53333rem;
-            color: #D4AF37;
+            color: #ff4d4f;
             font-weight: 600;
         }
 
         .mian .selectBox .recharge .box[data-v-67caa467] {
             padding: .13333rem .4rem .26667rem;
-            background: rgba(30, 30, 46, 0.8);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(212, 175, 55, 0.2);
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #ebeef5;
             border-radius: 12px;
             margin: 10px;
         }
 
         .mian .selectBox .recharge .box .list.rechargeList .item[data-v-67caa467] {
-            border: .05333rem solid rgba(212, 175, 55, 0.2);
+            border: 1px solid #ebeef5;
             margin-bottom: .26667rem;
             padding: .26667rem .4rem;
             width: 100%;
-            background: rgba(40, 40, 56, 0.8);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background: #f9fafb;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
             border-radius: .4rem;
             transition: all 0.3s ease;
         }
 
         .mian .selectBox .recharge .box .list.rechargeList .item .txt[data-v-67caa467] {
-            color: #a0a0a0;
+            color: #7e8a9b;
             font-size: .34667rem;
             margin-top: .26667rem;
         }
 
-        .mian .selectBox .recharge .box .list.rechargeList .item .icon[data-v-67caa467] {
-            height: .66667rem;
-            width: .66667rem;
-            border-radius: .66667rem;
-            background-color: rgba(212, 175, 55, 0.3);
-        }
-
         .mian .selectBox .recharge .box .list.rechargeList .item.action[data-v-67caa467] {
-            border-color: #D4AF37;
-            background: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            border-color: #ff4d4f;
+            background: #fff5f5;
+            box-shadow: 0 2px 8px rgba(255, 77, 79, 0.2);
         }
 
         .mian .selectBox .recharge .box .list .item[data-v-67caa467] {
-            border: .05333rem solid rgba(212, 175, 55, 0.2);
+            border: 1px solid #ebeef5;
             margin-bottom: .26667rem;
             padding: .26667rem;
             text-align: center;
             width: 30%;
-            background: rgba(40, 40, 56, 0.8);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background: #f9fafb;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
             border-radius: .4rem;
             margin-right: .26667rem;
-            color: #e0e0e0;
+            color: #1e2329;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        .mian .selectBox .recharge .box .list .item .icon[data-v-67caa467] {
-            margin: 0 auto;
-        }
-
         .mian .selectBox .recharge .box .list .item.action[data-v-67caa467] {
-            border-color: #D4AF37;
-            color: #000000;
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
-            font-weight: 900;
+            border-color: #ff4d4f;
+            color: #ffffff;
+            background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
+            box-shadow: 0 4px 15px rgba(255, 76, 76, 0.35);
+            font-weight: 800;
         }
 
         .mian .selectBox .recharge .box.numberBox .number-box .fuhao[data-v-67caa467] {
             font-size: .53333rem;
-            color: #D4AF37;
+            color: #ff4d4f;
         }
 
         .mian .selectBox .recharge .box.numberBox .number-box .input[data-v-67caa467] {
             font-size: .42667rem;
-            color: #e0e0e0;
-            background: rgba(40, 40, 56, 0.8);
-            border-color: rgba(212, 175, 55, 0.3);
+            color: #1e2329;
+            background: #ffffff;
+            border-color: #ebeef5;
         }
 
         .mian .selectBox .recharge .box.numberBox .item[data-v-67caa467] {
@@ -310,9 +283,9 @@
             line-height: .53333rem;
             border-radius: .13333rem;
             font-size: .4rem;
-            background: rgba(40, 40, 56, 0.8);
-            color: #e0e0e0;
-            border: 2px solid rgba(212, 175, 55, 0.2);
+            background: #f9fafb;
+            color: #1e2329;
+            border: 1px solid #ebeef5;
         }
 
         .mian .selectBox .recharge-btn[data-v-67caa467] {
@@ -320,10 +293,10 @@
             height: 1.06667rem;
             font-size: .4rem;
             margin: 0 auto;
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%) !important;
-            color: #000000 !important;
-            font-weight: 900 !important;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5) !important;
+            background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            box-shadow: 0 4px 15px rgba(255, 76, 76, 0.35) !important;
             border: none !important;
             border-radius: 25px !important;
             transition: all 0.3s ease !important;
@@ -331,27 +304,27 @@
         
         .mian .selectBox .recharge-btn[data-v-67caa467]:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.7) !important;
+            box-shadow: 0 6px 20px rgba(255, 76, 76, 0.45) !important;
         }
 
         .mian .selectBox .pay-box[data-v-67caa467] {
             padding: 0 .53333rem;
-            background: rgba(30, 30, 46, 0.8);
+            background: #ffffff;
             border-radius: 12px;
             margin: 10px;
-            border: 2px solid rgba(212, 175, 55, 0.2);
+            border: 1px solid #ebeef5;
         }
 
         .mian .selectBox .pay-box .title[data-v-67caa467] {
             font-size: .4rem;
             font-weight: 700;
-            color: #D4AF37;
+            color: #1e2329;
         }
 
         .mian .selectBox .pay-box .title .time[data-v-67caa467] {
-            background-image: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            background-image: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
             padding: .13333rem .26667rem;
-            color: #000000;
+            color: #ffffff;
             border-radius: .05333rem;
             font-weight: 700;
         }

@@ -9,7 +9,7 @@
 	<title>DiuWin Games - Lobby</title>
 	<link rel="stylesheet" href="/css/main.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
-	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 	<style>
 		/* Reset and Base Styles */
 		html, body {
@@ -18,15 +18,12 @@
 			padding: 0;
 			margin: 0;
 			font-family: 'Outfit', sans-serif;
-			background-color: #071224;
-			color: #ffffff;
+			background-color: #7b8494;
+			color: #1e2329;
 		}
 
 		body {
-			background-image: linear-gradient(rgba(7, 18, 36, 0.94), rgba(15, 41, 74, 0.94)), url('/images/dark_blue_damask.jpg');
-			background-size: cover, 300px 300px;
-			background-repeat: no-repeat, repeat;
-			background-attachment: fixed;
+			background-color: #7b8494;
 			display: flex;
 			justify-content: center;
 			align-items: flex-start;
@@ -40,24 +37,24 @@
 			display: flex;
 			flex-direction: column;
 			position: relative;
-			background: transparent;
-			box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+			background: #f4f5f8;
+			box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
 			box-sizing: border-box;
-			padding-bottom: 75px; /* Leave space for bottom nav */
+			padding-bottom: 75px;
 		}
 
-		/* Header Section */
+		/* Top Header Section - Clean White */
 		.header-container {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			padding: 12px 20px;
-			background: rgba(10, 25, 47, 0.6);
-			backdrop-filter: blur(10px);
-			border-bottom: 1.5px solid rgba(212, 175, 55, 0.2);
+			padding: 10px 16px;
+			background: #ffffff;
+			border-bottom: 1px solid #f0f0f0;
 			position: sticky;
 			top: 0;
 			z-index: 1000;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 		}
 
 		.raja-logo-container {
@@ -71,10 +68,7 @@
 			width: 32px;
 			height: 32px;
 			object-fit: cover;
-			object-position: 50% 12%;
 			border-radius: 50%;
-			border: 1.5px solid rgba(229, 192, 96, 0.4);
-			box-shadow: 0 0 10px rgba(229, 192, 96, 0.3);
 		}
 
 		.logo-text-wrapper {
@@ -84,122 +78,129 @@
 
 		.raja-logo-title {
 			font-family: 'Outfit', sans-serif;
-			font-size: 19px;
-			font-weight: 800;
-			letter-spacing: 0.5px;
-			background: linear-gradient(180deg, #FFF 0%, #FFD700 100%);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
+			font-size: 22px;
+			font-weight: 900;
+			letter-spacing: -0.5px;
+			color: #f2413b;
 			line-height: 1.1;
-			text-transform: uppercase;
-		}
-
-		.raja-logo-sub {
-			font-family: 'Outfit', sans-serif;
-			font-size: 9px;
-			font-weight: 700;
-			letter-spacing: 2px;
-			color: #D4AF37;
-			text-transform: uppercase;
 		}
 
 		.header-actions {
 			display: flex;
-			gap: 12px;
+			gap: 8px;
 			align-items: center;
 		}
 
-		.lang-dropdown {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: rgba(255, 255, 255, 0.08);
-			border: 1px solid rgba(255, 255, 255, 0.15);
-			border-radius: 8px;
-			width: 38px;
-			height: 32px;
-			cursor: pointer;
-			transition: all 0.3s ease;
+		.header-btn-login {
+			background: transparent;
+			border: 1.5px solid #ff635c;
+			color: #ff635c;
+			padding: 5px 14px;
+			border-radius: 6px;
+			font-weight: 700;
+			font-size: 12.5px;
+			text-decoration: none;
+			transition: all 0.2s ease;
 		}
 
-		.lang-dropdown:hover {
-			border-color: #E5C060;
-			background: rgba(229, 192, 96, 0.1);
+		.header-btn-login:hover {
+			background: rgba(255, 99, 92, 0.08);
+		}
+
+		.header-btn-register {
+			background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
+			border: none;
+			color: #ffffff;
+			padding: 6px 15px;
+			border-radius: 6px;
+			font-weight: 700;
+			font-size: 12.5px;
+			text-decoration: none;
+			box-shadow: 0 2px 8px rgba(255, 76, 76, 0.35);
+			transition: all 0.2s ease;
+		}
+
+		.header-btn-register:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 12px rgba(255, 76, 76, 0.45);
 		}
 
 		.header-profile-icon-wrapper {
-			width: 32px;
-			height: 32px;
+			width: 34px;
+			height: 34px;
+			border-radius: 50%;
+			background: #f4f5f8;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			cursor: pointer;
-			transition: all 0.3s ease;
+			color: #5d6472;
+			border: 1px solid #e1e4e8;
 		}
 
-		.header-profile-icon-wrapper:hover {
-			transform: scale(1.1);
-		}
-
-		/* Guest Actions Section */
-		.guest-actions-container {
+		/* Welcome Announcement Bar - Soft Light Pink */
+		.welcome-text {
 			display: flex;
-			gap: 15px;
-			padding: 15px 20px;
+			align-items: center;
+			background: #fff2f0;
+			margin: 10px 14px 14px 14px;
+			padding: 8px 12px;
+			border-radius: 20px;
+			border: 1px solid #ffd8d6;
+			gap: 10px;
 		}
 
-		.guest-btn {
+		.speaker-icon {
+			width: 18px;
+			height: 18px;
+			object-fit: contain;
+		}
+
+		.welcome-text p {
 			flex: 1;
-			padding: 12px;
-			border-radius: 12px;
-			font-size: 15px;
-			font-weight: 700;
-			text-align: center;
-			text-decoration: none;
-			transition: all 0.3s ease;
+			margin: 0;
+			font-size: 12px;
+			color: #5d6472;
+			line-height: 1.3;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			font-weight: 500;
 		}
 
-		.guest-btn-login {
-			background: linear-gradient(180deg, #E5C060 0%, #B8860B 100%);
-			color: #071224;
+		.detail-btn {
+			background: linear-gradient(90deg, #ff7467 0%, #ff5151 100%);
 			border: none;
-			box-shadow: 0 4px 15px rgba(184, 134, 11, 0.4);
+			color: #ffffff;
+			padding: 4px 12px;
+			border-radius: 16px;
+			font-size: 11px;
+			font-weight: 700;
+			text-decoration: none;
+			box-shadow: 0 2px 6px rgba(255, 81, 81, 0.3);
+			display: flex;
+			align-items: center;
+			gap: 4px;
 		}
 
-		.guest-btn-login:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 6px 20px rgba(184, 134, 11, 0.6);
-		}
-
-		.guest-btn-register {
-			background: rgba(10, 25, 47, 0.6);
-			color: #E5C060;
-			border: 1.5px solid #E5C060;
-		}
-
-		.guest-btn-register:hover {
-			background: rgba(229, 192, 96, 0.1);
-			transform: translateY(-2px);
-		}
-
-		/* Banner section */
+		/* Banner Carousel Section */
 		.banner-section {
-			padding: 0 20px 20px 20px;
+			padding: 0 14px 14px 14px;
 		}
 
 		.banner-carousel {
 			position: relative;
 			width: 100%;
 			overflow: hidden;
-			border-radius: 16px;
-			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-			border: 1px solid rgba(255, 255, 255, 0.05);
+			border-radius: 14px;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+			background: #ffffff;
 		}
 		
 		.banner-slide {
 			display: none;
 			width: 100%;
-			animation: fadeIn 0.6s ease-in-out;
+			animation: fadeIn 0.5s ease-in-out;
 		}
 		
 		.banner-slide.active {
@@ -211,17 +212,17 @@
 			height: auto;
 			display: block;
 			object-fit: cover;
-			max-height: 200px;
+			max-height: 190px;
 		}
 		
 		@keyframes fadeIn {
-			from { opacity: 0; transform: scale(1.03); }
+			from { opacity: 0; transform: scale(1.02); }
 			to { opacity: 1; transform: scale(1); }
 		}
 		
 		.banner-dots {
 			position: absolute;
-			bottom: 12px;
+			bottom: 8px;
 			left: 50%;
 			transform: translateX(-50%);
 			display: flex;
@@ -230,135 +231,99 @@
 		}
 		
 		.dot {
-			width: 8px;
-			height: 8px;
+			width: 6px;
+			height: 6px;
 			border-radius: 50%;
-			background: rgba(255, 255, 255, 0.4);
+			background: rgba(255, 255, 255, 0.6);
 			cursor: pointer;
 			transition: all 0.3s ease;
 		}
 		
 		.dot.active {
-			background: #FFD700;
-			transform: scale(1.2);
-			box-shadow: 0 0 6px #FFD700;
+			background: #ff4d4f;
+			width: 16px;
+			border-radius: 4px;
 		}
 
-		/* Welcome announcement bar */
-		.welcome-text {
-			display: flex;
-			align-items: center;
-			background: rgba(10, 25, 47, 0.5);
-			margin: 15px 20px;
-			padding: 10px 16px;
-			border-radius: 12px;
-			border: 1px solid rgba(255, 255, 255, 0.05);
-			gap: 12px;
+		/* Top Pastel Category Cards Grid - Image 1 Style */
+		.pastel-category-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 10px;
+			padding: 0 14px 14px 14px;
 		}
 
-		.speaker-icon {
-			width: 20px;
-			height: 20px;
-			object-fit: contain;
-			filter: drop-shadow(0 0 4px #FFD700);
-		}
-
-		.welcome-text p {
-			flex: 1;
-			margin: 0;
-			font-size: 12.5px;
-			color: rgba(255, 255, 255, 0.8);
-			line-height: 1.4;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		.detail-btn {
-			background: linear-gradient(180deg, #1d3d63 0%, #0f294a 100%);
-			border: 1px solid #D4AF37;
-			color: #FFD700;
-			padding: 4px 10px;
-			border-radius: 10px;
-			font-size: 11px;
-			font-weight: 700;
-			text-decoration: none;
-			transition: all 0.3s ease;
-		}
-
-		.detail-btn:hover {
-			box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
-		}
-
-		/* Feature Promo Banners */
-		.feature-promo-container {
-			display: flex;
-			gap: 15px;
-			padding: 0 20px 20px 20px;
-		}
-
-		.promo-card {
-			flex: 1;
-			background: linear-gradient(135deg, rgba(17, 34, 64, 0.8) 0%, rgba(10, 25, 47, 0.8) 100%);
-			border: 1px solid rgba(229, 192, 96, 0.2);
-			border-radius: 16px;
-			padding: 12px 15px;
+		.pastel-card {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			padding: 12px 14px;
+			border-radius: 14px;
 			text-decoration: none;
-			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-			transition: all 0.3s ease;
-			overflow: hidden;
 			position: relative;
+			overflow: hidden;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+			height: 62px;
+			box-sizing: border-box;
 		}
 
-		.promo-card:hover {
-			transform: translateY(-3px);
-			border-color: #E5C060;
-			box-shadow: 0 6px 20px rgba(229, 192, 96, 0.25);
+		.pastel-card:active {
+			transform: scale(0.98);
 		}
 
-		.promo-card-info {
-			display: flex;
-			flex-direction: column;
-			z-index: 2;
+		.pastel-card.blue {
+			background: linear-gradient(135deg, #dcf0fa 0%, #edf7fd 100%);
+			border: 1px solid #c8e7fa;
+		}
+		.pastel-card.purple {
+			background: linear-gradient(135deg, #f0e2fb 0%, #f9f2fe 100%);
+			border: 1px solid #e7d1fa;
+		}
+		.pastel-card.peach {
+			background: linear-gradient(135deg, #ffedd5 0%, #fff7ed 100%);
+			border: 1px solid #fed7aa;
+		}
+		.pastel-card.pink {
+			background: linear-gradient(135deg, #fce7f3 0%, #fdf2f8 100%);
+			border: 1px solid #fbcfe8;
+		}
+		.pastel-card.amber {
+			background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+			border: 1px solid #fde68a;
+		}
+		.pastel-card.rummy {
+			background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+			border: 1px solid #bae6fd;
+		}
+		.pastel-card.cyan {
+			background: linear-gradient(135deg, #cffafe 0%, #ecfeff 100%);
+			border: 1px solid #a5f3fc;
+		}
+		.pastel-card.indigo {
+			background: linear-gradient(135deg, #e0e7ff 0%, #eef2ff 100%);
+			border: 1px solid #c7d2fe;
 		}
 
-		.promo-card-title {
-			font-size: 12px;
-			font-weight: 800;
-			color: #ffffff;
-			letter-spacing: 0.5px;
-			margin: 0 0 2px 0;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-		}
-
-		.promo-card-desc {
-			font-size: 9px;
-			color: #E5C060;
+		.pastel-card-title {
+			font-size: 13.5px;
 			font-weight: 700;
-			text-transform: uppercase;
+			color: #333333;
 		}
 
-		.promo-card-img {
-			width: 44px;
-			height: 44px;
+		.pastel-card-icon {
+			width: 38px;
+			height: 38px;
 			object-fit: contain;
-			z-index: 2;
-			transition: transform 0.5s ease;
 		}
 
-		.promo-card:hover .promo-card-img {
-			transform: scale(1.1) rotate(5deg);
-		}
-
-		/* Category Switch Tabs */
+		/* Horizontal Category Nav Bar Tabs - Image 2 Style */
 		.category-nav-bar {
 			display: flex;
 			gap: 8px;
-			padding: 0 20px 25px 20px;
+			padding: 0 14px 14px 14px;
 			overflow-x: auto;
+			scrollbar-width: none;
 		}
 
 		.category-nav-bar::-webkit-scrollbar {
@@ -369,403 +334,287 @@
 			flex-shrink: 0;
 			display: flex;
 			align-items: center;
-			gap: 8px;
-			padding: 8px 16px;
+			gap: 6px;
+			padding: 8px 14px;
 			border-radius: 20px;
-			background: rgba(255, 255, 255, 0.04);
-			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: #ffffff;
+			border: 1px solid #ebeef5;
 			cursor: pointer;
-			transition: all 0.3s ease;
-			color: rgba(255, 255, 255, 0.6);
+			transition: all 0.25s ease;
+			color: #5d6472;
+			font-size: 13px;
+			font-weight: 600;
+			box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 		}
 
 		.category-tab-item img {
-			width: 22px;
-			height: 22px;
+			width: 20px;
+			height: 20px;
 			object-fit: contain;
-			transition: all 0.3s ease;
-		}
-
-		.category-tab-item span {
-			font-size: 13.5px;
-			font-weight: 600;
 		}
 
 		.category-tab-item.active {
-			background: linear-gradient(135deg, #1d3d63 0%, #0f294a 100%);
-			border-color: #D4AF37;
-			color: #FFD700;
-			box-shadow: 0 4px 10px rgba(212, 175, 55, 0.25);
+			background: linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%);
+			border-color: #ff4c4c;
+			color: #ffffff;
+			box-shadow: 0 3px 10px rgba(255, 76, 76, 0.35);
 		}
 
-		.category-tab-item.active img {
-			filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.6));
-		}
-
-		/* Sections Base */
+		/* Section Containers */
 		.section-container {
 			display: flex;
 			flex-direction: column;
-			margin-bottom: 30px;
-			padding: 0 20px;
+			margin-bottom: 20px;
+			padding: 0 14px;
 		}
 
 		.section-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin-bottom: 15px;
+			margin-bottom: 12px;
 		}
 
-		.section-title-badge {
+		.section-title-wrap {
 			display: flex;
 			align-items: center;
-			gap: 8px;
-			background: rgba(10, 25, 47, 0.7);
-			border: 1px solid rgba(212, 175, 55, 0.3);
-			padding: 6px 14px;
-			border-radius: 15px;
+			gap: 6px;
 		}
 
-		.section-title-badge i {
-			color: #FFD700;
-			font-size: 14px;
+		.section-red-bar {
+			width: 3.5px;
+			height: 16px;
+			background: #ff4d4f;
+			border-radius: 2px;
 		}
 
-		.section-title-badge h3 {
+		.section-title-text {
+			font-size: 16px;
+			font-weight: 800;
+			color: #1e2329;
 			margin: 0;
-			font-size: 13.5px;
-			font-weight: 700;
-			letter-spacing: 0.5px;
-			color: #ffffff;
-			text-transform: uppercase;
 		}
 
-		.more-link {
-			font-size: 13px;
-			color: #FFD700;
+		.section-all-btn {
+			font-size: 11.5px;
+			color: #ff4d4f;
+			border: 1px solid #ffb3b5;
+			border-radius: 12px;
+			padding: 2px 9px;
 			text-decoration: none;
 			font-weight: 600;
+			background: #fff;
+			transition: all 0.2s ease;
 		}
 
-		.more-link:hover {
-			text-decoration: underline;
+		.section-all-btn:hover {
+			background: #fff2f0;
 		}
 
-		/* Game Cards Styling */
+		/* Lottery Grid - 2x2 Soft Coral Gradient Cards */
+		.lottery-cards-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 10px;
+		}
+
+		.lottery-game-card {
+			background: linear-gradient(135deg, #ff7e79 0%, #ffa09a 100%);
+			border-radius: 14px;
+			padding: 14px 12px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			text-decoration: none;
+			min-height: 110px;
+			position: relative;
+			overflow: hidden;
+			box-shadow: 0 4px 15px rgba(255, 126, 121, 0.25);
+			transition: transform 0.25s ease;
+		}
+
+		.lottery-game-card:hover {
+			transform: translateY(-2px);
+		}
+
+		.lottery-card-header {
+			font-size: 15px;
+			font-weight: 800;
+			color: #ffffff;
+			margin-bottom: 4px;
+		}
+
+		.lottery-card-sub {
+			font-size: 10.5px;
+			color: rgba(255, 255, 255, 0.85);
+			font-weight: 500;
+		}
+
+		.lottery-card-art {
+			align-self: flex-end;
+			margin-top: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.lottery-card-art img {
+			height: 48px;
+			width: auto;
+			object-fit: contain;
+		}
+
+		/* Platform Recommendation Grid - 3 Columns with RTP */
 		.games-grid {
 			display: grid;
 			grid-template-columns: repeat(3, 1fr);
-			gap: 12px;
+			gap: 10px;
 		}
 
-		.game-card {
-			display: flex;
-			flex-direction: column;
-			background: linear-gradient(180deg, #112240 0%, #0a192f 100%);
-			border: 1px solid rgba(212, 175, 55, 0.15);
-			border-radius: 16px;
+		.rec-game-card {
+			background: #ffffff;
+			border-radius: 12px;
 			overflow: hidden;
 			text-decoration: none;
-			transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-			position: relative;
+			display: flex;
+			flex-direction: column;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+			border: 1px solid #ebeef5;
+			transition: transform 0.25s ease;
 		}
 
-		.game-card:hover {
-			transform: translateY(-5px);
-			border-color: #D4AF37;
-			box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
+		.rec-game-card:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 		}
 
-		/* Highlight Shine Effect */
-		.game-card::after {
-			content: '';
-			position: absolute;
-			top: -50%;
-			left: -60%;
-			width: 30%;
-			height: 200%;
-			background: rgba(255, 255, 255, 0.13);
-			transform: rotate(30deg);
-			transition: all 0.5s ease;
-			pointer-events: none;
-		}
-
-		.game-card:hover::after {
-			left: 130%;
-			transition: all 0.7s ease;
-		}
-
-		.game-card-img-wrapper {
-			position: relative;
+		.rec-game-thumb {
 			width: 100%;
 			aspect-ratio: 1;
-			display: flex;
-			align-items: center;
-			justify-content: center;
+			position: relative;
+			background: #111;
 			overflow: hidden;
 		}
 
-		/* Wingo Graphic details */
-		.wingo-card-bg {
-			background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-			width: 100%;
-			height: 100%;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			position: relative;
-		}
-
-		.lottery-ball-circle {
-			width: 48px;
-			height: 48px;
-			border-radius: 50%;
-			background: radial-gradient(circle at 30% 30%, #ff5e62, #ff9966);
-			box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 20px;
-			font-weight: 800;
-			color: white;
-			border: 2px solid white;
-		}
-
-		.lottery-ball-circle-alt {
-			position: absolute;
-			width: 28px;
-			height: 28px;
-			border-radius: 50%;
-			background: radial-gradient(circle at 30% 30%, #4facfe, #00f2fe);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 12px;
-			font-weight: 800;
-			color: white;
-			border: 1px solid white;
-			bottom: 15px;
-			right: 15px;
-		}
-
-		.gold-crown-overlay {
-			position: absolute;
-			top: 10px;
-			left: 10px;
-			color: #FFD700;
-			font-size: 16px;
-			filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-			animation: bounce 2s infinite alternate;
-		}
-
-		@keyframes bounce {
-			0% { transform: translateY(0); }
-			100% { transform: translateY(-4px); }
-		}
-
-		/* K3 Dice graphic details */
-		.k3-card-bg {
-			background: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
-			width: 100%;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			position: relative;
-		}
-
-		.k3-dice-wrapper {
-			display: flex;
-			gap: 4px;
-		}
-
-		.k3-dice {
-			width: 24px;
-			height: 24px;
-			background: #ffffff;
-			border-radius: 4px;
-			box-shadow: inset 0 0 5px rgba(0,0,0,0.2), 0 3px 6px rgba(0,0,0,0.3);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			position: relative;
-		}
-
-		.dice-dot-center {
-			width: 6px;
-			height: 6px;
-			background: red;
-			border-radius: 50%;
-		}
-
-		.dice-dot-multi {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			gap: 4px;
-			padding: 3px;
-			width: 100%;
-			height: 100%;
-			box-sizing: border-box;
-		}
-
-		.dice-dot-multi::before,
-		.dice-dot-multi::after {
-			content: '';
-			background: #333;
-			border-radius: 50%;
-		}
-
-		.gold-coins-overlay {
-			position: absolute;
-			bottom: 8px;
-			left: 8px;
-			color: #FFD700;
-			font-size: 12px;
-			display: flex;
-			gap: 2px;
-		}
-
-		/* 5D Spheres details */
-		.five-d-card-bg {
-			background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
-			width: 100%;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			position: relative;
-		}
-
-		.fived-sphere {
-			width: 44px;
-			height: 44px;
-			border-radius: 50%;
-			background: radial-gradient(circle at 30% 30%, #a8ff78, #78ffd6);
-			border: 2px solid white;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-weight: 800;
-			color: #134e5e;
-			font-size: 18px;
-			box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-		}
-
-		/* Standard game images styling */
-		.game-image-element {
+		.rec-game-thumb img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
 		}
 
-		.game-card-name-wrapper {
-			padding: 8px 10px;
+		.rec-game-name {
+			font-size: 12px;
+			font-weight: 700;
+			color: #1e2329;
 			text-align: center;
-			background: rgba(10, 25, 47, 0.9);
-			border-top: 1px solid rgba(255, 255, 255, 0.05);
+			padding: 6px 4px 2px 4px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
-		.game-card-title {
-			font-size: 12px;
+		.rec-game-rtp {
+			display: flex;
+			justify-content: space-between;
+			padding: 4px 6px;
+			background: #fafafa;
+			font-size: 9.5px;
+			border-top: 1px solid #f0f0f0;
+		}
+
+		.rec-game-rtp span.rtp-label {
+			color: #ff4d4f;
 			font-weight: 700;
-			color: #FFD700;
-			margin: 0 0 2px 0;
-			letter-spacing: 0.5px;
 		}
 
-		.game-card-desc {
-			font-size: 10px;
-			color: rgba(255, 255, 255, 0.5);
-			margin: 0;
+		.rec-game-rtp span.rtp-val {
+			color: #5d6472;
+			font-weight: 600;
 		}
 
 		/* Live Activity / Winners Feed */
 		.live-activity-section {
-			background: rgba(10, 25, 47, 0.5);
-			border: 1px solid rgba(212, 175, 55, 0.15);
+			background: #ffffff;
 			border-radius: 16px;
 			padding: 16px;
-			margin: 0 20px 20px 20px;
-			box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+			margin: 0 14px 16px 14px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+			border: 1px solid #ebeef5;
 		}
 
 		.activity-header {
 			display: flex;
 			align-items: center;
 			gap: 8px;
-			margin-bottom: 15px;
+			margin-bottom: 12px;
 			padding-bottom: 8px;
-			border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+			border-bottom: 1px solid #f0f2f5;
 		}
 
 		.activity-header h4 {
-			color: #FFD700;
+			color: #1e2329;
 			font-size: 14px;
 			font-weight: 700;
 			margin: 0;
-			text-transform: uppercase;
 		}
 
 		.activity-feed {
-			max-height: 260px;
+			max-height: 240px;
 			overflow-y: hidden;
 			display: flex;
 			flex-direction: column;
-			gap: 10px;
+			gap: 8px;
 		}
 
 		.activity-item {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			padding: 10px 12px;
-			background: rgba(255, 255, 255, 0.03);
+			padding: 8px 10px;
+			background: #f9fafb;
 			border-radius: 10px;
-			border: 1px solid rgba(255, 255, 255, 0.05);
-			animation: slideInWinner 0.5s ease-out;
+			border: 1px solid #f0f2f5;
+			animation: slideInWinner 0.4s ease-out;
 		}
 
 		@keyframes slideInWinner {
-			from { opacity: 0; transform: translateY(-10px); }
+			from { opacity: 0; transform: translateY(-8px); }
 			to { opacity: 1; transform: translateY(0); }
 		}
 
 		.activity-user {
 			display: flex;
 			align-items: center;
-			gap: 10px;
+			gap: 8px;
 		}
 
 		.activity-avatar {
-			width: 32px;
-			height: 32px;
+			width: 30px;
+			height: 30px;
 			border-radius: 50%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			color: white;
 			font-weight: 700;
-			font-size: 13px;
-			border: 1px solid rgba(255, 255, 255, 0.2);
+			font-size: 12px;
 		}
 
 		.activity-username {
-			color: #ffffff;
-			font-size: 12.5px;
+			color: #1e2329;
+			font-size: 12px;
 			font-weight: 600;
 		}
 
 		.activity-game-badge {
 			display: inline-block;
-			background: rgba(255, 215, 0, 0.15);
-			color: #FFD700;
+			background: #fff0f0;
+			color: #ff4d4f;
 			padding: 1px 6px;
-			border-radius: 8px;
-			font-size: 10px;
+			border-radius: 6px;
+			font-size: 9.5px;
 			font-weight: 700;
-			margin-top: 2px;
+			margin-top: 1px;
 		}
 
 		.activity-win {
@@ -773,331 +622,108 @@
 		}
 
 		.activity-amount {
-			color: #FFD700;
-			font-weight: 700;
-			font-size: 13px;
+			color: #ff4d4f;
+			font-weight: 800;
+			font-size: 12.5px;
 		}
 
 		.activity-status {
-			color: rgba(255, 255, 255, 0.4);
-			font-size: 10px;
+			color: #8b96a5;
+			font-size: 9.5px;
 			margin-top: 1px;
 		}
 
-		/* Sticky Support Button */
-		.support-btn {
+		/* Floating Right Action Buttons */
+		.floating-side-actions {
 			position: fixed;
-			bottom: 85px;
-			right: 20px;
-			width: 48px;
-			height: 48px;
+			right: calc(50% - 240px + 10px);
+			top: 40%;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			z-index: 999;
+		}
+
+		@media (max-width: 480px) {
+			.floating-side-actions {
+				right: 8px;
+			}
+		}
+
+		.side-action-btn {
+			width: 40px;
+			height: 40px;
 			border-radius: 50%;
-			background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
-			border: 2px solid #ffffff;
+			background: #ffffff;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-			cursor: pointer;
-			z-index: 999;
-			transition: all 0.3s ease;
+			text-decoration: none;
+			transition: transform 0.2s ease;
 		}
 
-		.support-btn:hover {
-			transform: scale(1.1) rotate(5deg);
+		.side-action-btn:hover {
+			transform: scale(1.1);
 		}
 
-		.support-btn img {
-			width: 24px;
-			height: 24px;
+		.side-action-btn img {
+			width: 26px;
+			height: 26px;
 			object-fit: contain;
-			filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
 		}
 
-		/* Bottom Navigation Bar */
-		.bottom-nav {
+		/* Floating Add to Desktop Pill Button */
+		.add-to-desktop-pill {
 			position: fixed;
-			bottom: 0;
+			bottom: 80px;
 			left: 50%;
 			transform: translateX(-50%);
-			width: 100%;
-			max-width: 480px;
-			background: #0a192f;
-			border-top: 1.5px solid #D4AF37;
-			box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
-			z-index: 1000;
-		}
-
-		.nav-container {
-			display: flex;
-			justify-content: space-around;
-			padding: 8px 0;
-		}
-
-		.nav-item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			text-decoration: none;
-			color: rgba(255, 255, 255, 0.5);
-			font-size: 11px;
-			font-weight: 500;
-			gap: 4px;
-			transition: all 0.3s ease;
-		}
-
-		.nav-item i {
-			font-size: 18px;
-			transition: all 0.3s ease;
-		}
-
-		.nav-item span {
-			font-size: 11px;
-		}
-
-		.nav-item.active {
-			color: #FFD700;
-		}
-
-		.nav-item.active i {
-		}
-
-		.game-card-title {
+			background: linear-gradient(90deg, #ff6c64 0%, #ff4141 100%);
+			color: #ffffff;
+			padding: 7px 18px;
+			border-radius: 25px;
+			box-shadow: 0 4px 16px rgba(255, 65, 65, 0.45);
 			font-size: 12px;
 			font-weight: 700;
-			color: #FFD700;
-			margin: 0 0 2px 0;
-			letter-spacing: 0.5px;
-		}
-
-		.game-card-desc {
-			font-size: 10px;
-			color: rgba(255, 255, 255, 0.5);
-			margin: 0;
-		}
-
-		/* Live Activity / Winners Feed */
-		.live-activity-section {
-			background: rgba(10, 25, 47, 0.5);
-			border: 1px solid rgba(212, 175, 55, 0.15);
-			border-radius: 16px;
-			padding: 16px;
-			margin: 0 20px 20px 20px;
-			box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-		}
-
-		.activity-header {
 			display: flex;
 			align-items: center;
-			gap: 8px;
-			margin-bottom: 15px;
-			padding-bottom: 8px;
-			border-bottom: 1px solid rgba(255, 215, 0, 0.15);
-		}
-
-		.activity-header h4 {
-			color: #FFD700;
-			font-size: 14px;
-			font-weight: 700;
-			margin: 0;
-			text-transform: uppercase;
-		}
-
-		.activity-feed {
-			max-height: 260px;
-			overflow-y: hidden;
-			display: flex;
-			flex-direction: column;
-			gap: 10px;
-		}
-
-		.activity-item {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 10px 12px;
-			background: rgba(255, 255, 255, 0.03);
-			border-radius: 10px;
-			border: 1px solid rgba(255, 255, 255, 0.05);
-			animation: slideInWinner 0.5s ease-out;
-		}
-
-		@keyframes slideInWinner {
-			from { opacity: 0; transform: translateY(-10px); }
-			to { opacity: 1; transform: translateY(0); }
-		}
-
-		.activity-user {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-		}
-
-		.activity-avatar {
-			width: 32px;
-			height: 32px;
-			border-radius: 50%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: white;
-			font-weight: 700;
-			font-size: 13px;
-			border: 1px solid rgba(255, 255, 255, 0.2);
-		}
-
-		.activity-username {
-			color: #ffffff;
-			font-size: 12.5px;
-			font-weight: 600;
-		}
-
-		.activity-game-badge {
-			display: inline-block;
-			background: rgba(255, 215, 0, 0.15);
-			color: #FFD700;
-			padding: 1px 6px;
-			border-radius: 8px;
-			font-size: 10px;
-			font-weight: 700;
-			margin-top: 2px;
-		}
-
-		.activity-win {
-			text-align: right;
-		}
-
-		.activity-amount {
-			color: #FFD700;
-			font-weight: 700;
-			font-size: 13px;
-		}
-
-		.activity-status {
-			color: rgba(255, 255, 255, 0.4);
-			font-size: 10px;
-			margin-top: 1px;
-		}
-
-		/* Sticky Support Button */
-		.support-btn {
-			position: fixed;
-			bottom: 85px;
-			right: 20px;
-			width: 48px;
-			height: 48px;
-			border-radius: 50%;
-			background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
-			border: 2px solid #ffffff;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-			cursor: pointer;
-			z-index: 999;
-			transition: all 0.3s ease;
-		}
-
-		.support-btn:hover {
-			transform: scale(1.1) rotate(5deg);
-		}
-
-		.support-btn img {
-			width: 24px;
-			height: 24px;
-			object-fit: contain;
-			filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
-		}
-
-		/* Bottom Navigation Bar */
-		.bottom-nav {
-			position: fixed;
-			bottom: 0;
-			left: 50%;
-			transform: translateX(-50%);
-			width: 100%;
-			max-width: 480px;
-			background: #0a192f;
-			border-top: 1.5px solid #D4AF37;
-			box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
-			z-index: 1000;
-		}
-
-		.nav-container {
-			display: flex;
-			justify-content: space-around;
-			padding: 8px 0;
-		}
-
-		.nav-item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
+			gap: 6px;
+			z-index: 9998;
 			text-decoration: none;
-			color: rgba(255, 255, 255, 0.5);
-			font-size: 11px;
-			font-weight: 500;
-			gap: 4px;
-			transition: all 0.3s ease;
+			cursor: pointer;
+			transition: transform 0.2s ease;
 		}
 
-		.nav-item i {
-			font-size: 18px;
-			transition: all 0.3s ease;
+		.add-to-desktop-pill:hover {
+			transform: translateX(-50%) translateY(-2px);
 		}
 
-		.nav-item span {
-			font-size: 11px;
-		}
-
-		.nav-item.active {
-			color: #FFD700;
-		}
-
-		.nav-item.active i {
-			transform: translateY(-2px);
-			filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));
+		.add-to-desktop-pill i {
+			font-size: 14px;
 		}
 	</style>
 </head>
-<body class="home-page">
+<body>
 	<div id="app">
-		<!-- Sticky Top Header -->
+		<!-- Clean White Sticky Top Header -->
 		<div class="header-container">
 			<div class="raja-logo-container" onclick="location.href='/'">
 				<img src="/images/diuwin_logo.jpg" alt="DiuWin Logo" class="diuwin-logo-img">
 				<div class="logo-text-wrapper">
 					<span class="raja-logo-title">DiuWin</span>
-					<span class="raja-logo-sub">GAMES</span>
 				</div>
 			</div>
 			
 			<!-- Dynamic actions based on Auth Cookie -->
 			<div class="header-actions" id="header-user-status">
-				<div class="lang-dropdown" onclick="location.href='/keFuMenu'">
-					<i class="fa fa-chevron-down" style="font-size: 11px; color: #a5a5a5;"></i>
-				</div>
-				<div class="header-profile-icon-wrapper" onclick="location.href='/mian'">
-					<i class="fa fa-user" style="font-size: 20px; color: #ffffff;"></i>
-				</div>
+				<a href="/login" class="header-btn-login">Log in</a>
+				<a href="/register" class="header-btn-register">Register</a>
 			</div>
 		</div>
 
-		<!-- Guest Actions Container -->
-		<div class="guest-actions-container" id="guest-actions-box" style="display: none;">
-			<a href="/login" class="guest-btn guest-btn-login">Log in</a>
-			<a href="/register" class="guest-btn guest-btn-register">Register</a>
-		</div>
-
-		<!-- Welcome Announcement Bar -->
-		<div class="welcome-text">
-			<img src="/images/audio.webp" alt="Speaker" class="speaker-icon">
-			<p>Welcome to DiuWin Games! Enjoy exciting games, huge cash rewards, and daily login bonuses.</p>
-			<a href="/promotion" class="detail-btn">Detail</a>
-		</div>
-
 		<!-- Banner Auto Carousel -->
-		<div class="banner-section">
+		<div class="banner-section" style="margin-top: 10px;">
 			<div class="banner-carousel">
 				<div class="banner-slide active">
 					<img src="/asset/bannner/Banner_20250421143852jhq6.png" alt="Banner 1">
@@ -1134,41 +760,27 @@
 			</div>
 		</div>
 
-		<!-- Feature Promo Banners -->
-		<div class="feature-promo-container">
-			<a href="/redenvelopes" class="promo-card">
-				<div class="promo-card-info">
-					<span class="promo-card-title">WHEEL OF FORTUNE</span>
-					<span class="promo-card-desc">Spin & Win</span>
-				</div>
-				<img src="/asset/ass/turn_icon-0c8307cf.png" alt="Wheel of Fortune" class="promo-card-img">
-			</a>
-			<a href="/checkIn" class="promo-card">
-				<div class="promo-card-info">
-					<span class="promo-card-title">VIP PRIVILEGES</span>
-					<span class="promo-card-desc">Exclusive Rewards</span>
-				</div>
-				<img src="/asset/ass/vip_icon-0ce6fe20.png" alt="VIP" class="promo-card-img">
-			</a>
+		<!-- Welcome Announcement Bar -->
+		<div class="welcome-text">
+			<img src="/images/audio.webp" alt="Speaker" class="speaker-icon">
+			<p>Attention ! Attention ! To all DiuWin Games members, check out exciting new events!</p>
+			<a href="/promotion" class="detail-btn"><i class="fa fa-bell-o"></i> Detail</a>
 		</div>
 
-		<!-- Category Switcher Tabs -->
+
+		<!-- Category Switcher Tabs (Image 2 Style) -->
 		<div class="category-nav-bar">
 			<div class="category-tab-item active" data-filter="all">
-				<img src="/asset/svg/lobby_icon_a-d44b8b71.svg" data-active="/asset/svg/lobby_icon_a-d44b8b71.svg" data-inactive="/asset/svg/lobby_icon-f115f004.svg" alt="Lobby">
-				<span>Lobby</span>
+				<img src="/asset/svg/lobby_icon_a-d44b8b71.svg" data-active="/asset/svg/lobby_icon_a-d44b8b71.svg" data-inactive="/asset/svg/lobby_icon-f115f004.svg" alt="Popular">
+				<span>Popular</span>
 			</div>
 			<div class="category-tab-item" data-filter="lottery">
 				<img src="/asset/svg/lottery_icon-5ff664a9.svg" data-active="/asset/svg/lottery_icon_a-f4b1b254.svg" data-inactive="/asset/svg/lottery_icon-5ff664a9.svg" alt="Lottery">
 				<span>Lottery</span>
 			</div>
-			<div class="category-tab-item" data-filter="popular">
-				<img src="/asset/svg/popular_icon-f5d7ae51.svg" data-active="/asset/svg/popular_icon_a-6a0836fe.svg" data-inactive="/asset/svg/popular_icon-f5d7ae51.svg" alt="Popular">
-				<span>Popular</span>
-			</div>
-			<div class="category-tab-item" data-filter="minigames">
-				<img src="/asset/svg/miniGame_icon-834f27fe.svg" data-active="/asset/svg/mini_icon-f60f07f5.svg" data-inactive="/asset/svg/miniGame_icon-834f27fe.svg" alt="Mini Games">
-				<span>Mini Games</span>
+			<div class="category-tab-item" data-filter="casino">
+				<img src="/asset/svg/casion_icon-7ab9fd61.svg" data-active="/asset/svg/casion_icon-7ab9fd61.svg" data-inactive="/asset/svg/casion_icon-7ab9fd61.svg" alt="Casino">
+				<span>Casino</span>
 			</div>
 			<div class="category-tab-item" data-filter="slots">
 				<img src="/asset/svg/slot_icon-4d0489e6.svg" data-active="/asset/svg/slots_icon-4fc00bfb.svg" data-inactive="/asset/svg/slot_icon-4d0489e6.svg" alt="Slots">
@@ -1176,140 +788,143 @@
 			</div>
 		</div>
 
-		<!-- Section: LOTTERY -->
+		<!-- Section: LOTTERY (Image 2 Style) -->
 		<div class="section-container" id="sec-lottery">
 			<div class="section-header">
-				<div class="section-title-badge">
-					<i class="fa fa-money"></i>
-					<h3>Lottery</h3>
+				<div class="section-title-wrap">
+					<div class="section-red-bar"></div>
+					<h3 class="section-title-text">Lottery</h3>
 				</div>
-				<a href="/win" class="more-link">7 Games ›</a>
+				<a href="/win" class="section-all-btn">All 5 &gt;</a>
 			</div>
 
-			<div class="games-grid">
-				<!-- WINGO Card -->
-				<a class="game-card" href="/win">
-					<div class="game-card-shine"></div>
-					<div class="game-card-img-wrapper" style="aspect-ratio: 0.95;">
-						<img src="/asset/lotterycategory/lotterycategory_202504211530201tr5.png" alt="WINGO" class="game-image-element">
+			<div class="lottery-cards-grid">
+				<!-- Win Go -->
+				<a class="lottery-game-card" href="/win">
+					<div>
+						<div class="lottery-card-header">Win Go</div>
+						<div class="lottery-card-sub">Guess Number &amp; Color</div>
 					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">WINGO</h4>
-						<p class="game-card-desc">Win Go Lottery</p>
-					</div>
-				</a>
-				
-				<!-- K3 Card -->
-				<a class="game-card" href="/k3">
-					<div class="game-card-img-wrapper" style="aspect-ratio: 0.95;">
-						<img src="/asset/lotterycategory/lotterycategory_202504211530308pte.png" alt="K3" class="game-image-element">
-					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">K3</h4>
-						<p class="game-card-desc">K3 Dice Lottery</p>
+					<div class="lottery-card-art">
+						<img src="/asset/lotterycategory/lotterycategory_202504211530201tr5.png" alt="Win Go">
 					</div>
 				</a>
 
-				<!-- 5D Card -->
-				<a class="game-card" href="/5d">
-					<div class="game-card-img-wrapper" style="aspect-ratio: 0.95;">
-						<img src="/asset/lotterycategory/lotterycategory_20250421153042a2cb.png" alt="5D" class="game-image-element">
+				<!-- K3 -->
+				<a class="lottery-game-card" href="/k3">
+					<div>
+						<div class="lottery-card-header">K3</div>
+						<div class="lottery-card-sub">Dice Sum &amp; Triple</div>
 					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">5D</h4>
-						<p class="game-card-desc">5D Balls Lottery</p>
+					<div class="lottery-card-art">
+						<img src="/asset/lotterycategory/lotterycategory_202504211530308pte.png" alt="K3">
+					</div>
+				</a>
+
+				<!-- 5D -->
+				<a class="lottery-game-card" href="/5d">
+					<div>
+						<div class="lottery-card-header">5D</div>
+						<div class="lottery-card-sub">5 Digital Balls</div>
+					</div>
+					<div class="lottery-card-art">
+						<img src="/asset/lotterycategory/lotterycategory_20250421153042a2cb.png" alt="5D">
+					</div>
+				</a>
+
+				<!-- Trx Win Go -->
+				<a class="lottery-game-card" href="/win">
+					<div>
+						<div class="lottery-card-header">Trx Win Go</div>
+						<div class="lottery-card-sub">Blockchain Fair Odds</div>
+					</div>
+					<div class="lottery-card-art">
+						<img src="/asset/lotterycategory/lotterycategory_202504211530201tr5.png" alt="Trx Win Go">
 					</div>
 				</a>
 			</div>
 		</div>
 
-		<!-- Section: POPULAR -->
+		<!-- Section: Platform Recommendation (Image 2 & 3 Style) -->
 		<div class="section-container" id="sec-popular">
 			<div class="section-header">
-				<div class="section-title-badge">
-					<i class="fa fa-fire"></i>
-					<h3>Popular</h3>
+				<div class="section-title-wrap">
+					<i class="fa fa-fire" style="color: #ff4d4f; font-size: 16px;"></i>
+					<h3 class="section-title-text">Platform recommendation</h3>
 				</div>
-				<a href="/win" class="more-link">6 Games ›</a>
+				<a href="/win" class="section-all-btn">All 6 &gt;</a>
 			</div>
 
 			<div class="games-grid">
-				<!-- Chicken Road -->
-				<a class="game-card" href="/chicken">
-					<div class="game-card-img-wrapper">
-						<img src="/images/chicken_tile.svg" alt="Chicken Road" class="game-image-element">
+				<!-- Aviator -->
+				<a class="rec-game-card" href="/aviator">
+					<div class="rec-game-thumb">
+						<img src="/images/aviator_tile.jpg" alt="Aviator">
 					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">CHICKEN ROAD</h4>
-						<p class="game-card-desc">Highway Crash Game</p>
+					<div class="rec-game-name">AVIATOR</div>
+					<div class="rec-game-rtp">
+						<span class="rtp-label">RTP</span>
+						<span class="rtp-val">97.81%</span>
 					</div>
 				</a>
 
-				<!-- Aviator -->
-				<a class="game-card" href="/aviator">
-					<div class="game-card-img-wrapper">
-						<img src="/images/aviator_tile.jpg" alt="Aviator" class="game-image-element">
+				<!-- Chicken Road -->
+				<a class="rec-game-card" href="/chicken">
+					<div class="rec-game-thumb">
+						<img src="/images/chicken_tile.svg" alt="Chicken Road">
 					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">AVIATOR</h4>
-						<p class="game-card-desc">TB Chess Aviator</p>
+					<div class="rec-game-name">CHICKEN ROAD</div>
+					<div class="rec-game-rtp">
+						<span class="rtp-label">RTP</span>
+						<span class="rtp-val">96.54%</span>
 					</div>
 				</a>
 
 				<!-- Mines -->
-				<a class="game-card" href="/mines">
-					<div class="game-card-img-wrapper">
-						<img src="/images/mines_tile.jpg" alt="Mines" class="game-image-element">
+				<a class="rec-game-card" href="/mines">
+					<div class="rec-game-thumb">
+						<img src="/images/mines_tile.jpg" alt="Mines">
 					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">MINES</h4>
-						<p class="game-card-desc">Risk & Reward Diamonds</p>
-					</div>
-				</a>
-			</div>
-		</div>
-
-		<!-- Section: MINI GAMES -->
-		<div class="section-container" id="sec-minigames">
-			<div class="section-header">
-				<div class="section-title-badge">
-					<i class="fa fa-gamepad"></i>
-					<h3>Mini Games</h3>
-				</div>
-				<a href="/win" class="more-link">48 Games ›</a>
-			</div>
-
-			<div class="games-grid">
-				<!-- Chicken Road -->
-				<a class="game-card" href="/chicken">
-					<div class="game-card-img-wrapper">
-						<img src="/images/chicken_tile.svg" alt="Chicken Road" class="game-image-element">
-					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">CHICKEN ROAD</h4>
-						<p class="game-card-desc">Mini Games Chicken Road</p>
+					<div class="rec-game-name">MINES</div>
+					<div class="rec-game-rtp">
+						<span class="rtp-label">RTP</span>
+						<span class="rtp-val">97.76%</span>
 					</div>
 				</a>
 
-				<!-- Aviator -->
-				<a class="game-card" href="/aviator">
-					<div class="game-card-img-wrapper">
-						<img src="/images/aviator_tile.jpg" alt="Aviator" class="game-image-element">
+				<!-- Win Go 1M -->
+				<a class="rec-game-card" href="/win">
+					<div class="rec-game-thumb">
+						<img src="/asset/lotterycategory/lotterycategory_202504211530201tr5.png" alt="WINGO">
 					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">AVIATOR</h4>
-						<p class="game-card-desc">Mini Games Aviator</p>
+					<div class="rec-game-name">WINGO 1Min</div>
+					<div class="rec-game-rtp">
+						<span class="rtp-label">RTP</span>
+						<span class="rtp-val">96.36%</span>
 					</div>
 				</a>
 
-				<!-- Mines -->
-				<a class="game-card" href="/mines">
-					<div class="game-card-img-wrapper">
-						<img src="/images/mines_tile.jpg" alt="Mines" class="game-image-element">
+				<!-- K3 Dice -->
+				<a class="rec-game-card" href="/k3">
+					<div class="rec-game-thumb">
+						<img src="/asset/lotterycategory/lotterycategory_202504211530308pte.png" alt="K3">
 					</div>
-					<div class="game-card-name-wrapper">
-						<h4 class="game-card-title">MINES</h4>
-						<p class="game-card-desc">Mini Games Mines</p>
+					<div class="rec-game-name">K3 LOTTERY</div>
+					<div class="rec-game-rtp">
+						<span class="rtp-label">RTP</span>
+						<span class="rtp-val">96.60%</span>
+					</div>
+				</a>
+
+				<!-- 5D Ball -->
+				<a class="rec-game-card" href="/5d">
+					<div class="rec-game-thumb">
+						<img src="/asset/lotterycategory/lotterycategory_20250421153042a2cb.png" alt="5D">
+					</div>
+					<div class="rec-game-name">5D LOTTERY</div>
+					<div class="rec-game-rtp">
+						<span class="rtp-label">RTP</span>
+						<span class="rtp-val">96.49%</span>
 					</div>
 				</a>
 			</div>
@@ -1318,7 +933,7 @@
 		<!-- Winning Information List -->
 		<div class="live-activity-section" id="sec-winners">
 			<div class="activity-header">
-				<i class="fa fa-trophy" style="color:#FFD700"></i>
+				<i class="fa fa-trophy" style="color:#ff4d4f"></i>
 				<h4>Winning information</h4>
 			</div>
 			<div class="activity-feed" id="activityFeed">
@@ -1326,10 +941,24 @@
 			</div>
 		</div>
 
-		<!-- Customer Support Float Button -->
-		<a href="/keFuMenu" class="support-btn" aria-label="Customer Support">
-			<img src="/images/customer-5ef38c22.png" alt="Support">
-		</a>
+		<!-- Floating Right Action Buttons -->
+		<div class="floating-side-actions">
+			<a href="/redenvelopes" class="side-action-btn" title="Wheel of Fortune">
+				<img src="/asset/ass/turn_icon-0c8307cf.png" alt="Wheel">
+			</a>
+			<a href="/checkIn" class="side-action-btn" title="VIP Rewards">
+				<img src="/asset/ass/vip_icon-0ce6fe20.png" alt="VIP">
+			</a>
+			<a href="/keFuMenu" class="side-action-btn" title="Live Chat">
+				<img src="/images/customer-5ef38c22.png" alt="Support">
+			</a>
+		</div>
+
+		<!-- Floating Add to Desktop Pill -->
+		<div class="add-to-desktop-pill" onclick="window.open('/keFuMenu', '_self')">
+			<i class="fa fa-mobile" style="font-size: 16px;"></i>
+			<span>Add to Desktop</span>
+		</div>
 
 		<!-- Bottom Navigation Menu -->
 		<%- include('../nav') -%>
@@ -1361,26 +990,18 @@
 			const headerContainer = $('#header-user-status');
 			
 			if (token && auth) {
-				// User is logged in: show profile circle
+				// User is logged in: show profile avatar
 				headerContainer.html(`
-					<div class="header-profile" onclick="location.href='/mian'">
-						<div class="header-profile-icon" style="border-radius: 50%; background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: #071224;">
-							<i class="fa fa-user"></i>
-						</div>
+					<div class="header-profile-icon-wrapper" onclick="location.href='/mian'">
+						<i class="fa fa-user" style="font-size: 18px; color: #ff4d4f;"></i>
 					</div>
 				`);
-				$('#guest-actions-box').hide();
 			} else {
-				// User is not logged in: show lang dropdown and user icon
+				// User is not logged in: show login & register
 				headerContainer.html(`
-					<div class="lang-dropdown" onclick="location.href='/keFuMenu'">
-						<i class="fa fa-chevron-down" style="font-size: 11px; color: #a5a5a5;"></i>
-					</div>
-					<div class="header-profile-icon-wrapper" onclick="location.href='/login'">
-						<i class="fa fa-user" style="font-size: 20px; color: #ffffff;"></i>
-					</div>
+					<a href="/login" class="header-btn-login">Log in</a>
+					<a href="/register" class="header-btn-register">Register</a>
 				`);
-				$('#guest-actions-box').show();
 			}
 		}
 
@@ -1402,50 +1023,21 @@
 		// Category switcher filtering
 		$('.category-tab-item').click(function() {
 			$('.category-tab-item').removeClass('active');
-			
-			// Reset all images to inactive state
-			$('.category-tab-item').each(function() {
-				const img = $(this).find('img');
-				if (img.length) {
-					img.attr('src', img.data('inactive'));
-				}
-			});
-			
 			$(this).addClass('active');
-			
-			// Set current image to active state
-			const activeImg = $(this).find('img');
-			if (activeImg.length) {
-				activeImg.attr('src', activeImg.data('active'));
-			}
 			
 			const filter = $(this).data('filter');
 			
 			if (filter === 'all') {
 				$('#sec-lottery').fadeIn(200);
 				$('#sec-popular').fadeIn(200);
-				$('#sec-minigames').fadeIn(200);
 				$('#sec-winners').fadeIn(200);
 			} else if (filter === 'lottery') {
 				$('#sec-lottery').fadeIn(200);
 				$('#sec-popular').hide();
-				$('#sec-minigames').hide();
 				$('#sec-winners').hide();
-			} else if (filter === 'popular') {
+			} else if (filter === 'casino' || filter === 'slots') {
+				$('#sec-lottery').hide();
 				$('#sec-popular').fadeIn(200);
-				$('#sec-lottery').hide();
-				$('#sec-minigames').hide();
-				$('#sec-winners').hide();
-			} else if (filter === 'minigames') {
-				$('#sec-minigames').fadeIn(200);
-				$('#sec-lottery').hide();
-				$('#sec-popular').hide();
-				$('#sec-winners').hide();
-			} else if (filter === 'slots') {
-				// Slots placeholder
-				$('#sec-lottery').hide();
-				$('#sec-popular').hide();
-				$('#sec-minigames').hide();
 				$('#sec-winners').hide();
 			}
 		});
@@ -1498,25 +1090,8 @@
 		showBanner(currentBannerIndex);
 		startBannerAutoRotation();
 		
-		// Touch swipes support for banner
-		let touchStartX = 0;
-		let touchEndX = 0;
-		document.querySelector('.banner-carousel')?.addEventListener('touchstart', function(e) {
-			touchStartX = e.changedTouches[0].screenX;
-		});
-		document.querySelector('.banner-carousel')?.addEventListener('touchend', function(e) {
-			touchEndX = e.changedTouches[0].screenX;
-			if (touchEndX < touchStartX - 50) changeBanner(1);
-			if (touchEndX > touchStartX + 50) changeBanner(-1);
-		});
-
 		// Winning Information Feed simulation
-		const memberSuffixes = [
-			'KGG', 'LKM', 'CTR', 'NKE', 'UTD', 'FCB', 'RMA', 'PSG', 'BAY', 'JUV',
-			'ARS', 'CHE', 'LIV', 'MCI', 'TOT', 'INT', 'MIL', 'NAP', 'ROM', 'ATL',
-			'SEV', 'VAL', 'DOR', 'LEI', 'WHU', 'EVE', 'WOL', 'CRY', 'BUR', 'SOU'
-		];
-		
+		const memberSuffixes = ['KGG', 'LKM', 'CTR', 'NKE', 'UTD', 'FCB', 'RMA', 'PSG', 'BAY', 'JUV'];
 		const gameTypes = ['WinGo', 'K3', '5D'];
 		const gameNumbers = ['1', '3', '5', '7', '9'];
 		
@@ -1533,7 +1108,7 @@
 		}
 		
 		function getRandomAmount() {
-			const baseAmounts = [188, 288, 388, 488, 588, 688, 788, 888, 988, 1288, 1588, 1888, 2288, 2588, 2888];
+			const baseAmounts = [188, 288, 388, 488, 588, 688, 788, 888, 988, 1288, 1588, 1888];
 			const base = baseAmounts[Math.floor(Math.random() * baseAmounts.length)];
 			const decimal = Math.floor(Math.random() * 100);
 			return base + '.' + (decimal < 10 ? '0' + decimal : decimal);
@@ -1545,14 +1120,12 @@
 		
 		function getRandomAvatarColor() {
 			const colors = [
+				'linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%)',
 				'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
 				'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
 				'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
 				'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-				'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-				'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
-				'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-				'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+				'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
 			];
 			return colors[Math.floor(Math.random() * colors.length)];
 		}
@@ -1575,7 +1148,7 @@
 						</div>
 					</div>
 					<div class="activity-win">
-						<div class="activity-amount">Receive ₹${amount}</div>
+						<div class="activity-amount">₹${amount}</div>
 						<div class="activity-status">Winning amount</div>
 					</div>
 				</div>
@@ -1585,7 +1158,7 @@
 			if (feed) {
 				feed.insertAdjacentHTML('afterbegin', activityHTML);
 				const items = feed.querySelectorAll('.activity-item');
-				if (items.length > 8) {
+				if (items.length > 6) {
 					items[items.length - 1].remove();
 				}
 			}
@@ -1593,7 +1166,7 @@
 		
 		function initializeActivities() {
 			for (let i = 0; i < 5; i++) {
-				setTimeout(createActivityItem, i * 200);
+				setTimeout(createActivityItem, i * 400);
 			}
 		}
 		

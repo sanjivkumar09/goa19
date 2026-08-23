@@ -2,26 +2,26 @@
    Goa Games - Modern Design System
    ======================================== */
 
-/* CSS Variables - DiuWin Theme */
+/* CSS Variables - DiuWin Coral Theme */
 :root {
-    /* Primary Colors - Gold Theme */
-    --primary-color: #D4AF37;
-    --primary-dark: #B8941E;
-    --primary-light: #E6BE4E;
-    --secondary-color: #C5A028;
-    --accent-color: #D4AF37;
+    /* Primary Colors - Coral Red Theme */
+    --primary-color: #ff4d4f;
+    --primary-dark: #d9363e;
+    --primary-light: #ff7875;
+    --secondary-color: #f2413b;
+    --accent-color: #ff4d4f;
     
-    /* Background Colors - Dark Grey Theme */
-    --bg-primary: #2a2a2a;
-    --bg-secondary: #1f1f1f;
-    --bg-tertiary: rgba(30, 30, 46, 0.8);
-    --bg-light: #f8fafc;
-    --bg-card: rgba(30, 30, 46, 0.8);
+    /* Background Colors - Clean Light Theme */
+    --bg-primary: #f4f5f8;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f8fafc;
+    --bg-light: #ffffff;
+    --bg-card: #ffffff;
     
     /* Text Colors */
-    --text-primary: #D4AF37;
-    --text-secondary: #e0e0e0;
-    --text-light: #e0e0e0;
+    --text-primary: #1e2329;
+    --text-secondary: #7e8a9b;
+    --text-light: #5d6472;
     --text-white: #ffffff;
     
     /* Status Colors */

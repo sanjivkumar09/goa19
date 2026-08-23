@@ -11,23 +11,24 @@
     <link href="/css/main.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/images/bitbug_favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         html, body {
             height: 100%;
             width: 100%;
             padding: 0;
             margin: 0;
             font-family: 'Outfit', sans-serif;
-            background-color: #071224;
-            color: #ffffff;
+            background-color: #7b8494;
+            color: #1e2329;
         }
 
         body {
-            background-image: linear-gradient(rgba(7, 18, 36, 0.93), rgba(15, 41, 74, 0.93)), url('/images/dark_blue_damask.jpg');
-            background-size: cover, 320px 320px;
-            background-repeat: no-repeat, repeat;
-            background-attachment: fixed;
+            background-color: #7b8494;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -41,134 +42,114 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            background: transparent;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
-            padding: 24px 20px;
+            background: #ffffff;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+            padding: 0;
             box-sizing: border-box;
         }
 
-        /* Top Nav Header */
-        .nav-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            height: 50px;
-            margin-bottom: 10px;
+        /* Top Header Banner with Image */
+        .auth-top-banner {
+            background: url('/images/login_header_bg.png') no-repeat center center;
+            background-size: cover;
+            background-color: #ff5e52;
+            padding: 16px 20px 24px 20px;
+            color: #ffffff;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.25);
         }
 
-        .back-btn {
-            font-size: 28px;
+        .auth-banner-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            height: 40px;
+            margin-bottom: 12px;
+        }
+
+        .banner-back-btn {
+            font-size: 22px;
             color: #ffffff;
             cursor: pointer;
-            transition: transform 0.2s ease, color 0.2s ease;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            transition: transform 0.2s ease;
         }
 
-        .back-btn:hover {
-            color: #FFD700;
+        .banner-back-btn:hover {
             transform: translateX(-3px);
         }
 
-        .lang-selector {
+        .banner-brand-center {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 14px;
+            gap: 8px;
             cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            margin-right: 36px; /* Balance back button */
+            flex: 1;
+            justify-content: center;
         }
 
-        .lang-selector:hover {
-            border-color: #FFD700;
-            background: rgba(255, 215, 0, 0.1);
-        }
-
-        .lang-flag {
-            width: 20px;
-            height: 20px;
+        .banner-brand-logo {
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
+            border: 1.5px solid #ffffff;
             object-fit: cover;
         }
 
-        /* Logo Area */
-        .raja-logo-container {
-            text-align: center;
-            margin-top: 10px;
-            margin-bottom: 25px;
-        }
-
-        .raja-logo-title {
-            font-family: 'Cinzel', serif;
-            font-size: 38px;
+        .banner-brand-title {
+            font-size: 20px;
             font-weight: 800;
-            letter-spacing: 5px;
-            background: linear-gradient(180deg, #FFF 10%, #FFD700 60%, #E5A93B 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.25));
-            line-height: 1.1;
+            color: #ffffff;
+            letter-spacing: 0.5px;
         }
 
-        .raja-logo-sub {
-            font-family: 'Cinzel', serif;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 7px;
-            color: #D4AF37;
-            margin-top: 2px;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+        .auth-banner-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
         }
 
-        /* Main Form Section */
-        .login-box {
+        .auth-banner-sub {
+            font-size: 11.5px;
+            color: rgba(255, 255, 255, 0.92);
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        /* Form Area Container */
+        .login-content-box {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: transparent;
-        }
-
-        .login-box .tit {
-            font-size: 26px;
-            font-weight: 700;
-            color: #FFD700;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .login-box .sub-desc {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.5;
-            margin-bottom: 25px;
+            background: #ffffff;
+            padding: 16px 20px 30px 20px;
         }
 
         /* Tabs Styling */
         .tabs-container {
             display: flex;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 25px;
+            border-bottom: 1px solid #ebeef5;
+            margin-bottom: 22px;
             position: relative;
         }
 
         .tab-item {
             flex: 1;
             text-align: center;
-            padding: 12px 0;
-            font-size: 15px;
+            padding: 10px 0;
+            font-size: 14px;
             font-weight: 600;
-            color: rgba(255, 255, 255, 0.5);
+            color: #8b96a5;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -177,23 +158,23 @@
         }
 
         .tab-item i {
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .tab-item.active {
-            color: #FFD700;
+            color: #ff4d4f;
+            font-weight: 700;
         }
 
         .tab-item.active::after {
             content: '';
             position: absolute;
             bottom: -1px;
-            left: 15%;
-            right: 15%;
+            left: 20%;
+            right: 20%;
             height: 3px;
-            background: #FFD700;
+            background: #ff4d4f;
             border-radius: 3px 3px 0 0;
-            box-shadow: 0 -2px 10px rgba(255, 215, 0, 0.6);
         }
 
         /* Form Inputs */
@@ -201,51 +182,57 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 10px;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            color: #1e2329;
+            font-size: 13.5px;
+            font-weight: 600;
         }
 
-        .input-label-container i {
-            color: #FFD700;
-            font-size: 16px;
+        .label-icon-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: #ffebe9;
+            color: #ff4d4f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
         }
 
         .input-wrapper {
             display: flex;
             align-items: center;
-            background: rgba(10, 25, 47, 0.7);
-            border: 1px solid rgba(212, 175, 55, 0.35);
+            background: #ffffff;
+            border: 1px solid #e1e4e8;
             border-radius: 12px;
             padding: 4px 14px;
-            margin-bottom: 20px;
-            min-height: 52px;
-            transition: all 0.3s ease;
+            margin-bottom: 18px;
+            min-height: 48px;
+            transition: all 0.25s ease;
         }
 
         .input-wrapper:focus-within {
-            border-color: #FFD700;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
-            background: rgba(10, 25, 47, 0.85);
+            border-color: #ff4d4f;
+            box-shadow: 0 0 8px rgba(255, 77, 79, 0.2);
         }
 
         .country-select {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #ffffff;
-            font-size: 15px;
+            color: #1e2329;
+            font-size: 14px;
             font-weight: 600;
             padding-right: 12px;
             margin-right: 12px;
-            border-right: 1px solid rgba(255, 255, 255, 0.15);
+            border-right: 1px solid #ebeef5;
             cursor: pointer;
         }
 
         .country-select i {
-            font-size: 12px;
-            color: rgba(255,255,255,0.6);
+            font-size: 11px;
+            color: #8b96a5;
         }
 
         .input-field {
@@ -253,45 +240,52 @@
             background: transparent !important;
             border: none !important;
             outline: none !important;
-            color: #ffffff !important;
-            font-size: 15px;
+            color: #1e2329 !important;
+            font-size: 14px;
             font-family: 'Outfit', sans-serif;
-            height: 44px;
+            height: 42px;
             padding: 0;
         }
 
         .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: #a8b0bd;
+            font-size: 13px;
         }
 
         .toggle-password {
             font-size: 16px;
-            color: rgba(255, 255, 255, 0.5);
+            color: #8b96a5;
             cursor: pointer;
             padding: 10px;
             transition: color 0.2s ease;
         }
 
         .toggle-password:hover {
-            color: #FFD700;
+            color: #ff4d4f;
         }
 
-        /* Checkbox */
+        /* Options Row: Remember Password & Forgot Password */
+        .login-options-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            font-size: 13px;
+        }
+
         .remember-container {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 8px;
             cursor: pointer;
             user-select: none;
-            font-size: 13.5px;
-            color: rgba(255, 255, 255, 0.75);
+            color: #5d6472;
         }
 
         .checkbox-custom {
             width: 18px;
             height: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            border: 2px solid #c5cbda;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -300,15 +294,15 @@
         }
 
         .remember-container.checked .checkbox-custom {
-            border-color: #FFD700;
-            background: #FFD700;
+            border-color: #ff4d4f;
+            background: #ff4d4f;
         }
 
         .checkbox-custom::after {
             content: '';
             width: 6px;
             height: 6px;
-            background: #071224;
+            background: #ffffff;
             border-radius: 50%;
             display: none;
         }
@@ -317,117 +311,109 @@
             display: block;
         }
 
-        /* Buttons styling */
+        .forgot-password-link {
+            color: #ff4d4f;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 12.5px;
+            cursor: pointer;
+        }
+
+        .forgot-password-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Action Buttons */
         .btn-action-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 35px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
-        .btn-primary-gold {
-            background: linear-gradient(180deg, #1d3d63 0%, #0f294a 100%);
-            border: 1.5px solid #D4AF37;
-            color: #FFD700;
-            height: 52px;
-            border-radius: 26px;
-            font-size: 17px;
+        .btn-login-submit {
+            background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
+            border: none;
+            color: #ffffff;
+            height: 48px;
+            border-radius: 25px;
+            font-size: 16px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(255, 76, 76, 0.35);
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .btn-primary-gold:hover {
+        .btn-login-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-            background: linear-gradient(180deg, #244975 0%, #13335c 100%);
+            box-shadow: 0 6px 18px rgba(255, 76, 76, 0.45);
         }
 
-        .btn-primary-gold:active {
+        .btn-login-submit:active {
             transform: translateY(0);
         }
 
-        .btn-secondary-outlined {
-            background: rgba(10, 25, 47, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.85);
-            height: 52px;
-            border-radius: 26px;
-            font-size: 17px;
+        .btn-register-outlined {
+            background: #ffffff;
+            border: 1.5px solid #ff4d4f;
+            color: #ff4d4f;
+            height: 48px;
+            border-radius: 25px;
+            font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .btn-secondary-outlined:hover {
-            border-color: #FFD700;
-            color: #FFD700;
-            background: rgba(255, 215, 0, 0.05);
+        .btn-register-outlined:hover {
+            background: #fff2f0;
             transform: translateY(-2px);
         }
 
-        /* Footer Options */
-        .footer-shortcuts {
-            display: flex;
-            justify-content: space-around;
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .shortcut-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .shortcut-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .shortcut-icon-circle {
-            width: 48px;
-            height: 48px;
+        /* Floating Cute Support Widget (Image 3 Style) */
+        .floating-support-bubble {
+            position: fixed;
+            bottom: 30px;
+            right: calc(50% - 240px + 16px);
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1.5px solid rgba(212, 175, 55, 0.35);
+            background: #ffffff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #FFD700;
-            font-size: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
+            z-index: 9999;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.25s ease;
+            border: 2px solid #ff7165;
         }
 
-        .shortcut-item:hover .shortcut-icon-circle {
-            border-color: #FFD700;
-            box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-            background: rgba(255, 215, 0, 0.1);
+        @media (max-width: 480px) {
+            .floating-support-bubble {
+                right: 16px;
+            }
         }
 
-        .shortcut-label {
-            font-size: 12px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
+        .floating-support-bubble:hover {
+            transform: scale(1.08);
         }
 
-        .shortcut-item:hover .shortcut-label {
-            color: #FFD700;
+        .floating-support-bubble img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
-        /* Msg Toast Override */
+        /* Msg Toast */
         .alert-toast {
             position: fixed;
             top: 50%;
@@ -438,91 +424,50 @@
             max-width: 320px;
         }
         .msg-content {
-            background: rgba(10, 25, 47, 0.95);
-            border: 1px solid #FFD700;
+            background: linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%);
+            border: none;
             border-radius: 12px;
             color: #ffffff;
             padding: 12px 20px;
             text-align: center;
             font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(255, 76, 76, 0.4);
         }
     </style>
 </head>
 <body style="font-size: 12px">
     <div id="app">
-        <!-- Top Nav Header -->
-        <div class="nav-header">
-            <div class="back-btn" onclick="location.href='/home'">
-                <i class="fa fa-angle-left"></i>
+        <!-- Top Header Banner (Image 3 Style) -->
+        <div class="auth-top-banner">
+            <div class="auth-banner-nav">
+                <div class="banner-back-btn" onclick="location.href='/home'">
+                    <i class="fa fa-angle-left"></i>
+                </div>
+                <div class="banner-brand-center" onclick="location.href='/home'">
+                    <img src="/images/diuwin_logo.jpg" alt="DiuWin Logo" class="banner-brand-logo">
+                    <span class="banner-brand-title">DiuWin</span>
+                </div>
             </div>
-            <div class="lang-selector">
-                <!-- Circular US Flag SVG -->
-                <svg class="lang-flag" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="256" cy="256" r="256" fill="#fff"/>
-                    <path d="M0 256h512c0-36.2-7.5-70.6-21-101.8H21v203.6h470c13.5-31.2 21-65.6 21-101.8z" fill="#df2027"/>
-                    <path d="M21 154.2h470c17-39.2 21-82.6 11-125.6H10c-10 43-6 86.4 11 125.6z" fill="#df2027"/>
-                    <path d="M491 357.8H21c17 39.2 21 82.6 11 125.6H481c10-43 6-86.4-10-125.6z" fill="#df2027"/>
-                    <path d="M0 256c0 118.4 80.4 218 189.2 247.8V296.7H21C12.3 283.6 5.3 270 0 256z" fill="#df2027"/>
-                    <path d="M189.2 8.2C80.4 38 0 137.6 0 256c5.3-14 12.3-27.6 21-40.7h168.2V8.2z" fill="#df2027"/>
-                    <rect x="189.2" y="8.2" width="322.8" height="495.6" fill="#df2027"/>
-                    <path d="M0 256c0 141.4 114.6 256 256 256c42.5 0 82.7-10.4 118.2-28.7V256H0z" fill="#fff"/>
-                    <path d="M256 0C114.6 0 0 114.6 0 256h374.2V28.7C338.7 10.4 298.5 0 256 0z" fill="#fff"/>
-                    <rect x="189.2" y="8.2" width="185" height="247.8" fill="#1b4e9b"/>
-                    <circle cx="225" cy="50" r="4" fill="#fff"/>
-                    <circle cx="260" cy="50" r="4" fill="#fff"/>
-                    <circle cx="295" cy="50" r="4" fill="#fff"/>
-                    <circle cx="330" cy="50" r="4" fill="#fff"/>
-                    <circle cx="242.5" cy="80" r="4" fill="#fff"/>
-                    <circle cx="277.5" cy="80" r="4" fill="#fff"/>
-                    <circle cx="312.5" cy="80" r="4" fill="#fff"/>
-                    <circle cx="225" cy="110" r="4" fill="#fff"/>
-                    <circle cx="260" cy="110" r="4" fill="#fff"/>
-                    <circle cx="295" cy="110" r="4" fill="#fff"/>
-                    <circle cx="330" cy="110" r="4" fill="#fff"/>
-                    <circle cx="242.5" cy="140" r="4" fill="#fff"/>
-                    <circle cx="277.5" cy="140" r="4" fill="#fff"/>
-                    <circle cx="312.5" cy="140" r="4" fill="#fff"/>
-                    <circle cx="225" cy="170" r="4" fill="#fff"/>
-                    <circle cx="260" cy="170" r="4" fill="#fff"/>
-                    <circle cx="295" cy="170" r="4" fill="#fff"/>
-                    <circle cx="330" cy="170" r="4" fill="#fff"/>
-                    <circle cx="242.5" cy="200" r="4" fill="#fff"/>
-                    <circle cx="277.5" cy="200" r="4" fill="#fff"/>
-                    <circle cx="312.5" cy="200" r="4" fill="#fff"/>
-                </svg>
-                <span>EN</span>
-                <i class="fa fa-angle-down"></i>
-            </div>
+
+            <h1 class="auth-banner-title">Log in</h1>
+            <p class="auth-banner-sub">
+                Please log in with your phone number or email<br>
+                If you forget your password, please contact customer service
+            </p>
         </div>
 
-        <!-- Dynamic DiuWin GAMES Logo -->
-        <div class="raja-logo-container" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 15px; margin-bottom: 25px;">
-            <img src="/images/diuwin_logo.jpg" alt="DiuWin Logo" style="width: 44px; height: 44px; object-fit: cover; object-position: 50% 12%; border-radius: 50%; border: 1.5px solid rgba(229, 192, 96, 0.4); box-shadow: 0 0 10px rgba(229, 192, 96, 0.3);">
-            <div style="display: flex; flex-direction: column; text-align: left;">
-                <div class="raja-logo-title" style="font-size: 32px; letter-spacing: 2px; line-height: 1;">DiuWin</div>
-                <div class="raja-logo-sub" style="font-size: 13px; letter-spacing: 5px; margin-top: 2px;">GAMES</div>
-            </div>
-        </div>
-
-        <!-- Login Box Container -->
-        <div class="login-box">
-            <div class="tit">Log In</div>
-            <div class="sub-desc">
-                Please log in with your phone number or email.<br>
-                If you forgot your password, please contact customer service.
-            </div>
-
+        <!-- Login Form Container -->
+        <div class="login-content-box">
             <!-- Tabs -->
             <div class="tabs-container">
                 <div class="tab-item active" data-tab="phone">
-                    <i class="fa fa-mobile-phone" style="font-size: 24px; line-height: 18px;"></i>
-                    <span>phone number</span>
+                    <i class="fa fa-mobile" style="font-size: 22px;"></i>
+                    <span>Phone Number</span>
                 </div>
                 <div class="tab-item" data-tab="email">
                     <i class="fa fa-envelope-o"></i>
-                    <span>Email Login</span>
+                    <span>Email</span>
                 </div>
             </div>
 
@@ -530,7 +475,9 @@
             <div class="mian-from">
                 <!-- Username Input Wrapper -->
                 <div class="input-label-container">
-                    <i class="fa fa-mobile" id="input-label-icon" style="font-size: 20px;"></i>
+                    <div class="label-icon-box">
+                        <i class="fa fa-mobile" id="input-label-icon" style="font-size: 14px;"></i>
+                    </div>
                     <span id="input-label-text">Phone number</span>
                 </div>
                 <div class="input-wrapper">
@@ -544,7 +491,9 @@
 
                 <!-- Password Input Wrapper -->
                 <div class="input-label-container">
-                    <i class="fa fa-lock"></i>
+                    <div class="label-icon-box">
+                        <i class="fa fa-lock" style="font-size: 13px;"></i>
+                    </div>
                     <span>Password</span>
                 </div>
                 <div class="input-wrapper">
@@ -552,45 +501,37 @@
                     <span class="fa fa-fw fa-eye field_icon toggle-password"></span>
                 </div>
 
-                <!-- Remember Password checkbox -->
-                <div class="remember-container" id="remember-checkbox-trigger">
-                    <div class="checkbox-custom"></div>
-                    <span>Remember password</span>
+                <!-- Options Row: Remember Password & Forgot Password -->
+                <div class="login-options-row">
+                    <div class="remember-container" id="remember-checkbox-trigger">
+                        <div class="checkbox-custom"></div>
+                        <span>Remember password</span>
+                    </div>
+                    <a class="forgot-password-link" onclick="location.href='/keFuMenu'">Forgot password?</a>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="btn-action-container">
-                    <button class="btn-primary-gold" id="btn-login">
-                        Log in
+                    <button class="btn-login-submit" id="btn-login">
+                        Log In
                     </button>
-                    <button class="btn-secondary-outlined" onclick="location.href='/register'">
+                    <button class="btn-register-outlined" onclick="location.href='/register'">
                         Register
                     </button>
                 </div>
             </div>
-
-            <!-- Footer Shortcuts -->
-            <div class="footer-shortcuts">
-                <div class="shortcut-item" onclick="location.href='/forgot'">
-                    <div class="shortcut-icon-circle">
-                        <i class="fa fa-lock"></i>
-                    </div>
-                    <span class="shortcut-label">Forgot password</span>
-                </div>
-                <div class="shortcut-item" onclick="location.href='https://telegram.dog/'">
-                    <div class="shortcut-icon-circle">
-                        <i class="fa fa-headphones"></i>
-                    </div>
-                    <span class="shortcut-label">Customer Service</span>
-                </div>
-            </div>
         </div>
+
+        <!-- Floating Customer Support Widget -->
+        <a href="/keFuMenu" class="floating-support-bubble" title="Customer Support">
+            <img src="/images/customer-5ef38c22.png" alt="Support">
+        </a>
     </div>
 
     <!-- Overlay Loader -->
     <div class="van-overlay" style="z-index: 2003; display: none; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 10px;">
-            <div class="van-loading__spinner" style="color: #FFD700; width: 30px; height: 30px; border: 3px solid rgba(255,215,0,0.2); border-top-color: #FFD700; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <div class="van-loading__spinner" style="color: #ff4d4f; width: 30px; height: 30px; border: 3px solid rgba(255,77,79,0.2); border-top-color: #ff4d4f; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         </div>
     </div>
     <div class="alert-toast"></div>
@@ -672,7 +613,6 @@
             if (selectedTab === 'phone') {
                 labelTextElement.text('Phone number');
                 iconElement.removeClass('fa-envelope-o').addClass('fa-mobile');
-                iconElement.css('font-size', '20px');
                 countryContainer.show();
                 usernameField.attr('type', 'tel');
                 usernameField.attr('maxlength', '10');
@@ -682,7 +622,6 @@
             } else {
                 labelTextElement.text('Email Login');
                 iconElement.removeClass('fa-mobile').addClass('fa-envelope-o');
-                iconElement.css('font-size', '15px');
                 countryContainer.hide();
                 usernameField.attr('type', 'text');
                 usernameField.removeAttr('maxlength');

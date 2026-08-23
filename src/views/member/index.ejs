@@ -7,131 +7,147 @@
     <title>Account - DiuWin</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/pages-global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
+            background-color: #7b8494;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .member-app-wrap {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #f4f5f8;
+            padding-bottom: 80px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+            position: relative;
         }
         
         .profile-header {
-            background: linear-gradient(135deg, rgba(10, 25, 47, 0.95) 0%, rgba(15, 41, 74, 0.95) 100%);
-            padding: 40px 20px 30px;
+            background: linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%);
+            padding: 30px 20px 36px 20px;
             color: #ffffff;
             text-align: center;
-            border-radius: 0 0 24px 24px;
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
-            border-bottom: 1.5px solid rgba(212, 175, 55, 0.3);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.3);
         }
         
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
-            border: 3px solid #FFD700;
-            margin: 0 auto 16px;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            border: 3px solid #ffffff;
+            margin: 0 auto 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: #ffffff;
         }
         
         .profile-name {
             font-size: 20px;
             font-weight: 800;
             margin-bottom: 4px;
-            color: #FFD700;
-            text-shadow: 0 1px 4px rgba(255, 215, 0, 0.3);
+            color: #ffffff;
         }
         
         .profile-id {
-            font-size: 14px;
-            opacity: 0.9;
-            color: #e0e0e0;
+            font-size: 13px;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 12px;
+            border-radius: 12px;
+            color: #ffffff;
             font-weight: 600;
         }
         
         .balance-card {
-            background: linear-gradient(135deg, rgba(10, 25, 47, 0.9) 0%, rgba(15, 41, 74, 0.9) 100%) !important;
-            border: 1.5px solid rgba(212, 175, 55, 0.3);
-            margin: -20px 16px 16px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #ebeef5;
+            margin: -20px 14px 14px 14px;
+            padding: 18px 20px;
             border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6) !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
             text-align: center;
         }
         
         .balance-amount {
-            font-size: 32px;
-            font-weight: 900 !important;
-            color: #000000 !important;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+            font-size: 30px;
+            font-weight: 900;
+            color: #ff4d4f;
+            margin-bottom: 4px;
         }
         
         .balance-label {
-            font-size: 14px;
-            color: #000000 !important;
+            font-size: 13px;
+            color: #7e8a9b;
             font-weight: 600;
-            opacity: 0.8;
         }
         
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            padding: 16px;
+            gap: 10px;
+            padding: 0 14px 14px 14px;
         }
         
         .action-btn {
-            background: rgba(30, 30, 46, 0.8);
-            padding: 16px;
-            border-radius: 12px;
+            background: #ffffff;
+            padding: 14px 8px;
+            border-radius: 14px;
             text-align: center;
             text-decoration: none;
-            color: #e0e0e0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            border: 2px solid rgba(212, 175, 55, 0.2);
-        }
-        
-        .action-btn:active {
-            transform: scale(0.95);
+            color: #1e2329;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.25s ease;
+            border: 1px solid #ebeef5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         .action-btn:hover {
-            border-color: #D4AF37;
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+            border-color: #ff7875;
+            background: #fff8f8;
         }
         
         .action-btn img {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 8px;
+            width: 32px;
+            height: 32px;
+            margin-bottom: 6px;
+            object-fit: contain;
         }
         
         .action-btn span {
             font-size: 12px;
-            display: block;
+            font-weight: 700;
+            color: #5d6472;
         }
         
         .menu-section {
-            background: rgba(30, 30, 46, 0.8);
-            margin: 16px;
+            background: #ffffff;
+            margin: 0 14px 14px 14px;
             border-radius: 16px;
             overflow: hidden;
-            border: 2px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ebeef5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
         
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 16px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f2f5;
             text-decoration: none;
-            color: #e0e0e0;
-            transition: all 0.3s ease;
+            color: #1e2329;
+            transition: all 0.2s ease;
         }
         
         .menu-item:hover {
-            background: rgba(212, 175, 55, 0.1);
+            background: #fff8f8;
         }
         
         .menu-item:last-child {
@@ -139,120 +155,121 @@
         }
         
         .menu-item img {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             margin-right: 12px;
+            object-fit: contain;
         }
         
         .menu-item span {
             flex: 1;
-            font-size: 15px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e2329;
         }
-        
+
         .menu-item::after {
             content: '›';
-            font-size: 24px;
-            color: #D4AF37;
+            font-size: 20px;
+            color: #8b96a5;
         }
         
         .logout-btn {
-            background: rgba(30, 30, 46, 0.8);
-            color: #ef4444;
-            border: 2px solid #ef4444;
-            padding: 16px;
-            margin: 16px;
-            border-radius: 12px;
+            background: #ffffff;
+            color: #ff4d4f;
+            border: 1.5px solid #ff4d4f;
+            padding: 14px;
+            margin: 0 14px 20px 14px;
+            border-radius: 25px;
             text-align: center;
             font-weight: 700;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
+            width: calc(100% - 28px);
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(255, 77, 79, 0.1);
         }
         
         .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
+            background: #fff2f0;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
-        }
-        
-        .logout-btn:active {
-            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <!-- Profile Header -->
-    <div class="profile-header">
-        <img src="/images/avatar.svg" alt="Avatar" class="profile-avatar">
-        <div class="profile-name" id="userName">Loading...</div>
-        <div class="profile-id">UID: <span id="userId">---</span></div>
+    <div class="member-app-wrap">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <img src="/images/avatar.svg" alt="Avatar" class="profile-avatar">
+            <div class="profile-name" id="userName">Loading...</div>
+            <div class="profile-id">UID: <span id="userId">---</span></div>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-amount" id="userBalance">₹0.00</div>
+            <div class="balance-label">Total balance</div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/wallet" class="action-btn">
+                <img src="/images/wallet2.png" alt="Wallet">
+                <span>Wallet</span>
+            </a>
+            <a href="/wallet/recharge" class="action-btn">
+                <img src="/images/recharge.png" alt="Deposit">
+                <span>Deposit</span>
+            </a>
+            <a href="/wallet/withdrawal" class="action-btn">
+                <img src="/images/withdraw.png" alt="Withdraw">
+                <span>Withdraw</span>
+            </a>
+            <a href="/redenvelopes" class="action-btn">
+                <img src="/images/gift.png" alt="Gifts">
+                <span>Gifts</span>
+            </a>
+        </div>
+
+        <!-- Menu Section -->
+        <div class="menu-section">
+            <a href="/myprofile" class="menu-item">
+                <img src="/images/settings.png" alt="Settings">
+                <span>Settings</span>
+            </a>
+            <a href="/notification" class="menu-item">
+                <img src="/images/s9.png" alt="Notification">
+                <span>Notification</span>
+            </a>
+            <a href="/feedbeck" class="menu-item">
+                <img src="/images/s8.png" alt="Feedback">
+                <span>Feedback</span>
+            </a>
+            <a href="/keFuMenu" class="menu-item">
+                <img src="/images/support2.png" alt="Support">
+                <span>24/7 Customer service</span>
+            </a>
+            <a href="/guide" class="menu-item">
+                <img src="/images/guide.png" alt="Guide">
+                <span>Beginner's Guide</span>
+            </a>
+            <a href="/about" class="menu-item">
+                <img src="/images/about.png" alt="About">
+                <span>About us</span>
+            </a>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="logout-btn" onclick="logout()">Log out</button>
+
+        <!-- Support Button -->
+        <a href="/keFuMenu" class="support-btn">
+            <img src="/images/customer-5ef38c22.png" alt="Support">
+        </a>
+
+        <!-- Bottom Navigation -->
+        <%- include('../nav') -%>
     </div>
-
-    <!-- Balance Card -->
-    <div class="balance-card">
-        <div class="balance-amount" id="userBalance">₹0.00</div>
-        <div class="balance-label">Total balance</div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <a href="/wallet" class="action-btn">
-            <img src="/images/wallet2.png" alt="Wallet">
-            <span>Wallet</span>
-        </a>
-        <a href="/wallet/recharge" class="action-btn">
-            <img src="/images/recharge.png" alt="Deposit">
-            <span>Deposit</span>
-        </a>
-        <a href="/wallet/withdrawal" class="action-btn">
-            <img src="/images/withdraw.png" alt="Withdraw">
-            <span>Withdraw</span>
-        </a>
-        <a href="/redenvelopes" class="action-btn">
-            <img src="/images/gift.png" alt="Gifts">
-            <span>Gifts</span>
-        </a>
-    </div>
-
-    <!-- Menu Section -->
-    <div class="menu-section">
-        <a href="/myprofile" class="menu-item">
-            <img src="/images/settings.png" alt="Settings">
-            <span>Settings</span>
-        </a>
-        <a href="/notification" class="menu-item">
-            <img src="/images/s9.png" alt="Notification">
-            <span>Notification</span>
-        </a>
-        <a href="/feedbeck" class="menu-item">
-            <img src="/images/s8.png" alt="Feedback">
-            <span>Feedback</span>
-        </a>
-        <a href="/keFuMenu" class="menu-item">
-            <img src="/images/support2.png" alt="Support">
-            <span>24/7 Customer service</span>
-        </a>
-        <a href="/guide" class="menu-item">
-            <img src="/images/guide.png" alt="Guide">
-            <span>Beginner's Guide</span>
-        </a>
-        <a href="/about" class="menu-item">
-            <img src="/images/about.png" alt="About">
-            <span>About us</span>
-        </a>
-    </div>
-
-    <!-- Logout Button -->
-    <button class="logout-btn" onclick="logout()">Log out</button>
-
-    <!-- Support Button -->
-    <a href="/keFuMenu" class="support-btn">
-        <img src="/images/customer-5ef38c22.png" alt="Support">
-    </a>
-
-    <!-- Bottom Navigation -->
-    <%- include('../nav') -%>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

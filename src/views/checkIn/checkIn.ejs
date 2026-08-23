@@ -4,260 +4,420 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/x-icon" href="/images/bitbug_favicon.ico">
-    <title>Rewards - DiuWin</title>
+    <title>Activity - DiuWin Games</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/pages-global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body {
+        html, body {
+            height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
+            background-color: #7b8494;
+            font-family: 'Outfit', sans-serif;
         }
-        
-        .rewards-banner {
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            padding: 40px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
-        }
-        
-        .rewards-banner::before {
-            content: '🎉';
-            position: absolute;
-            font-size: 100px;
-            opacity: 0.1;
-            top: -20px;
-            left: -20px;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        .rewards-banner::after {
-            content: '🎁';
-            position: absolute;
-            font-size: 80px;
-            opacity: 0.1;
-            bottom: -10px;
-            right: -10px;
-            animation: float 4s ease-in-out infinite reverse;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .rewards-banner h1 {
-            color: #000000;
-            font-size: 24px;
-            font-weight: 900;
-            margin: 0 0 8px 0;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
-        }
-        
-        .rewards-banner p {
-            color: #000000;
-            font-size: 14px;
-            margin: 0;
-            font-weight: 600;
-            opacity: 0.9;
-        }
-        
-        .rewards-actions {
+
+        body {
             display: flex;
             justify-content: center;
-            gap: 16px;
-            margin-top: 16px;
+            align-items: flex-start;
+            overflow-y: auto;
         }
-        
-        .rewards-actions button {
-            background: #000000;
-            color: #D4AF37;
-            padding: 10px 24px;
-            border-radius: 25px;
-            border: 2px solid rgba(212, 175, 55, 0.5);
-            font-weight: 900;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-        
-        .rewards-actions button:hover {
-            background: rgba(212, 175, 55, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
-        }
-        
-        .rewards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 20px;
-        }
-        
-        .reward-card {
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            color: #000000;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
-            transition: all 0.3s ease;
-            cursor: pointer;
+
+        .activity-app {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background: #f4f5f8;
+            padding-bottom: 80px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+            box-sizing: border-box;
             position: relative;
-            overflow: hidden;
-            border: 2px solid rgba(212, 175, 55, 0.3);
         }
         
-        .reward-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
+        /* Coral Red Activity Header - Image 4 Style */
+        .activity-top-header {
+            background: linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%);
+            padding: 30px 20px 24px 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.3);
+            border-radius: 0 0 16px 16px;
         }
-        
-        .reward-card:hover::before {
-            opacity: 1;
-        }
-        
-        .reward-card:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.7);
-        }
-        
-        .reward-card.claimed {
-            background: rgba(30, 30, 46, 0.8);
-            cursor: not-allowed;
-            opacity: 0.7;
-            color: #e0e0e0;
-            border-color: rgba(212, 175, 55, 0.2);
-        }
-        
-        .reward-card.claimed:hover {
-            transform: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        .reward-amount {
-            font-size: 32px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
-        }
-        
-        .reward-status {
-            font-size: 14px;
-            padding: 6px 16px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            display: inline-block;
-            font-weight: 700;
-        }
-        
-        .reward-card.claimed .reward-amount {
-            color: #D4AF37;
-            text-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
-        }
-        
-        .reward-card.claimed .reward-status {
-            background: rgba(0,0,0,0.2);
-        }
-        
-        .support-btn {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            border-radius: 50%;
+
+        .activity-header-brand {
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
-            z-index: 999;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .activity-header-brand span {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .activity-login-btn {
+            background: #ffffff;
+            color: #ff4d4f;
+            padding: 9px 36px;
+            border-radius: 25px;
+            font-weight: 800;
+            font-size: 14.5px;
+            display: inline-block;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+            transition: all 0.25s ease;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
-            animation: supportPulse 2s infinite;
+        }
+
+        .activity-login-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+        }
+
+        /* 4 Quick Circular Awards Grid */
+        .quick-awards-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 16px 14px;
+            margin-top: 4px;
+        }
+
+        .quick-award-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .quick-award-icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease;
+        }
+
+        .quick-award-icon-box:hover {
+            transform: translateY(-2px);
+        }
+
+        .quick-award-icon-box.award1 { background: linear-gradient(135deg, #ffdcd2 0%, #ffede8 100%); color: #ff6b52; }
+        .quick-award-icon-box.award2 { background: linear-gradient(135deg, #d8f5eb 0%, #ebfaf4 100%); color: #10b981; }
+        .quick-award-icon-box.award3 { background: linear-gradient(135deg, #e4defa 0%, #f1edfd 100%); color: #8b5cf6; }
+        .quick-award-icon-box.award4 { background: linear-gradient(135deg, #fedfc8 0%, #ffeedf 100%); color: #f97316; }
+
+        .quick-award-icon-box i {
+            font-size: 24px;
+        }
+
+        .quick-award-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #5d6472;
+            line-height: 1.2;
+        }
+
+        /* Gifts & Attendance Bonus Cards - Image 4 Style */
+        .feature-cards-wrap {
+            padding: 0 14px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .activity-card {
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: transform 0.25s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .activity-card.gifts-card {
+            background: linear-gradient(135deg, #fff3eb 0%, #fff7f2 100%);
+            border: 1px solid #fedbc8;
+        }
+
+        .activity-card.attendance-card {
+            background: linear-gradient(135deg, #fff5ed 0%, #fffbf7 100%);
+            border: 1px solid #fedecb;
+        }
+
+        .activity-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 68%;
+        }
+
+        .activity-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e2329;
+            margin: 0;
+        }
+
+        .activity-card-desc {
+            font-size: 11.5px;
+            color: #7e8a9b;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .activity-card-img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+        }
+
+        /* Agent Luxury Rewards Banner */
+        .agent-banner-card {
+            margin: 0 14px 14px 14px;
+            background: linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%);
+            border-radius: 14px;
+            padding: 16px 18px;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(255, 76, 76, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+        }
+
+        .agent-banner-card h4 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .agent-banner-card p {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* 7 Days Rewards Section */
+        .checkin-section {
+            padding: 0 14px 16px 14px;
+        }
+
+        .checkin-title-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .checkin-title-wrap h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e2329;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkin-rule-btn {
+            font-size: 12px;
+            color: #ff4d4f;
+            border: 1px solid #ffb3b5;
+            border-radius: 12px;
+            padding: 2px 10px;
+            text-decoration: none;
+            font-weight: 600;
+            background: #ffffff;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
         
-        .support-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.8);
+        .reward-card {
+            background: linear-gradient(135deg, #ff7e79 0%, #ffa09a 100%);
+            border-radius: 12px;
+            padding: 18px 14px;
+            text-align: center;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(255, 126, 121, 0.25);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: none;
         }
         
-        .support-btn img {
-            width: 32px;
-            height: 32px;
-            filter: brightness(0);
+        .reward-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 126, 121, 0.35);
         }
         
-        @keyframes supportPulse {
-            0%, 100% {
-                box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
-            }
-            50% {
-                box-shadow: 0 6px 30px rgba(212, 175, 55, 0.9);
-            }
+        .reward-card.claimed {
+            background: #ffffff;
+            cursor: not-allowed;
+            color: #8b96a5;
+            border: 1px solid #ebeef5;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        
+        .reward-amount {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+        
+        .reward-status {
+            font-size: 12px;
+            padding: 4px 14px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 15px;
+            display: inline-block;
+            font-weight: 700;
+        }
+
+        .reward-card.claimed .reward-status {
+            background: #f4f5f8;
+            color: #8b96a5;
         }
     </style>
 </head>
 <body>
-    <!-- Rewards Banner -->
-    <div class="rewards-banner">
-        <h1>7 Days Recharge Rewards</h1>
-        <p>Recharge daily and claim amazing rewards!</p>
-        <div class="rewards-actions">
-            <button onclick="location.href='/checkDes'">Rule</button>
-            <button onclick="location.href='/checkRecord'">Registration Profile</button>
+    <div class="activity-app">
+        <!-- Coral Red Activity Top Header -->
+        <div class="activity-top-header">
+            <div class="activity-header-brand">
+                <img src="/images/diuwin_logo.jpg" alt="DiuWin Logo" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ffffff;">
+                <span>DiuWin</span>
+            </div>
+            <a href="/login" class="activity-login-btn">Login</a>
         </div>
+
+        <!-- 4 Quick Circular Awards Grid -->
+        <div class="quick-awards-row">
+            <a href="/redenvelopes" class="quick-award-item">
+                <div class="quick-award-icon-box award1">
+                    <i class="fa fa-trophy"></i>
+                </div>
+                <span class="quick-award-label">Activity Award</span>
+            </a>
+            <a href="/checkIn" class="quick-award-item">
+                <div class="quick-award-icon-box award2">
+                    <i class="fa fa-diamond"></i>
+                </div>
+                <span class="quick-award-label">Super Jackpot</span>
+            </a>
+            <a href="/redenvelopes" class="quick-award-item">
+                <div class="quick-award-icon-box award3">
+                    <i class="fa fa-gift"></i>
+                </div>
+                <span class="quick-award-label">First gift</span>
+            </a>
+            <a href="/redenvelopes" class="quick-award-item">
+                <div class="quick-award-icon-box award4">
+                    <i class="fa fa-pie-chart"></i>
+                </div>
+                <span class="quick-award-label">Invite Wheel</span>
+            </a>
+        </div>
+
+        <!-- Gifts & Attendance Bonus Cards (Image 4 Style) -->
+        <div class="feature-cards-wrap">
+            <a href="/redenvelopes" class="activity-card gifts-card">
+                <div class="activity-card-info">
+                    <h4 class="activity-card-title">Gifts</h4>
+                    <p class="activity-card-desc">Enter the redemption code to receive gift rewards</p>
+                </div>
+                <img src="/asset/ass/turn_icon-0c8307cf.png" alt="Gifts" class="activity-card-img">
+            </a>
+            <a href="/checkIn" class="activity-card attendance-card">
+                <div class="activity-card-info">
+                    <h4 class="activity-card-title">Attendance bonus</h4>
+                    <p class="activity-card-desc">The more consecutive days you sign in, the higher the reward will be.</p>
+                </div>
+                <img src="/asset/ass/vip_icon-0ce6fe20.png" alt="Attendance" class="activity-card-img">
+            </a>
+        </div>
+
+        <!-- Agent Luxury Rewards Banner -->
+        <a href="/promotion" class="agent-banner-card">
+            <div>
+                <h4>Become Agent Enjoy Luxury Rewards</h4>
+                <p>Invite friends and earn daily agent commissions!</p>
+            </div>
+            <i class="fa fa-chevron-right" style="font-size: 16px;"></i>
+        </a>
+
+        <!-- 7 Days Recharge Rewards Section -->
+        <div class="checkin-section">
+            <div class="checkin-title-wrap">
+                <h3><i class="fa fa-calendar" style="color: #ff4d4f;"></i> 7 Days Recharge Rewards</h3>
+                <a href="/checkDes" class="checkin-rule-btn">Rules</a>
+            </div>
+
+            <div class="rewards-grid">
+                <div class="reward-card" data-dpr="1">
+                    <div class="reward-amount">₹50</div>
+                    <div class="reward-status">Get it now</div>
+                </div>
+                <div class="reward-card" data-dpr="2">
+                    <div class="reward-amount">₹100</div>
+                    <div class="reward-status">Get it now</div>
+                </div>
+                <div class="reward-card" data-dpr="3">
+                    <div class="reward-amount">₹150</div>
+                    <div class="reward-status">Get it now</div>
+                </div>
+                <div class="reward-card" data-dpr="4">
+                    <div class="reward-amount">₹200</div>
+                    <div class="reward-status">Get it now</div>
+                </div>
+                <div class="reward-card" data-dpr="5">
+                    <div class="reward-amount">₹250</div>
+                    <div class="reward-status">Get it now</div>
+                </div>
+                <div class="reward-card" data-dpr="6">
+                    <div class="reward-amount">₹300</div>
+                    <div class="reward-status">Get it now</div>
+                </div>
+                <div class="reward-card" data-dpr="7">
+                    <div class="reward-amount">₹400</div>
+                    <div class="reward-status">Get it now</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Customer Support Button -->
+        <a href="/keFuMenu" class="support-btn">
+            <img src="/images/customer-5ef38c22.png" alt="Support">
+        </a>
+
+        <!-- Bottom Navigation -->
+        <%- include('../nav') -%>
     </div>
-
-    <!-- Rewards Grid -->
-    <div class="rewards-grid">
-        <div class="reward-card" data-dpr="1">
-            <div class="reward-amount">₹50</div>
-            <div class="reward-status">Get it now</div>
-        </div>
-        <div class="reward-card" data-dpr="2">
-            <div class="reward-amount">₹100</div>
-            <div class="reward-status">Get it now</div>
-        </div>
-        <div class="reward-card" data-dpr="3">
-            <div class="reward-amount">₹150</div>
-            <div class="reward-status">Get it now</div>
-        </div>
-        <div class="reward-card" data-dpr="4">
-            <div class="reward-amount">₹200</div>
-            <div class="reward-status">Get it now</div>
-        </div>
-        <div class="reward-card" data-dpr="5">
-            <div class="reward-amount">₹250</div>
-            <div class="reward-status">Get it now</div>
-        </div>
-        <div class="reward-card" data-dpr="6">
-            <div class="reward-amount">₹300</div>
-            <div class="reward-status">Get it now</div>
-        </div>
-        <div class="reward-card" data-dpr="7">
-            <div class="reward-amount">₹400</div>
-            <div class="reward-status">Get it now</div>
-        </div>
-    </div>
-
-    <!-- Support Button -->
-    <a href="/keFuMenu" class="support-btn">
-        <img src="/images/customer-5ef38c22.png" alt="Support">
-    </a>
-
-    <!-- Bottom Navigation -->
-    <%- include('../nav') -%>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -265,7 +425,7 @@
         // Alert message function
         function alertMess(text) {
             $('body').append(`
-                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%); color: #000000; padding: 16px 24px; border-radius: 16px; z-index: 9999; animation: fadeInOut 2s; font-weight: 700; box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6); text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);">
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%); color: #ffffff; padding: 14px 22px; border-radius: 12px; z-index: 99999; animation: fadeInOut 2s; font-weight: 700; box-shadow: 0 8px 25px rgba(255, 76, 76, 0.4);">
                     ${text}
                 </div>
             `);
@@ -337,14 +497,6 @@
             loadCheckInStatus();
         });
     </script>
-    <!-- Support Button -->
-    <a href="/keFuMenu" class="support-btn">
-        <img src="/images/customer-5ef38c22.png" alt="Support">
-    </a>
-
-    <!-- Bottom Navigation -->
-    <%- include('../nav') -%>
-
     <style>
         @keyframes fadeInOut {
             0% { opacity: 0; transform: translate(-50%, -40%); }

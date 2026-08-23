@@ -7,92 +7,101 @@
     <title>Promotion - DiuWin</title>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/pages-global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
+            background-color: #7b8494;
+            font-family: 'Outfit', sans-serif;
         }
         
+        .promo-app-wrap {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #f4f5f8;
+            padding-bottom: 80px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
         .promo-header {
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            padding: 40px 20px;
-            color: #000000;
+            background: linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%);
+            padding: 30px 20px 38px 20px;
+            color: #ffffff;
             text-align: center;
-            border-radius: 0 0 24px 24px;
-            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.3);
         }
         
         .promo-header h1 {
             font-size: 24px;
-            margin: 0 0 8px 0;
-            color: #000000;
+            margin: 0 0 6px 0;
+            color: #ffffff;
             font-weight: 900;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
         }
         
         .promo-header p {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
             margin: 0;
-            color: #000000;
-            font-weight: 600;
+            color: #ffffff;
+            font-weight: 500;
         }
         
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 20px;
-            margin-top: -30px;
+            gap: 10px;
+            padding: 0 14px;
+            margin-top: -22px;
         }
         
         .stat-card {
-            background: rgba(30, 30, 46, 0.8);
-            padding: 20px;
-            border-radius: 16px;
+            background: #ffffff;
+            padding: 16px 12px;
+            border-radius: 14px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(212, 175, 55, 0.3);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #ebeef5;
         }
         
         .stat-value {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
-            color: #D4AF37;
+            color: #ff4d4f;
             margin-bottom: 4px;
-            text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
         }
         
         .stat-label {
-            font-size: 12px;
-            color: #e0e0e0;
+            font-size: 11.5px;
+            color: #7e8a9b;
             font-weight: 600;
         }
         
         .commission-card {
-            background: rgba(30, 30, 46, 0.8);
-            margin: 16px;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(212, 175, 55, 0.3);
-            backdrop-filter: blur(10px);
+            background: #ffffff;
+            margin: 14px;
+            padding: 16px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            border: 1px solid #ebeef5;
         }
         
         .commission-title {
-            font-size: 16px;
-            font-weight: 900;
-            margin-bottom: 16px;
-            color: #D4AF37;
-            text-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #1e2329;
         }
         
         .commission-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
         }
         
         .commission-item:last-child {
@@ -100,191 +109,149 @@
         }
         
         .commission-label {
-            font-size: 14px;
-            color: #e0e0e0;
+            font-size: 13.5px;
+            color: #5d6472;
             font-weight: 500;
         }
         
         .commission-value {
-            font-size: 16px;
-            font-weight: 900;
-            color: #D4AF37;
-            text-shadow: 0 2px 6px rgba(212, 175, 55, 0.3);
+            font-size: 15px;
+            font-weight: 800;
+            color: #ff4d4f;
         }
         
         .action-buttons {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 0 16px 16px;
+            gap: 10px;
+            padding: 0 14px 14px;
         }
         
         .copy-btn {
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            color: #000000;
-            padding: 16px;
+            background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
+            color: #ffffff;
+            padding: 12px;
             border-radius: 25px;
             text-align: center;
-            font-weight: 900;
+            font-weight: 700;
             cursor: pointer;
             border: none;
-            font-size: 14px;
+            font-size: 13.5px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 14px rgba(255, 76, 76, 0.35);
         }
         
         .copy-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.6);
-        }
-        
-        .copy-btn:active {
-            transform: translateY(0) scale(0.98);
+            box-shadow: 0 6px 18px rgba(255, 76, 76, 0.45);
         }
         
         .team-link {
-            background: rgba(30, 30, 46, 0.8);
-            margin: 16px;
-            padding: 16px;
-            border-radius: 16px;
+            background: #ffffff;
+            margin: 0 14px 14px 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
-            color: #e0e0e0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(212, 175, 55, 0.2);
-            transition: all 0.3s ease;
+            color: #1e2329;
+            border: 1px solid #ebeef5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease;
         }
-        
+
         .team-link:hover {
-            border-color: #D4AF37;
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            border-color: #ff7875;
+            background: #fff8f8;
         }
-        
+
         .team-link img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             margin-right: 12px;
-            filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3));
         }
         
         .team-link span {
             flex: 1;
             font-weight: 700;
+            font-size: 14px;
         }
         
         .team-link::after {
             content: '›';
-            font-size: 24px;
-            color: #D4AF37;
-        }
-        
-        .support-btn {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
-            z-index: 999;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: supportPulse 2s infinite;
-        }
-        
-        .support-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.8);
-        }
-        
-        .support-btn img {
-            width: 32px;
-            height: 32px;
-            filter: brightness(0);
-        }
-        
-        @keyframes supportPulse {
-            0%, 100% {
-                box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
-            }
-            50% {
-                box-shadow: 0 6px 30px rgba(212, 175, 55, 0.9);
-            }
+            font-size: 22px;
+            color: #8b96a5;
         }
     </style>
 </head>
 <body>
-    <!-- Promo Header -->
-    <div class="promo-header">
-        <h1>Refer & Earn</h1>
-        <p>Share your referral code and earn commission!</p>
+    <div class="promo-app-wrap">
+        <!-- Promotion Header -->
+        <div class="promo-header">
+            <h1>Agent Promotion Center</h1>
+            <p>Invite friends and enjoy high permanent commissions!</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="f1">0</div>
+                <div class="stat-label">Direct subordinates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="f1_today">0</div>
+                <div class="stat-label">Today's registrations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="f_total">0</div>
+                <div class="stat-label">Team subordinates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="f_all_today">0</div>
+                <div class="stat-label">Team registrations (today)</div>
+            </div>
+        </div>
+
+        <!-- Commission Card -->
+        <div class="commission-card">
+            <div class="commission-title">Commission Details</div>
+            <div class="commission-item">
+                <span class="commission-label">Total Commission</span>
+                <span class="commission-value">₹<span id="roses_all">0</span></span>
+            </div>
+            <div class="commission-item">
+                <span class="commission-label">Today's Commission</span>
+                <span class="commission-value">₹<span id="roses_today">0</span></span>
+            </div>
+            <div class="commission-item">
+                <span class="commission-label" id="roses_f1">Direct Commission: 0</span>
+            </div>
+            <div class="commission-item">
+                <span class="commission-label" id="roses_f">Team Commission: 0</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="copy-btn" id="copyCode">Copy Code</button>
+            <button class="copy-btn" id="copyLink">Copy Refer Link</button>
+        </div>
+
+        <!-- Team Link -->
+        <a href="/promotion/myTeam" class="team-link">
+            <img src="/images/customer-5ef38c22.png" alt="Team">
+            <span>My Team</span>
+        </a>
+
+        <!-- Support Button -->
+        <a href="/keFuMenu" class="support-btn">
+            <img src="/images/customer-5ef38c22.png" alt="Support">
+        </a>
+
+        <!-- Bottom Navigation -->
+        <%- include('../nav') -%>
     </div>
-
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-value" id="f1">0</div>
-            <div class="stat-label">Direct subordinates</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="f1_today">0</div>
-            <div class="stat-label">Today's registrations</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="f_total">0</div>
-            <div class="stat-label">Team subordinates</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="f_all_today">0</div>
-            <div class="stat-label">Team registrations (today)</div>
-        </div>
-    </div>
-
-    <!-- Commission Card -->
-    <div class="commission-card">
-        <div class="commission-title">Commission Details</div>
-        <div class="commission-item">
-            <span class="commission-label">Total Commission</span>
-            <span class="commission-value">₹<span id="roses_all">0</span></span>
-        </div>
-        <div class="commission-item">
-            <span class="commission-label">Today's Commission</span>
-            <span class="commission-value">₹<span id="roses_today">0</span></span>
-        </div>
-        <div class="commission-item">
-            <span class="commission-label" id="roses_f1">Direct Commission: 0</span>
-        </div>
-        <div class="commission-item">
-            <span class="commission-label" id="roses_f">Team Commission: 0</span>
-        </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-        <button class="copy-btn" id="copyCode">Copy Code</button>
-        <button class="copy-btn" id="copyLink">Copy Refer Link</button>
-    </div>
-
-    <!-- Team Link -->
-    <a href="/myTeam" class="team-link">
-        <img src="/images/team.png" alt="Team">
-        <span>My Team</span>
-    </a>
-
-    <!-- Support Button -->
-    <a href="/keFuMenu" class="support-btn">
-        <img src="/images/customer-5ef38c22.png" alt="Support">
-    </a>
-
-    <!-- Bottom Navigation -->
-    <%- include('../nav') -%>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -295,7 +262,7 @@
         // Alert message function
         function alertMess(text) {
             $('body').append(`
-                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%); color: #000000; padding: 16px 24px; border-radius: 16px; z-index: 9999; animation: fadeInOut 2s; font-weight: 700; box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6); text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);">
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%); color: #ffffff; padding: 14px 22px; border-radius: 12px; z-index: 99999; animation: fadeInOut 2s; font-weight: 700; box-shadow: 0 8px 25px rgba(255, 76, 76, 0.4);">
                     ${text}
                 </div>
             `);

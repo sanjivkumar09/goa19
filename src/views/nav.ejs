@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    /* Global DIUWIN Bottom Navigation Bar */
+    /* Global DIUWIN Bottom Navigation Bar - Coral Red & White */
     .bottom-nav {
         position: fixed !important;
         bottom: 0 !important;
@@ -9,9 +9,9 @@
         transform: translateX(-50%) !important;
         width: 100% !important;
         max-width: 480px !important;
-        background: #0a192f !important;
-        border-top: 1.5px solid #D4AF37 !important;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.6) !important;
+        background: #ffffff !important;
+        border-top: 1px solid #ebeef5 !important;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.06) !important;
         z-index: 10000 !important;
         box-sizing: border-box !important;
     }
@@ -20,9 +20,10 @@
         display: flex !important;
         justify-content: space-around !important;
         align-items: center !important;
-        padding: 8px 0 !important;
+        padding: 6px 0 4px 0 !important;
         margin: 0 !important;
         width: 100% !important;
+        position: relative !important;
     }
 
     .nav-item {
@@ -31,11 +32,11 @@
         align-items: center !important;
         justify-content: center !important;
         text-decoration: none !important;
-        color: rgba(255, 255, 255, 0.5) !important;
+        color: #8b96a5 !important;
         font-size: 11px !important;
         font-weight: 500 !important;
-        gap: 4px !important;
-        transition: all 0.3s ease !important;
+        gap: 3px !important;
+        transition: all 0.25s ease !important;
         flex: 1 !important;
         text-align: center !important;
         background: transparent !important;
@@ -43,28 +44,80 @@
     }
 
     .nav-item i {
-        font-size: 18px !important;
-        transition: all 0.3s ease !important;
-        color: rgba(255, 255, 255, 0.5) !important;
+        font-size: 19px !important;
+        transition: all 0.25s ease !important;
+        color: #8b96a5 !important;
     }
 
     .nav-item span {
         font-size: 11px !important;
         font-family: 'Outfit', sans-serif !important;
-        color: rgba(255, 255, 255, 0.5) !important;
+        color: #8b96a5 !important;
+        transition: color 0.25s ease !important;
     }
 
     .nav-item.active,
     .nav-item.active i,
     .nav-item.active span {
-        color: #FFD700 !important;
+        color: #ff4d4f !important;
         font-weight: 700 !important;
     }
 
     .nav-item:hover,
     .nav-item:hover i,
     .nav-item:hover span {
-        color: #FFD700 !important;
+        color: #ff4d4f !important;
+    }
+
+    /* Center Elevated Action Button */
+    .nav-center-item {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-decoration: none !important;
+        flex: 1 !important;
+        margin-top: -24px !important;
+        z-index: 10001 !important;
+    }
+
+    .nav-center-circle {
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #ff6b62 0%, #ff4141 100%) !important;
+        box-shadow: 0 4px 15px rgba(255, 77, 79, 0.45) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: 3px solid #ffffff !important;
+        transition: transform 0.25s ease !important;
+    }
+
+    .nav-center-circle:hover {
+        transform: scale(1.08) !important;
+    }
+
+    .nav-center-circle span.go-text {
+        font-size: 10px !important;
+        font-weight: 900 !important;
+        color: #ffffff !important;
+        line-height: 1 !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .nav-center-circle i {
+        font-size: 14px !important;
+        color: #ffffff !important;
+    }
+
+    .nav-center-item span.label {
+        font-size: 10.5px !important;
+        font-weight: 700 !important;
+        color: #ff4d4f !important;
+        margin-top: 2px !important;
+        font-family: 'Outfit', sans-serif !important;
     }
 
     /* Prevent bottom content from being obscured */
@@ -76,24 +129,27 @@
 <div class="bottom-nav" id="global-bottom-nav">
     <div class="nav-container">
         <a href="/home" class="nav-item" data-url="/home">
-            <i class="fa fa-gamepad"></i>
-            <span>Games</span>
-        </a>
-        <a href="/promotion" class="nav-item" data-url="/promotion">
-            <i class="fa fa-share-alt"></i>
-            <span>Affiliate</span>
-        </a>
-        <a href="/wallet" class="nav-item" data-url="/wallet">
-            <i class="fa fa-credit-card"></i>
-            <span>Wallet</span>
+            <i class="fa fa-home"></i>
+            <span>Home</span>
         </a>
         <a href="/checkIn" class="nav-item" data-url="/checkIn">
             <i class="fa fa-calendar-check-o"></i>
             <span>Activity</span>
         </a>
+        <a href="/redenvelopes" class="nav-center-item" data-url="/redenvelopes">
+            <div class="nav-center-circle">
+                <i class="fa fa-bolt"></i>
+                <span class="go-text">GO</span>
+            </div>
+            <span class="label">Get ₹500</span>
+        </a>
+        <a href="/promotion" class="nav-item" data-url="/promotion">
+            <i class="fa fa-share-alt"></i>
+            <span>Promotion</span>
+        </a>
         <a href="/mian" class="nav-item" data-url="/mian">
             <i class="fa fa-user"></i>
-            <span>Profile</span>
+            <span>Account</span>
         </a>
     </div>
 </div>
