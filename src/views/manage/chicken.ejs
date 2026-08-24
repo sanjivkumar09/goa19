@@ -120,6 +120,17 @@
                     </div>
 
                     <div class="form-group">
+                      <label>Next Crash Target (Force Crash):</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="next-crash" placeholder="Leave empty for auto, or enter '1' / 'force' / lane number e.g. '3'">
+                        <div class="input-group-append">
+                          <button class="btn btn-danger" type="button" id="btn-force-crash-now">Force Crash Next Jump</button>
+                        </div>
+                      </div>
+                      <small class="form-text text-muted">Forces the very next jump across all players to trigger a crash/hit collision.</small>
+                    </div>
+
+                    <div class="form-group">
                       <div class="custom-control custom-switch">
                         <input type="checkbox" class="custom-control-input" id="maintenance-mode">
                         <label class="custom-control-label font-weight-bold text-danger" for="maintenance-mode">Maintenance Mode (Pause Game)</label>
@@ -277,6 +288,7 @@
           $('#win-rate-modifier').val(cfg.winRateModifier || 1.0);
           $('#min-bet').val(cfg.minBet || 10);
           $('#max-bet').val(cfg.maxBet || 10000);
+          $('#next-crash').val(cfg.nextCrash || '');
           $('#maintenance-mode').prop('checked', !!cfg.maintenanceMode);
         }
       } catch (err) {
@@ -289,10 +301,12 @@
     // Save Settings
     $('#form-chicken-settings').submit(async function(e) {
       e.preventDefault();
+      const nextCrashVal = $('#next-crash').val().trim();
       const payload = {
         winRateModifier: parseFloat($('#win-rate-modifier').val()),
         minBet: parseFloat($('#min-bet').val()),
         maxBet: parseFloat($('#max-bet').val()),
+        nextCrash: nextCrashVal.length > 0 ? nextCrashVal : null,
         maintenanceMode: $('#maintenance-mode').is(':checked')
       };
 
@@ -309,6 +323,24 @@
         }
       } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: err.responseJSON?.message || 'Failed to update settings' });
+      }
+    });
+
+    // Force Crash Next Jump Quick Button
+    $('#btn-force-crash-now').click(async function() {
+      try {
+        const res = await $.ajax({
+          url: '/api/admin/config',
+          method: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify({ nextCrash: '1' })
+        });
+        if (res.status) {
+          $('#next-crash').val('1');
+          Swal.fire({ icon: 'warning', title: 'Crash Armed!', text: 'Next player jump will trigger a crash/hit collision!', timer: 2000 });
+        }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.responseJSON?.message || 'Failed to arm crash' });
       }
     });
 

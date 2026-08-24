@@ -132,6 +132,7 @@ const ensureChickenTables = async () => {
           ('chicken_min_bet', '10', ${timeNow}),
           ('chicken_max_bet', '10000', ${timeNow}),
           ('chicken_win_rate_modifier', '1.0', ${timeNow}),
+          ('chicken_next_crash', NULL, ${timeNow}),
           ('chicken_maintenance_mode', '0', ${timeNow});`);
 
         console.log('🐔 Chicken Road Database verified and ready.');
@@ -402,6 +403,25 @@ const jumpGame = async (req, res) => {
             return res.status(500).json({ error: 'INVALID_STATE', message: `Configuration missing for lane ${nextLane}.` });
         }
 
+        // Check admin next crash override
+        let forceCrash = false;
+        try {
+            const [nextCrashSetting] = await connection.execute(
+                'SELECT `setting_value` FROM `admin_settings` WHERE `setting_key` = "chicken_next_crash" LIMIT 1'
+            );
+            if (nextCrashSetting && nextCrashSetting.length > 0 && nextCrashSetting[0].setting_value !== null) {
+                const val = String(nextCrashSetting[0].setting_value).trim().toLowerCase();
+                if (val === '1' || val === 'force' || val === 'crash' || parseInt(val, 10) === nextLane) {
+                    forceCrash = true;
+                    await connection.execute(
+                        'UPDATE `admin_settings` SET `setting_value` = NULL WHERE `setting_key` = "chicken_next_crash"'
+                    );
+                }
+            }
+        } catch (e) {
+            console.error('Error checking chicken_next_crash:', e.message);
+        }
+
         // Check admin win rate modifier
         const [modifierSetting] = await connection.execute(
             'SELECT `setting_value` FROM `admin_settings` WHERE `setting_key` = "chicken_win_rate_modifier"'
@@ -416,7 +436,7 @@ const jumpGame = async (req, res) => {
         const randomUint = hmac.readUInt32BE(0);
         const randomFloat = randomUint / 4294967296; // [0.0, 1.0)
 
-        const isSafe = randomFloat < effectiveSafeProb;
+        const isSafe = !forceCrash && (randomFloat < effectiveSafeProb);
         const timeNow = Date.now().toString();
         const multBefore = parseFloat(round.current_multiplier);
         const multAfter = laneConfig.multiplier;
@@ -435,6 +455,15 @@ const jumpGame = async (req, res) => {
 
             const betNum = parseFloat(round.bet_amount);
             const potentialCashout = parseFloat((betNum * multAfter).toFixed(2));
+
+            if (ioInstance) {
+                ioInstance.emit('chicken:jump', {
+                    gameId,
+                    lane: nextLane,
+                    multiplier: multAfter,
+                    result: 'SAFE'
+                });
+            }
 
             return res.status(200).json({
                 gameId,
@@ -455,6 +484,15 @@ const jumpGame = async (req, res) => {
                 'UPDATE `chicken_rounds` SET `status` = "LOST", `ended_at` = ? WHERE `id` = ?',
                 [timeNow, gameId]
             );
+
+            if (ioInstance) {
+                ioInstance.emit('chicken:crash', {
+                    gameId,
+                    lane: nextLane,
+                    username: (user.name_user || user.phone).slice(0, 4) + '****',
+                    time: timeNow
+                });
+            }
 
             return res.status(200).json({
                 gameId,
@@ -803,6 +841,7 @@ const getAdminConfig = async (req, res) => {
             if (s.setting_key === 'chicken_min_bet') config.minBet = parseFloat(s.setting_value);
             if (s.setting_key === 'chicken_max_bet') config.maxBet = parseFloat(s.setting_value);
             if (s.setting_key === 'chicken_win_rate_modifier') config.winRateModifier = parseFloat(s.setting_value);
+            if (s.setting_key === 'chicken_next_crash') config.nextCrash = s.setting_value;
             if (s.setting_key === 'chicken_maintenance_mode') config.maintenanceMode = s.setting_value === '1';
         });
 
@@ -814,7 +853,7 @@ const getAdminConfig = async (req, res) => {
 
 const updateAdminConfig = async (req, res) => {
     try {
-        const { minBet, maxBet, winRateModifier, maintenanceMode } = req.body;
+        const { minBet, maxBet, winRateModifier, nextCrash, maintenanceMode } = req.body;
         const timeNow = Date.now();
 
         if (minBet !== undefined) {
@@ -833,6 +872,12 @@ const updateAdminConfig = async (req, res) => {
             await connection.execute(
                 'INSERT INTO `admin_settings` (`setting_key`, `setting_value`, `updated_at`) VALUES ("chicken_win_rate_modifier", ?, ?) ON DUPLICATE KEY UPDATE `setting_value` = ?, `updated_at` = ?',
                 [String(winRateModifier), timeNow, String(winRateModifier), timeNow]
+            );
+        }
+        if (nextCrash !== undefined) {
+            await connection.execute(
+                'INSERT INTO `admin_settings` (`setting_key`, `setting_value`, `updated_at`) VALUES ("chicken_next_crash", ?, ?) ON DUPLICATE KEY UPDATE `setting_value` = ?, `updated_at` = ?',
+                [nextCrash !== null ? String(nextCrash) : null, timeNow, nextCrash !== null ? String(nextCrash) : null, timeNow]
             );
         }
         if (maintenanceMode !== undefined) {
