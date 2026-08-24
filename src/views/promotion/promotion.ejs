@@ -13,7 +13,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #7b8494;
+            background-color: #e8ecef;
             font-family: 'Outfit', sans-serif;
         }
         
@@ -21,19 +21,19 @@
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
-            background: #f4f5f8;
+            background: #F5F5F3;
             padding-bottom: 80px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.12);
             position: relative;
         }
 
         .promo-header {
-            background: linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%);
+            background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
             padding: 30px 20px 38px 20px;
             color: #ffffff;
             text-align: center;
             border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.3);
+            box-shadow: 0 4px 15px rgba(32, 185, 107, 0.3);
         }
         
         .promo-header h1 {
@@ -71,13 +71,13 @@
         .stat-value {
             font-size: 22px;
             font-weight: 900;
-            color: #ff4d4f;
+            color: #20B96B;
             margin-bottom: 4px;
         }
         
         .stat-label {
             font-size: 11.5px;
-            color: #7e8a9b;
+            color: #7C8290;
             font-weight: 600;
         }
         
@@ -94,7 +94,7 @@
             font-size: 15px;
             font-weight: 800;
             margin-bottom: 12px;
-            color: #1e2329;
+            color: #0B1833;
         }
         
         .commission-item {
@@ -117,7 +117,7 @@
         .commission-value {
             font-size: 15px;
             font-weight: 800;
-            color: #ff4d4f;
+            color: #20B96B;
         }
         
         .action-buttons {
@@ -128,7 +128,7 @@
         }
         
         .copy-btn {
-            background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
+            background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
             color: #ffffff;
             padding: 12px;
             border-radius: 25px;
@@ -138,12 +138,12 @@
             border: none;
             font-size: 13.5px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 14px rgba(255, 76, 76, 0.35);
+            box-shadow: 0 4px 14px rgba(32, 185, 107, 0.35);
         }
         
         .copy-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(255, 76, 76, 0.45);
+            box-shadow: 0 6px 18px rgba(32, 185, 107, 0.45);
         }
         
         .team-link {
@@ -155,15 +155,15 @@
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
-            color: #1e2329;
+            color: #0B1833;
             border: 1px solid #ebeef5;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all 0.2s ease;
         }
 
         .team-link:hover {
-            border-color: #ff7875;
-            background: #fff8f8;
+            border-color: #20B96B;
+            background: #e6f7f0;
         }
 
         .team-link img {
@@ -259,10 +259,9 @@
         let referralCode = '';
         let referralLink = '';
 
-        // Alert message function
         function alertMess(text) {
             $('body').append(`
-                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%); color: #ffffff; padding: 14px 22px; border-radius: 12px; z-index: 99999; animation: fadeInOut 2s; font-weight: 700; box-shadow: 0 8px 25px rgba(255, 76, 76, 0.4);">
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%); color: #ffffff; padding: 14px 22px; border-radius: 12px; z-index: 99999; animation: fadeInOut 2s; font-weight: 700; box-shadow: 0 8px 25px rgba(32, 185, 107, 0.4);">
                     ${text}
                 </div>
             `);
@@ -271,7 +270,6 @@
             }, 1500);
         }
 
-        // Copy to clipboard function
         function copyToClipboard(text) {
             const tempInput = document.createElement('input');
             tempInput.value = text;
@@ -282,7 +280,6 @@
             alertMess('Copied to clipboard!');
         }
 
-        // Load promotion data
         function loadPromotionData() {
             $.ajax({
                 type: "POST",
@@ -290,19 +287,16 @@
                 dataType: "json",
                 success: function (response) {
                     if (response && response.invite && response.info) {
-                        // Update statistics
                         $('#f1').text(response.invite.f1 || 0);
                         $('#f1_today').text(response.invite.f1_today || 0);
                         $('#f_all_today').text(response.invite.f_all_today || 0);
                         $('#f_total').text(response.invite.total_f || 0);
                         
-                        // Update commissions
                         $('#roses_f1').text("Direct Commission: " + (response.invite.roses_f1 || 0));
                         $('#roses_f').text("Team Commission: " + (response.invite.roses_f || 0));
                         $('#roses_all').text(response.invite.roses_all || 0);
                         $('#roses_today').text(response.invite.roses_today || 0);
                         
-                        // Store referral info
                         referralCode = response.info[0].code;
                         referralLink = window.location.origin + `/register?r_code=${referralCode}`;
                     }
@@ -313,21 +307,18 @@
             });
         }
 
-        // Copy code button
         $('#copyCode').click(function() {
             if (referralCode) {
                 copyToClipboard(referralCode);
             }
         });
 
-        // Copy link button
         $('#copyLink').click(function() {
             if (referralLink) {
                 copyToClipboard(referralLink);
             }
         });
 
-        // Load data on page ready
         $(document).ready(function() {
             loadPromotionData();
         });

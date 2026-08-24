@@ -23,12 +23,12 @@
             padding: 0;
             margin: 0;
             font-family: 'Outfit', sans-serif;
-            background-color: #7b8494;
-            color: #1e2329;
+            background-color: #e8ecef;
+            color: #0B1833;
         }
 
         body {
-            background-color: #7b8494;
+            background-color: #e8ecef;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -42,21 +42,19 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            background: #ffffff;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+            background: #F5F5F3;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.12);
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Top Header Banner with Image */
+        /* Top Header Banner - Primary Green Gradient (#20B96B -> #36C66B) matching Screenshot 4 */
         .auth-top-banner {
-            background: url('/images/login_header_bg.png') no-repeat center center;
-            background-size: cover;
-            background-color: #ff5e52;
+            background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
             padding: 16px 20px 24px 20px;
             color: #ffffff;
             position: relative;
-            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.25);
+            box-shadow: 0 4px 15px rgba(32, 185, 107, 0.3);
         }
 
         .auth-banner-nav {
@@ -65,7 +63,7 @@
             justify-content: space-between;
             width: 100%;
             height: 40px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .banner-back-btn {
@@ -89,28 +87,39 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            margin-right: 36px; /* Balance back button */
+            margin-right: 36px;
             flex: 1;
             justify-content: center;
         }
 
         .banner-brand-logo {
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             border: 1.5px solid #ffffff;
             object-fit: cover;
         }
 
         .banner-brand-title {
-            font-size: 20px;
-            font-weight: 800;
+            font-size: 22px;
+            font-weight: 900;
             color: #ffffff;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.3px;
+        }
+
+        .lang-selector {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
         }
 
         .auth-banner-title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             color: #ffffff;
             margin: 0 0 6px 0;
@@ -118,7 +127,7 @@
         }
 
         .auth-banner-sub {
-            font-size: 11.5px;
+            font-size: 12px;
             color: rgba(255, 255, 255, 0.92);
             line-height: 1.45;
             margin: 0;
@@ -130,10 +139,13 @@
             display: flex;
             flex-direction: column;
             background: #ffffff;
-            padding: 16px 20px 30px 20px;
+            border-radius: 20px 20px 0 0;
+            margin-top: -12px;
+            padding: 20px 20px 30px 20px;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
         }
 
-        /* Tabs Styling */
+        /* Tabs Styling (Screenshot 4) */
         .tabs-container {
             display: flex;
             border-bottom: 1px solid #ebeef5;
@@ -147,7 +159,7 @@
             padding: 10px 0;
             font-size: 14px;
             font-weight: 600;
-            color: #8b96a5;
+            color: #7C8290;
             cursor: pointer;
             transition: all 0.25s ease;
             display: flex;
@@ -162,8 +174,8 @@
         }
 
         .tab-item.active {
-            color: #ff4d4f;
-            font-weight: 700;
+            color: #20B96B;
+            font-weight: 800;
         }
 
         .tab-item.active::after {
@@ -173,7 +185,7 @@
             left: 20%;
             right: 20%;
             height: 3px;
-            background: #ff4d4f;
+            background: #20B96B;
             border-radius: 3px 3px 0 0;
         }
 
@@ -183,17 +195,17 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 8px;
-            color: #1e2329;
+            color: #0B1833;
             font-size: 13.5px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .label-icon-box {
             width: 22px;
             height: 22px;
             border-radius: 6px;
-            background: #ffebe9;
-            color: #ff4d4f;
+            background: #e6f7f0;
+            color: #20B96B;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -213,17 +225,17 @@
         }
 
         .input-wrapper:focus-within {
-            border-color: #ff4d4f;
-            box-shadow: 0 0 8px rgba(255, 77, 79, 0.2);
+            border-color: #20B96B;
+            box-shadow: 0 0 8px rgba(32, 185, 107, 0.2);
         }
 
         .country-select {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #1e2329;
+            color: #0B1833;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             padding-right: 12px;
             margin-right: 12px;
             border-right: 1px solid #ebeef5;
@@ -232,7 +244,7 @@
 
         .country-select i {
             font-size: 11px;
-            color: #8b96a5;
+            color: #7C8290;
         }
 
         .input-field {
@@ -240,7 +252,7 @@
             background: transparent !important;
             border: none !important;
             outline: none !important;
-            color: #1e2329 !important;
+            color: #0B1833 !important;
             font-size: 14px;
             font-family: 'Outfit', sans-serif;
             height: 42px;
@@ -254,14 +266,14 @@
 
         .toggle-password {
             font-size: 16px;
-            color: #8b96a5;
+            color: #7C8290;
             cursor: pointer;
             padding: 10px;
             transition: color 0.2s ease;
         }
 
         .toggle-password:hover {
-            color: #ff4d4f;
+            color: #20B96B;
         }
 
         /* Options Row: Remember Password & Forgot Password */
@@ -279,7 +291,7 @@
             gap: 8px;
             cursor: pointer;
             user-select: none;
-            color: #5d6472;
+            color: #7C8290;
         }
 
         .checkbox-custom {
@@ -294,8 +306,8 @@
         }
 
         .remember-container.checked .checkbox-custom {
-            border-color: #ff4d4f;
-            background: #ff4d4f;
+            border-color: #20B96B;
+            background: #20B96B;
         }
 
         .checkbox-custom::after {
@@ -312,9 +324,9 @@
         }
 
         .forgot-password-link {
-            color: #ff4d4f;
+            color: #20B96B;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 12.5px;
             cursor: pointer;
         }
@@ -323,7 +335,7 @@
             text-decoration: underline;
         }
 
-        /* Action Buttons */
+        /* Action Buttons (Primary Green & Outlined Green) */
         .btn-action-container {
             display: flex;
             flex-direction: column;
@@ -332,16 +344,16 @@
         }
 
         .btn-login-submit {
-            background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
+            background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
             border: none;
             color: #ffffff;
             height: 48px;
             border-radius: 25px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.3px;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(255, 76, 76, 0.35);
+            box-shadow: 0 4px 14px rgba(32, 185, 107, 0.35);
             transition: all 0.25s ease;
             display: flex;
             align-items: center;
@@ -350,7 +362,7 @@
 
         .btn-login-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(255, 76, 76, 0.45);
+            box-shadow: 0 6px 18px rgba(32, 185, 107, 0.45);
         }
 
         .btn-login-submit:active {
@@ -359,12 +371,12 @@
 
         .btn-register-outlined {
             background: #ffffff;
-            border: 1.5px solid #ff4d4f;
-            color: #ff4d4f;
+            border: 1.5px solid #20B96B;
+            color: #20B96B;
             height: 48px;
             border-radius: 25px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.25s ease;
             display: flex;
@@ -373,11 +385,11 @@
         }
 
         .btn-register-outlined:hover {
-            background: #fff2f0;
+            background: #e6f7f0;
             transform: translateY(-2px);
         }
 
-        /* Floating Cute Support Widget (Image 3 Style) */
+        /* Floating Support Bubble */
         .floating-support-bubble {
             position: fixed;
             bottom: 30px;
@@ -394,7 +406,7 @@
             cursor: pointer;
             text-decoration: none;
             transition: transform 0.25s ease;
-            border: 2px solid #ff7165;
+            border: 2px solid #20B96B;
         }
 
         @media (max-width: 480px) {
@@ -424,7 +436,7 @@
             max-width: 320px;
         }
         .msg-content {
-            background: linear-gradient(135deg, #ff7165 0%, #ff4c4c 100%);
+            background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
             border: none;
             border-radius: 12px;
             color: #ffffff;
@@ -432,21 +444,24 @@
             text-align: center;
             font-size: 14px;
             font-weight: 700;
-            box-shadow: 0 8px 25px rgba(255, 76, 76, 0.4);
+            box-shadow: 0 8px 25px rgba(32, 185, 107, 0.4);
         }
     </style>
 </head>
 <body style="font-size: 12px">
     <div id="app">
-        <!-- Top Header Banner (Image 3 Style) -->
+        <!-- Top Header Banner (Screenshot 4 Style) -->
         <div class="auth-top-banner">
             <div class="auth-banner-nav">
                 <div class="banner-back-btn" onclick="location.href='/home'">
                     <i class="fa fa-angle-left"></i>
                 </div>
                 <div class="banner-brand-center" onclick="location.href='/home'">
-                    <img src="/images/diuwin_logo.jpg" alt="DiuWin Logo" class="banner-brand-logo">
-                    <span class="banner-brand-title">DiuWin</span>
+                    <img src="/images/logo.png" alt="DiuWin Logo" class="banner-brand-logo" style="height: 32px; width: auto; object-fit: contain; border-radius: 0; border: none;">
+                </div>
+                <div class="lang-selector">
+                    <i class="fa fa-globe"></i>
+                    <span>EN</span>
                 </div>
             </div>
 
@@ -481,7 +496,7 @@
                     <span id="input-label-text">Phone number</span>
                 </div>
                 <div class="input-wrapper">
-                    <!-- Country Code Picker (Hidden when Email Tab active) -->
+                    <!-- Country Code Picker -->
                     <div class="country-select" id="country-code-container">
                         <span>+91</span>
                         <i class="fa fa-chevron-down"></i>
@@ -531,7 +546,7 @@
     <!-- Overlay Loader -->
     <div class="van-overlay" style="z-index: 2003; display: none; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 10px;">
-            <div class="van-loading__spinner" style="color: #ff4d4f; width: 30px; height: 30px; border: 3px solid rgba(255,77,79,0.2); border-top-color: #ff4d4f; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <div class="van-loading__spinner" style="color: #20B96B; width: 30px; height: 30px; border: 3px solid rgba(32,185,107,0.2); border-top-color: #20B96B; border-radius: 50%; animation: spin 1s linear infinite;"></div>
         </div>
     </div>
     <div class="alert-toast"></div>
@@ -565,10 +580,6 @@
                 }
             }
             return "";
-        }
-        function unsetCookie() {
-            setCookie('token', '', 0);
-            setCookie('auth', '', 0);
         }
     </script>
     <script>

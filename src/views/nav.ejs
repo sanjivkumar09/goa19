@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    /* Global DIUWIN Bottom Navigation Bar - Coral Red & White */
+    /* Global DIUWIN Bottom Navigation Bar - Green Brand Theme (#20B96B) */
     .bottom-nav {
         position: fixed !important;
         bottom: 0 !important;
@@ -32,7 +32,7 @@
         align-items: center !important;
         justify-content: center !important;
         text-decoration: none !important;
-        color: #8b96a5 !important;
+        color: #7C8290 !important;
         font-size: 11px !important;
         font-weight: 500 !important;
         gap: 3px !important;
@@ -46,27 +46,27 @@
     .nav-item i {
         font-size: 19px !important;
         transition: all 0.25s ease !important;
-        color: #8b96a5 !important;
+        color: #7C8290 !important;
     }
 
     .nav-item span {
         font-size: 11px !important;
         font-family: 'Outfit', sans-serif !important;
-        color: #8b96a5 !important;
+        color: #7C8290 !important;
         transition: color 0.25s ease !important;
     }
 
     .nav-item.active,
     .nav-item.active i,
     .nav-item.active span {
-        color: #ff4d4f !important;
+        color: #20B96B !important;
         font-weight: 700 !important;
     }
 
     .nav-item:hover,
     .nav-item:hover i,
     .nav-item:hover span {
-        color: #ff4d4f !important;
+        color: #20B96B !important;
     }
 
     /* Center Elevated Action Button */
@@ -82,17 +82,18 @@
     }
 
     .nav-center-circle {
-        width: 48px !important;
-        height: 48px !important;
+        width: 50px !important;
+        height: 50px !important;
         border-radius: 50% !important;
-        background: linear-gradient(135deg, #ff6b62 0%, #ff4141 100%) !important;
-        box-shadow: 0 4px 15px rgba(255, 77, 79, 0.45) !important;
+        background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
+        box-shadow: 0 4px 15px rgba(32, 185, 107, 0.4) !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         border: 3px solid #ffffff !important;
         transition: transform 0.25s ease !important;
+        position: relative !important;
     }
 
     .nav-center-circle:hover {
@@ -100,11 +101,12 @@
     }
 
     .nav-center-circle span.go-text {
-        font-size: 10px !important;
+        font-size: 11px !important;
         font-weight: 900 !important;
         color: #ffffff !important;
         line-height: 1 !important;
         letter-spacing: 0.5px !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
     }
 
     .nav-center-circle i {
@@ -115,7 +117,7 @@
     .nav-center-item span.label {
         font-size: 10.5px !important;
         font-weight: 700 !important;
-        color: #ff4d4f !important;
+        color: #20B96B !important;
         margin-top: 2px !important;
         font-family: 'Outfit', sans-serif !important;
     }
@@ -138,10 +140,10 @@
         </a>
         <a href="/redenvelopes" class="nav-center-item" data-url="/redenvelopes">
             <div class="nav-center-circle">
-                <i class="fa fa-bolt"></i>
+                <i class="fa fa-compass"></i>
                 <span class="go-text">GO</span>
             </div>
-            <span class="label">Get ₹500</span>
+            <span class="label">Get ₹300</span>
         </a>
         <a href="/promotion" class="nav-item" data-url="/promotion">
             <i class="fa fa-share-alt"></i>

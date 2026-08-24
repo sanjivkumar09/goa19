@@ -2,14 +2,14 @@
    Goa Games - Modern Design System
    ======================================== */
 
-/* CSS Variables - DiuWin Coral Theme */
+/* CSS Variables - DiuWin Green Theme (#20B96B) */
 :root {
-    /* Primary Colors - Coral Red Theme */
-    --primary-color: #ff4d4f;
-    --primary-dark: #d9363e;
-    --primary-light: #ff7875;
-    --secondary-color: #f2413b;
-    --accent-color: #ff4d4f;
+    /* Primary Colors - Green Brand Theme */
+    --primary-color: #20B96B;
+    --primary-dark: #199955;
+    --primary-light: #36C66B;
+    --secondary-color: #36C66B;
+    --accent-color: #20B96B;
     
     /* Background Colors - Clean Light Theme */
     --bg-primary: #f4f5f8;

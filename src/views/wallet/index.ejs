@@ -11,22 +11,23 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #7b8494;
+            background-color: #e8ecef;
+            font-family: 'Outfit', sans-serif;
         }
         .wallet-app-wrap {
             max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
-            background: #f4f5f8;
+            background: #F5F5F3;
             padding-bottom: 80px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.12);
             position: relative;
         }
         .wallet-header {
-            background: linear-gradient(180deg, #ff5e52 0%, #ff7b71 100%);
+            background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(255, 94, 82, 0.3);
+            box-shadow: 0 4px 15px rgba(32, 185, 107, 0.3);
             border-radius: 0 0 20px 20px;
             color: #ffffff;
         }
@@ -65,14 +66,14 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
-            color: #1e2329;
+            color: #0B1833;
             font-weight: 700;
             font-size: 14px;
             transition: all 0.2s ease;
         }
         .wallet-action-btn:hover {
-            border-color: #ff7875;
-            background: #fff5f5;
+            border-color: #20B96B;
+            background: #e6f7f0;
         }
         .wallet-action-btn img {
             width: 36px;
@@ -97,17 +98,17 @@
             <!-- Balance Info -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                 <div style="text-align: center; padding: 14px; background: #f9fafb; border-radius: 12px; border: 1px solid #ebeef5;">
-                    <div style="font-size: 20px; font-weight: 800; color: #ff4d4f;" id="mainWallet">₹0.00</div>
-                    <div style="font-size: 12.5px; color: #7e8a9b; margin-top: 4px; font-weight: 600;">Main wallet</div>
+                    <div style="font-size: 20px; font-weight: 800; color: #20B96B;" id="mainWallet">₹0.00</div>
+                    <div style="font-size: 12.5px; color: #7C8290; margin-top: 4px; font-weight: 600;">Main wallet</div>
                 </div>
                 <div style="text-align: center; padding: 14px; background: #f9fafb; border-radius: 12px; border: 1px solid #ebeef5;">
                     <div style="font-size: 20px; font-weight: 800; color: #5d6472;" id="thirdPartyWallet">₹0.00</div>
-                    <div style="font-size: 12.5px; color: #7e8a9b; margin-top: 4px; font-weight: 600;">3rd party wallet</div>
+                    <div style="font-size: 12.5px; color: #7C8290; margin-top: 4px; font-weight: 600;">3rd party wallet</div>
                 </div>
             </div>
 
             <!-- Transfer Button -->
-            <button class="btn-secondary" style="width: 100%; margin-bottom: 16px; border-radius: 20px; font-weight: 700; padding: 10px;" onclick="location.href='/wallet/transfer'">
+            <button class="btn-secondary" style="width: 100%; margin-bottom: 16px; border-radius: 20px; font-weight: 700; padding: 10px; color: #20B96B; border: 1.5px solid #20B96B;" onclick="location.href='/wallet/transfer'">
                 Main wallet transfer
             </button>
 
@@ -146,9 +147,8 @@
     </div>
 
     <!-- Scripts -->
-	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        // Fetch wallet data
         function loadWalletData() {
             $.ajax({
                 type: "GET",
@@ -156,13 +156,11 @@
                 dataType: "json",
                 success: function (response) {
                     if (response && response.data) {
-                    let user = response.data;
+                        let user = response.data;
                         let balance = parseFloat(user.money_user || 0).toFixed(2);
-                        
-                        // Update balances
                         $('#totalBalance').text("₹" + balance);
                         $('#mainWallet').text("₹" + balance);
-                        $('#thirdPartyWallet').text("₹0.00"); // Can be updated based on your logic
+                        $('#thirdPartyWallet').text("₹0.00");
                     }
                 },
                 error: function() {
@@ -171,11 +169,9 @@
             });
         }
 
-        // Load data on page load
         $(document).ready(function() {
             loadWalletData();
         });
     </script>	
 </body>
 </html>
-	

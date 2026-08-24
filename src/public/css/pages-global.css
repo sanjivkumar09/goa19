@@ -1,16 +1,16 @@
-/* DIUWIN Global Theme - Modern Coral Red & Clean White Aesthetic */
+/* DIUWIN Global Theme - Green Brand Aesthetic (#20B96B) */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-    /* DIUWIN Coral & Red Palette */
-    --primary-color: #ff4d4f;
-    --primary-red: #ff4d4f;
-    --primary-coral: #f2413b;
-    --primary-gradient: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
-    --primary-gradient-135: linear-gradient(135deg, #ff5e52 0%, #ff7b71 100%);
-    --secondary-coral: #ff7875;
-    --accent-red: #ff3b30;
-    --dark-red: #d9363e;
+    /* DIUWIN Green Palette */
+    --primary-color: #20B96B;
+    --primary-red: #20B96B;
+    --primary-coral: #20B96B;
+    --primary-gradient: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
+    --primary-gradient-135: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
+    --secondary-coral: #36C66B;
+    --accent-red: #20B96B;
+    --dark-red: #199955;
     
     /* Backgrounds */
     --bg-grey: #f4f5f8;
@@ -20,22 +20,22 @@
     --bg-overlay: rgba(0, 0, 0, 0.4);
     
     /* Text Colors */
-    --text-primary: #1e2329;
-    --text-dark: #222222;
-    --text-secondary: #7e8a9b;
+    --text-primary: #0B1833;
+    --text-dark: #0B1833;
+    --text-secondary: #7C8290;
     --text-muted: #8b96a5;
     --text-light: #5d6472;
     --text-white: #ffffff;
-    --text-coral: #ff4d4f;
-    --text-gold: #ff4d4f; /* fallback for text-gold class to match coral theme */
+    --text-coral: #20B96B;
+    --text-gold: #20B96B;
     
     /* Border & Shadow */
     --border-color: #ebeef5;
     --border-light: 1px solid #f0f2f5;
-    --border-coral: 1px solid rgba(255, 77, 79, 0.3);
+    --border-coral: 1px solid rgba(32, 185, 107, 0.3);
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
-    --shadow-coral: 0 4px 15px rgba(255, 77, 79, 0.35);
+    --shadow-coral: 0 4px 15px rgba(32, 185, 107, 0.35);
     
     /* Spacing & Radius */
     --spacing-xs: 8px;
@@ -47,7 +47,7 @@
 
 /* Global Body & Root Styles */
 html, body {
-    background-color: #7b8494 !important;
+    background-color: #e8ecef !important;
     background-image: none !important;
     color: var(--text-dark);
     margin: 0;
@@ -65,11 +65,11 @@ html, body {
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
 }
 
-/* Navbar - Clean White Header with Coral Accents */
+/* Navbar - Clean White Header with Green Accents */
 .navbar {
     background: #ffffff !important;
     backdrop-filter: blur(10px) !important;
-    color: #1e2329 !important;
+    color: #0B1833 !important;
     padding: 12px 16px;
     display: flex;
     align-items: center;
@@ -88,7 +88,7 @@ html, body {
     font-weight: 800;
     flex: 1;
     text-align: center;
-    color: #ff4d4f !important;
+    color: #20B96B !important;
     letter-spacing: 0.5px;
 }
 
@@ -127,18 +127,18 @@ html, body {
 .card-title {
     font-size: 17px;
     font-weight: 700;
-    color: #1e2329;
+    color: #0B1833;
 }
 
 .card-body {
     color: var(--text-light);
 }
 
-/* Buttons - DIUWIN Coral Red Gradient */
+/* Buttons - DIUWIN Green Gradient */
 .btn, button {
-    background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
-    color: #ffffff;
-    border: none;
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
     padding: 12px 24px;
     border-radius: 25px;
     font-weight: 700;
@@ -150,7 +150,7 @@ html, body {
 
 .btn:hover, button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 77, 79, 0.45);
+    box-shadow: 0 6px 20px rgba(32, 185, 107, 0.45);
 }
 
 .btn:active, button:active {
@@ -158,15 +158,15 @@ html, body {
 }
 
 .btn-primary {
-    background: linear-gradient(90deg, #ff7165 0%, #ff4c4c 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
+    color: #ffffff !important;
 }
 
 .btn-secondary {
-    background: #ffffff;
-    color: #ff4d4f;
-    border: 1.5px solid #ff4d4f;
-    box-shadow: none;
+    background: #ffffff !important;
+    color: #20B96B !important;
+    border: 1.5px solid #20B96B !important;
+    box-shadow: none !important;
 }
 
 /* Input Fields */
@@ -176,15 +176,15 @@ input, textarea, select {
     border-radius: 12px;
     padding: 12px 16px;
     font-size: 14px;
-    color: #1e2329;
+    color: #0B1833;
     font-weight: 500;
     transition: all 0.3s ease;
 }
 
 input:focus, textarea:focus, select:focus {
     outline: none;
-    border-color: #ff4d4f;
-    box-shadow: 0 0 10px rgba(255, 77, 79, 0.2);
+    border-color: #20B96B !important;
+    box-shadow: 0 0 10px rgba(32, 185, 107, 0.2) !important;
 }
 
 input::placeholder, textarea::placeholder {
@@ -206,8 +206,8 @@ input::placeholder, textarea::placeholder {
 }
 
 .list-item:hover {
-    border-color: #ff7875;
-    box-shadow: 0 4px 15px rgba(255, 77, 79, 0.15);
+    border-color: #20B96B;
+    box-shadow: 0 4px 15px rgba(32, 185, 107, 0.15);
     transform: translateY(-2px);
 }
 
@@ -219,17 +219,17 @@ input::placeholder, textarea::placeholder {
 
 .list-item-value {
     font-weight: 700;
-    color: #ff4d4f;
+    color: #20B96B;
     font-size: 16px;
 }
 
 /* Wallet / Balance Cards */
 .balance-card {
-    background: linear-gradient(135deg, #ff5e52 0%, #ff7b71 100%);
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
     border-radius: var(--border-radius);
     padding: 24px;
     margin: 16px 12px;
-    box-shadow: 0 8px 25px rgba(255, 77, 79, 0.3);
+    box-shadow: 0 8px 25px rgba(32, 185, 107, 0.3);
     text-align: center;
     color: #ffffff;
 }
@@ -255,12 +255,12 @@ input::placeholder, textarea::placeholder {
     right: 20px;
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, #ff6b62 0%, #ff4141 100%);
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(255, 77, 79, 0.4);
+    box-shadow: 0 4px 15px rgba(32, 185, 107, 0.4);
     cursor: pointer;
     z-index: 9999;
     transition: all 0.3s ease;
@@ -277,10 +277,10 @@ input::placeholder, textarea::placeholder {
 }
 
 /* Utility Classes */
-.text-gold { color: #ff4d4f !important; }
+.text-gold { color: #20B96B !important; }
 .text-light { color: #5d6472 !important; }
 .text-white { color: #ffffff !important; }
-.text-dark { color: #1e2329 !important; }
+.text-dark { color: #0B1833 !important; }
 .text-center { text-align: center; }
 .text-bold { font-weight: 700; }
 
