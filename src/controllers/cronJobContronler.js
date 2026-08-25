@@ -8,17 +8,11 @@ const cron = require('node-cron');
 const initializeGamePeriods = async () => {
     try {
         const timeNow = Date.now();
-        
-        // Generate proper period based on current date
         let date = new Date();
         let years = date.getFullYear();
         let months = String(date.getMonth() + 1).padStart(2, '0');
         let days = String(date.getDate()).padStart(2, '0');
-        let hours = String(date.getHours()).padStart(2, '0');
-        let minutes = String(date.getMinutes()).padStart(2, '0');
-        let currentPeriod = `${years}${months}${days}${hours}${minutes}001`;
-        
-        console.log(`Initializing game periods with: ${currentPeriod}`);
+        let todayPrefix = `${years}${months}${days}`;
         
         // Initialize WinGo games
         const wingoGames = [
@@ -31,10 +25,16 @@ const initializeGamePeriods = async () => {
         for (const { game, name } of wingoGames) {
             const [existing] = await connection.query(`SELECT * FROM wingo WHERE game = '${name}' AND status = 0 LIMIT 1`);
             if (!existing || existing.length === 0) {
-                console.log(`Initializing ${name} game period...`);
+                const [last] = await connection.query(`SELECT period FROM wingo WHERE game = '${name}' ORDER BY id DESC LIMIT 1`);
+                let startPeriod = `${todayPrefix}0001`;
+                if (last && last.length > 0 && String(last[0].period).startsWith(todayPrefix)) {
+                    let seq = (parseInt(String(last[0].period).slice(todayPrefix.length), 10) || 0) + 1;
+                    startPeriod = `${todayPrefix}${String(seq).padStart(4, '0')}`;
+                }
+                console.log(`Initializing ${name} game period with: ${startPeriod}`);
                 await connection.execute(
                     `INSERT INTO wingo (period, amount, game, status, time) VALUES (?, ?, ?, ?, ?)`,
-                    [currentPeriod, 0, name, 0, timeNow]
+                    [startPeriod, 0, name, 0, timeNow]
                 );
             }
         }
@@ -44,10 +44,16 @@ const initializeGamePeriods = async () => {
         for (const game of k3Games) {
             const [existing] = await connection.query(`SELECT * FROM k3 WHERE game = ${game} AND status = 0 LIMIT 1`);
             if (!existing || existing.length === 0) {
-                console.log(`Initializing K3 game ${game} period...`);
+                const [last] = await connection.query(`SELECT period FROM k3 WHERE game = ${game} ORDER BY id DESC LIMIT 1`);
+                let startPeriod = `${todayPrefix}0001`;
+                if (last && last.length > 0 && String(last[0].period).startsWith(todayPrefix)) {
+                    let seq = (parseInt(String(last[0].period).slice(todayPrefix.length), 10) || 0) + 1;
+                    startPeriod = `${todayPrefix}${String(seq).padStart(4, '0')}`;
+                }
+                console.log(`Initializing K3 game ${game} period with: ${startPeriod}`);
                 await connection.execute(
                     `INSERT INTO k3 (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
-                    [currentPeriod, 0, game, 0, timeNow]
+                    [startPeriod, 0, game, 0, timeNow]
                 );
             }
         }
@@ -57,10 +63,16 @@ const initializeGamePeriods = async () => {
         for (const game of d5Games) {
             const [existing] = await connection.query(`SELECT * FROM 5d WHERE game = ${game} AND status = 0 LIMIT 1`);
             if (!existing || existing.length === 0) {
-                console.log(`Initializing 5D game ${game} period...`);
+                const [last] = await connection.query(`SELECT period FROM 5d WHERE game = ${game} ORDER BY id DESC LIMIT 1`);
+                let startPeriod = `${todayPrefix}0001`;
+                if (last && last.length > 0 && String(last[0].period).startsWith(todayPrefix)) {
+                    let seq = (parseInt(String(last[0].period).slice(todayPrefix.length), 10) || 0) + 1;
+                    startPeriod = `${todayPrefix}${String(seq).padStart(4, '0')}`;
+                }
+                console.log(`Initializing 5D game ${game} period with: ${startPeriod}`);
                 await connection.execute(
                     `INSERT INTO 5d (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
-                    [currentPeriod, '00000', game, 0, timeNow]
+                    [startPeriod, '00000', game, 0, timeNow]
                 );
             }
         }

@@ -46,18 +46,8 @@ const isNumber = (params) => {
 }
 
 function formatPeriodDate(period) {
-    // Period format is typically: 20240118224 (YYYYMMDDHHMM)
-    // Extract: Year-Month-Day Hour:Minute
-    if (!period || period.length < 11) return period;
-    
-    const periodStr = String(period);
-    const year = periodStr.substring(0, 4);
-    const month = periodStr.substring(4, 6);
-    const day = periodStr.substring(6, 8);
-    const hour = periodStr.substring(8, 10);
-    const minute = periodStr.substring(10, 12);
-    
-    return `${year}-${month}-${day} ${hour}:${minute}`;
+    if (!period) return '';
+    return String(period);
 }
 
 function showJoinMember(data) {

@@ -117,6 +117,7 @@ const middlewareAdminController = async (req, res, next) => {
 const totalJoin = async (req, res) => {
     let auth = req.cookies.auth;
     let typeid = req.body.typeid;
+    let timeNow = Date.now();
     if (!typeid) {
         return res.status(200).json({
             message: 'Failed',
@@ -133,10 +134,10 @@ const totalJoin = async (req, res) => {
     const [rows] = await connection.query('SELECT * FROM users WHERE `token` = ? ', [auth]);
 
     if (rows.length > 0) {
-        const [wingoall] = await connection.query(`SELECT * FROM minutes_1 WHERE game = "${game}" AND status = 0 AND level = 0 ORDER BY id ASC `, [auth]);
-        const [winGo1] = await connection.execute(`SELECT * FROM wingo WHERE status = 0 AND game = '${game}' ORDER BY id DESC LIMIT 1 `, []);
-        const [winGo10] = await connection.execute(`SELECT * FROM wingo WHERE status != 0 AND game = '${game}' ORDER BY id DESC LIMIT 10 `, []);
-        const [setting] = await connection.execute(`SELECT * FROM admin `, []);
+        const [wingoall] = await connection.query('SELECT * FROM minutes_1 WHERE game = ? AND status = 0 ORDER BY id ASC', [game]);
+        const [winGo1] = await connection.execute('SELECT * FROM wingo WHERE status = 0 AND game = ? ORDER BY id DESC LIMIT 1', [game]);
+        const [winGo10] = await connection.execute('SELECT * FROM wingo WHERE status != 0 AND game = ? ORDER BY id DESC LIMIT 10', [game]);
+        const [setting] = await connection.execute('SELECT * FROM admin', []);
 
         return res.status(200).json({
             message: 'Success',

@@ -314,27 +314,24 @@ const addK3 = async (game) => {
             await connection.execute(`UPDATE k3 SET result = ?,status = ? WHERE period = ? AND game = ${game}`, [result, 1, period]);
         }
         
-        // Generate period based on current date/time (Format: YYYYMMDDHHmmS)
+        // Generate period based on current date (Format: YYYYMMDD + 4 digits: 0001, 0002, 0003...)
         let date = new Date();
         let years = date.getFullYear();
         let months = String(date.getMonth() + 1).padStart(2, '0');
         let days = String(date.getDate()).padStart(2, '0');
-        let hours = String(date.getHours()).padStart(2, '0');
-        let minutes = String(date.getMinutes()).padStart(2, '0');
-        
-        // Get sequence number from last 3 digits of old period, or start at 1
-        let sequence = 1;
-        if (period && String(period).length >= 12) {
-            let oldSequence = parseInt(String(period).slice(-3));
-            let oldMinute = String(period).slice(8, 10);
-            if (oldMinute === minutes) {
-                sequence = oldSequence + 1;
-            }
+        let todayPrefix = `${years}${months}${days}`;
+
+        let nextPeriod;
+        if (period && String(period).startsWith(todayPrefix)) {
+            let seqStr = String(period).slice(todayPrefix.length);
+            let nextSeq = (parseInt(seqStr, 10) || 0) + 1;
+            nextPeriod = `${todayPrefix}${String(nextSeq).padStart(4, '0')}`;
+        } else {
+            nextPeriod = `${todayPrefix}0001`;
         }
-        let newPeriod = `${years}${months}${days}${hours}${minutes}${String(sequence).padStart(3, '0')}`;
         
         const sql = `INSERT INTO k3 SET period = ?, result = ?, game = ?, status = ?, time = ?`;
-        await connection.execute(sql, [newPeriod, 0, game, 0, timeNow]);
+        await connection.execute(sql, [nextPeriod, 0, game, 0, timeNow]);
 
         if (game == 1) join = 'k3d';
         if (game == 3) join = 'k3d3';
