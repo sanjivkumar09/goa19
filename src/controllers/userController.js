@@ -690,12 +690,13 @@ const recharge = async (req, res) => {
     let utr = req.body.utr;
 
     if (type != 'cancel' && type != 'submit' && type != 'submitauto') {
-        if (!auth || !money || money <= 499) {
+        let numMoney = Number(money);
+        if (!auth || isNaN(numMoney) || numMoney < 500 || numMoney > 100000) {
             return res.status(200).json({
-                message: 'Minimum recharge 500',
+                message: 'Deposit amount must be between ₹500 and ₹1,00,000',
                 status: false,
                 timeStamp: timeNow,
-            })
+            });
         }
     }
     const [user] = await connection.query('SELECT `phone`, `code`,`invite` FROM users WHERE `token` = ?', [auth]);
@@ -995,14 +996,21 @@ const infoUserBank = async (req, res) => {
 
 const withdrawal3 = async (req, res) => {
     let auth = req.cookies.auth;
-    let money = req.body.money;
+    let money = Number(req.body.money);
     let password = req.body.password;
-    if (!auth || !money || !password) {
+    if (!auth || isNaN(money) || !password) {
         return res.status(200).json({
             message: 'Failed',
             status: false,
             timeStamp: timeNow,
         })
+    }
+    if (money < 110 || money > 100000) {
+        return res.status(200).json({
+            message: 'Withdrawal amount must be between ₹110 and ₹1,00,000',
+            status: false,
+            timeStamp: timeNow,
+        });
     }
     const [user] = await connection.query('SELECT `phone`, `code`,`invite`, `money`, `money_user` FROM users WHERE `token` = ? AND password = ?', [auth, md5(password)]);
 

@@ -7828,17 +7828,9 @@
                         <span data-v-67caa467="" class="m-l-10"> Payment Method </span>
                     </div>
                     <div data-v-67caa467="" class="list c-row c-flex-warp m-t-10">
-                        <div data-v-67caa467="" class="item action" type="bank">
-                            <img data-v-67caa467="" width="20px" height="20px" src="/images/recharge_TRANSFER_red.webp" class="img">
-                            <div data-v-67caa467="" class="name">E-Pay</div>
-                            
-                            <!---->
-                        </div>
-                        <div data-v-67caa467="" class="item" type="MOMO">
-                            <img data-v-67caa467="" width="20px" height="20px" src="/images/recharge_TRANSFER_red.webp" class="img">
-                            <div data-v-67caa467="" class="name">T Pay</div>
-                            
-                            <!---->
+                        <div data-v-67caa467="" class="item action" type="bank" style="width: 100%; display: flex; align-items: center; justify-content: center; padding: 12px; gap: 8px; border-radius: 10px; cursor: pointer;">
+                            <i class="fa fa-qrcode" style="font-size: 20px; color: #20B96B;"></i>
+                            <div data-v-67caa467="" class="name" style="font-size: 14px; font-weight: 700;">QR Code (UPI / QR Pay)</div>
                         </div>
                     </div>
                 </div>
@@ -7860,7 +7852,7 @@
                                 <div data-v-67caa467="" class="input van-cell van-field">
                                     <div class="van-cell__value van-cell__value--alone van-field__value">
                                         <div class="van-field__body">
-                                            <input type="tel" id="ramount" inputmode="numeric" oninput="value=value.replace(/\D/g,'')" placeholder="₹ 500 ~ 20000" class="van-field__control ">
+                                            <input type="tel" id="ramount" inputmode="numeric" oninput="value=value.replace(/\D/g,'')" placeholder="₹ 500 ~ 1,00,000" class="van-field__control ">
                                         </div>
                                     </div>
                                 </div>
@@ -7881,8 +7873,11 @@
                                 <div data-v-67caa467="" data-money="10000" class="li">
                                     <span data-v-67caa467="" class="number">₹10000</span>
                                 </div>
-                                <div data-v-67caa467="" data-money="20000" class="li">
-                                    <span data-v-67caa467="" class="number">₹20000</span>
+                                <div data-v-67caa467="" data-money="50000" class="li">
+                                    <span data-v-67caa467="" class="number">₹50000</span>
+                                </div>
+                                <div data-v-67caa467="" data-money="100000" class="li">
+                                    <span data-v-67caa467="" class="number">₹1,00,000</span>
                                 </div>
                             </div>
                             <div data-v-67caa467="" style="margin-top: 20px;">
@@ -7891,12 +7886,12 @@
                                     
                                     <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
                                         <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
-                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Minimum deposit amount is ₹1500</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Minimum deposit amount is ₹500</span>
                                     </div>
                                     
                                     <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
                                         <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
-                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Maximum deposit amount is ₹20,000</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Maximum deposit amount is ₹1,00,000 (1 Lakh)</span>
                                     </div>
                                     
                                     <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
@@ -7916,7 +7911,7 @@
                                     
                                     <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
                                         <span style="color: #4CAF50; margin-right: 10px; font-size: 12px;">◆</span>
-                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Deposit processing time: 5-10 minutes</span>
+                                        <span style="color: #555; font-size: 14px; line-height: 1.6;">Deposit processing time: 1-5 minutes</span>
                                     </div>
                                     
                                     <div style="display: flex; align-items: flex-start;">
@@ -8045,8 +8040,8 @@
             e.preventDefault();
             $(this).addClass('block-click');
             let money = $('#ramount').val().trim();
-            let type = $('.pay-box:eq(0) .list').find('.action').attr('type');
-            if (money && money >= 1500 && money <= 20000) { 
+            let type = $('.pay-box:eq(0) .list').find('.action').attr('type') || 'bank';
+            if (money && money >= 500 && money <= 100000) { 
                 $.ajax({
                     type: "POST",
                     url: "/api/webapi/recharge",
@@ -8065,18 +8060,14 @@
                         setTimeout(() => {
                             $('.Loading').fadeOut(0);
                             if(pay){
-                                if(type=="bank"){
-                                    window.location.href = "/wallet/recharge/pay";
-                                }else if(type=="MOMO"){
-                                    window.location.href = "/wallet/recharge/pay1";
-                                }
+                                window.location.href = "/wallet/recharge/pay";
                             }
                         }, 1500);
                     }
                 });
                 return true;
             }
-            alertMess('Deposit amount range : ₹1500 ~ ₹20,000', $(this));
+            alertMess('Deposit amount range : ₹500 ~ ₹1,00,000', $(this));
         });
         // $('.submit').click(function (e) {
         //     e.preventDefault();
