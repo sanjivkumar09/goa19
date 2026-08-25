@@ -324,88 +324,101 @@
                 </div>
               </div>
             </div>
-            <!-- Main row -->
-            <div class="row">
-              <!-- Left col -->
-              <div class="col-md-12">
-                <!-- MAP & BOX PANE -->
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="card direct-chat direct-chat-warning">
-                      <div class="card-header">
-                        <h3 class="card-title">Betting Statistics</h3>
+            <!-- Main Dashboard Split Row (2 Columns) -->
+            <div class="row mt-2">
+              <!-- Left Column: Active Round, Timer, Adjustment, & Past Results -->
+              <div class="col-lg-6 col-md-12">
+                <!-- Round Info & Countdown Timer -->
+                <div class="card card-primary card-outline shadow-sm mb-3">
+                  <div class="card-header d-flex justify-content-between align-items-center" style="background: rgba(0, 123, 255, 0.15);">
+                    <h3 class="card-title font-weight-bold text-primary mb-0"><i class="fas fa-stopwatch mr-2"></i> Active Round & Timer</h3>
+                    <span class="badge badge-warning reservation-chunk-sub-num px-3 py-1 font-weight-bold" style="font-size: 16px;">Loading...</span>
+                  </div>
+                  <div class="card-body text-center py-3">
+                    <div class="text-muted small mb-2 text-uppercase font-weight-bold">Time Left To Draw</div>
+                    <div class="time" style="font-size: 32px; font-weight: 800; letter-spacing: 3px;">
+                      <span class="time-sub badge badge-light border px-3 py-2 text-dark">0</span>
+                      <span class="time-sub badge badge-light border px-3 py-2 text-dark">0</span>
+                      <span class="text-warning mx-2">:</span>
+                      <span class="time-sub badge badge-light border px-3 py-2 text-dark">4</span>
+                      <span class="time-sub badge badge-light border px-3 py-2 text-dark">7</span>
+                    </div>
+                  </div>
+                </div>
 
-                        <div class="card-tools">
-                          <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                          </button>
-                          <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                          </button>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <div class="direct-chat-messages" style="min-height: 520px;">
-                          <div class="direct-chat-msg">
-                            <!---->
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-footer"></div>
-                    </div>
+                <!-- Adjusting Next Result -->
+                <div class="card card-warning card-outline shadow-sm mb-3">
+                  <div class="card-header d-flex justify-content-between align-items-center" style="background: rgba(255, 193, 7, 0.15);">
+                    <h3 class="card-title font-weight-bold text-warning mb-0"><i class="fas fa-sliders-h mr-2"></i> Adjust Next Result</h3>
+                    <span id="ketQua" class="badge badge-info p-2 font-weight-bold" style="font-size: 14px;">Next result: Random</span>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="card card-primary">
-                      <div class="card-header" style="text-align: center;">
-                        <div data-v-04e3b381="" class="reservation-chunk-sub-num">012401924124912</div>
-                        <div data-v-7d40872f="" class="time" style="font-size: 23px;border-radius: none;">
-                          <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">0</span>
-                          <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">0</span>
-                          <span data-v-7d40872f="" class="">:</span>
-                          <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">4</span>
-                          <span data-v-7d40872f="" class="time-sub" style="border-radius: 0;">7</span>
-                        </div>
-                      </div>
-                      <div class="card-body" style="padding: 0;">
-                        <div class="form-group">
-                          <div data-v-a9660e98="" class="wrap">
-                            <div data-v-a9660e98="" class="c-tc van-row"
-                              style="text-align: center;border-bottom: 1px solid;padding: 6px">
-                              <div data-v-a9660e98="" class="van-col van-col--12">Date</div>
-                              <div data-v-a9660e98="" class="van-col van-col--4">Number</div>
-                              <div data-v-a9660e98="" class="van-col van-col--4">Big/Small</div>
-                              <div data-v-a9660e98="" class="van-col van-col--4">Colour</div>
-                            </div>
-                          </div>
-                          <div id="list-orders">
-                            <!---->
-                          </div>
-                        </div>
+                  <div class="card-body py-3">
+                    <div class="small text-muted mb-2">
+                      <span class="badge badge-danger">Red</span> (2, 4, 6, 8) &bull; 
+                      <span class="badge badge-success">Green</span> (1, 3, 7, 9) &bull; 
+                      <span class="badge" style="background:#9b59b6; color:#fff">Violet</span> (0, 5)
+                    </div>
+                    <!-- Quick Number Select Buttons -->
+                    <div class="btn-group btn-group-sm w-100 mb-3" role="group">
+                      <button type="button" class="btn btn-outline-danger btn-preset-number font-weight-bold" data-num="0">0</button>
+                      <button type="button" class="btn btn-outline-success btn-preset-number font-weight-bold" data-num="1">1</button>
+                      <button type="button" class="btn btn-outline-danger btn-preset-number font-weight-bold" data-num="2">2</button>
+                      <button type="button" class="btn btn-outline-success btn-preset-number font-weight-bold" data-num="3">3</button>
+                      <button type="button" class="btn btn-outline-danger btn-preset-number font-weight-bold" data-num="4">4</button>
+                      <button type="button" class="btn btn-outline-secondary btn-preset-number font-weight-bold" data-num="5">5</button>
+                      <button type="button" class="btn btn-outline-danger btn-preset-number font-weight-bold" data-num="6">6</button>
+                      <button type="button" class="btn btn-outline-success btn-preset-number font-weight-bold" data-num="7">7</button>
+                      <button type="button" class="btn btn-outline-danger btn-preset-number font-weight-bold" data-num="8">8</button>
+                      <button type="button" class="btn btn-outline-success btn-preset-number font-weight-bold" data-num="9">9</button>
+                      <button type="button" class="btn btn-outline-warning btn-preset-number font-weight-bold" data-num="-1">Random</button>
+                    </div>
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="editResult" placeholder="Enter custom result (e.g., 5 or 1|4|5)">
+                      <div class="input-group-append">
+                        <button type="submit" class="btn btn-warning font-weight-bold start-order px-4">Submit</button>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="card card-primary">
-                      <div class="card-header">
-                        <h3 class="card-title">Adjusting the result</h3>
-                      </div>
-                      <div class="card-body">
-                        <div class="form-group">
-                            <b>
-0 (Red and Purple) | 5 (Blue and Purple) | 1, 3, 7, 9 (Blue) | 2, 4, 6, 8 (Red)   </p>
-                            <label for="editResult" id="ketQua">Next result: 6</label>
-                            <input type="text" class="form-control" id="editResult" value=""
-                              placeholder="Enter the result (e.g., 1)">
-                        </div>
-                      </div>
-                      <div class="card-footer" style="text-align: center;">
-                        <button type="submit" class="btn btn-primary start-order">Submit</button>
+
+                <!-- Recent Round History Table -->
+                <div class="card card-secondary card-outline shadow-sm mb-3">
+                  <div class="card-header">
+                    <h3 class="card-title font-weight-bold"><i class="fas fa-history mr-2"></i> Recent Draw History</h3>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="wrap">
+                      <div class="c-tc van-row" style="text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px; font-weight: 700; background: rgba(0,0,0,0.2);">
+                        <div class="van-col van-col--12">Period</div>
+                        <div class="van-col van-col--4">Number</div>
+                        <div class="van-col van-col--4">Big/Small</div>
+                        <div class="van-col van-col--4">Colour</div>
                       </div>
                     </div>
+                    <div id="list-orders" style="max-height: 280px; overflow-y: auto;">
+                      <!-- Past results loaded dynamically -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Live Betting Activity Stream -->
+              <div class="col-lg-6 col-md-12">
+                <div class="card card-success card-outline shadow-sm direct-chat direct-chat-success">
+                  <div class="card-header d-flex justify-content-between align-items-center" style="background: rgba(40, 167, 69, 0.15);">
+                    <h3 class="card-title font-weight-bold text-success mb-0"><i class="fas fa-chart-line mr-2"></i> Live Betting Activity</h3>
+                    <span class="badge badge-success px-2 py-1"><i class="fas fa-satellite-dish mr-1"></i> LIVE</span>
+                  </div>
+                  <div class="card-body p-2">
+                    <div class="direct-chat-messages" style="height: 520px; overflow-y: auto; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px;">
+                      <div class="direct-chat-msg">
+                        <!-- Live bets loaded dynamically -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer bg-dark border-top-0 d-flex justify-content-between align-items-center text-muted small">
+                    <span>Updates in real-time as users place bets</span>
+                    <span id="winrate" class="badge badge-info font-weight-bold p-1">Win Rate: 80%</span>
                   </div>
                 </div>
               </div>

@@ -422,11 +422,21 @@ function refreshAdminData() {
             $('.orderNumbers').attr('totalmoney', ns);
 
             $('.direct-chat-msg').html('');
-            response.datas.map((data) => {
-                showJoinMember(data);
-            });
+            if (response.datas && response.datas.length > 0) {
+                response.datas.map((data) => {
+                    showJoinMember(data);
+                });
+            } else {
+                $('.direct-chat-msg').html(`
+                    <div class="text-center py-5" style="color: #8c93a0;">
+                        <i class="fas fa-coins fa-2x mb-3 text-warning d-block"></i>
+                        <h6 class="font-weight-bold mb-1">Waiting for bets</h6>
+                        <p class="small text-muted mb-0">No active bets placed yet for active round #${response.lotterys[0]?.period || ''}</p>
+                    </div>
+                `);
+            }
             showListOrder3(response.list_orders);
-            $(".direct-chat-warning .direct-chat-messages").animate({
+            $(".direct-chat-warning .direct-chat-messages, .direct-chat-success .direct-chat-messages").animate({
                 scrollTop: $(".direct-chat-msg").prop("scrollHeight")
             }, 750);
             $('.reservation-chunk-sub-num').text(response.lotterys[0].period);
@@ -445,43 +455,57 @@ function refreshAdminData() {
 refreshAdminData();
 setInterval(refreshAdminData, 1000);
 
+$(document).on('click', '.btn-preset-number', function() {
+    const num = $(this).data('num');
+    $('#editResult').val(num);
+});
+
 $('.start-order').click(function (e) {
     e.preventDefault();
-    let value = $('#editResult').val(); 
-    let arr = value.split('|');
-    for (let i = 0; i < arr.length; i++) {
-        let check = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(String(arr[i]));
-        if (arr[i] == "" || arr[i].length > 1 || !check) {
-            alert("Please enter the correct format (e.g., 1|4|5|1|5)");
-            return false;
-        }
-    }
-    if (value != '') {
-        $.ajax({
-            type: "POST",
-            url: "/api/webapi/admin/change",
-            data: {
-                type: 'change-wingo1',
-                value: value,
-                typeid: typeid,
-            },
-            dataType: "json",
-            success: function (response) {
-                Swal.fire(
-                    'Good job!',
-                    `${response.message}`,
-                    'success'
-                );
-                $('#ketQua').text(`Next Result: ${value}`);
-            }
-        });
-    } else {
+    let value = $('#editResult').val().trim(); 
+    if (!value) {
         Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong!',
-        })
+            icon: 'warning',
+            title: 'Empty result',
+            text: 'Please choose or enter a result number (0-9 or Random)!',
+        });
+        return false;
     }
+    if (value !== '-1' && value.toLowerCase() !== 'random') {
+        let arr = value.split('|');
+        for (let i = 0; i < arr.length; i++) {
+            let check = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(String(arr[i]));
+            if (arr[i] == "" || arr[i].length > 1 || !check) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Format',
+                    text: 'Please enter single digit (0-9) or pipe-separated (e.g., 1|4|5) or select Random!',
+                });
+                return false;
+            }
+        }
+    } else {
+        value = '-1';
+    }
+    $.ajax({
+        type: "POST",
+        url: "/api/webapi/admin/change",
+        data: {
+            type: 'change-wingo1',
+            value: value,
+            typeid: typeid,
+        },
+        dataType: "json",
+        success: function (response) {
+            Swal.fire(
+                'Success!',
+                `${response.message || 'Next result updated successfully!'}`,
+                'success'
+            );
+            $('#ketQua').text(`Next Result: ${value == '-1' ? 'Random' : value}`);
+            $('#editResult').val('');
+        }
+    });
 });
 
 // $('.editWinRate').click(function (e) {
