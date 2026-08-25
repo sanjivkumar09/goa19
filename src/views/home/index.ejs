@@ -461,6 +461,149 @@
 			height: 24px;
 			object-fit: contain;
 		}
+
+		/* Winning Information Live Feed Section */
+		.live-activity-section {
+			background: #ffffff;
+			border: 1px solid #eef2f5;
+			border-radius: 16px;
+			padding: 14px 16px;
+			margin: 0 16px 16px 16px;
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+		}
+
+		.activity-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 12px;
+			padding-bottom: 8px;
+			border-bottom: 1px solid #f1f4f8;
+		}
+
+		.activity-header-left {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.activity-header-left i {
+			color: #FFB800;
+			font-size: 16px;
+		}
+
+		.activity-header-title {
+			color: #0B1833;
+			font-size: 14px;
+			font-weight: 800;
+			margin: 0;
+			text-transform: uppercase;
+			letter-spacing: 0.3px;
+		}
+
+		.activity-live-badge {
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			font-size: 11px;
+			font-weight: 800;
+			color: #20B96B;
+			background: rgba(32, 185, 107, 0.1);
+			padding: 2px 8px;
+			border-radius: 10px;
+		}
+
+		.activity-live-dot {
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background-color: #20B96B;
+			animation: pulseLiveDot 1.5s infinite;
+		}
+
+		@keyframes pulseLiveDot {
+			0%, 100% { opacity: 1; transform: scale(1); }
+			50% { opacity: 0.4; transform: scale(0.7); }
+		}
+
+		.activity-feed {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			overflow: hidden;
+		}
+
+		.activity-item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 8px 10px;
+			background: #f8fafc;
+			border-radius: 12px;
+			border: 1px solid #edf2f7;
+			animation: slideInWinner 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		}
+
+		@keyframes slideInWinner {
+			from { opacity: 0; transform: translateY(-12px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		.activity-user {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.activity-avatar {
+			width: 34px;
+			height: 34px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #ffffff;
+			font-weight: 800;
+			font-size: 13px;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+			flex-shrink: 0;
+		}
+
+		.activity-username {
+			color: #0B1833;
+			font-size: 13px;
+			font-weight: 700;
+			line-height: 1.2;
+		}
+
+		.activity-game-badge {
+			display: inline-block;
+			background: rgba(32, 185, 107, 0.12);
+			color: #1a9e5b;
+			padding: 1px 7px;
+			border-radius: 6px;
+			font-size: 10px;
+			font-weight: 700;
+			margin-top: 2px;
+		}
+
+		.activity-win {
+			text-align: right;
+		}
+
+		.activity-amount {
+			color: #20B96B;
+			font-weight: 800;
+			font-size: 14px;
+			line-height: 1.2;
+		}
+
+		.activity-status {
+			color: #8c93a0;
+			font-size: 10px;
+			font-weight: 500;
+			margin-top: 1px;
+		}
 	</style>
 </head>
 <body>
@@ -614,6 +757,23 @@
 			</div>
 		</div>
 
+		<!-- Winning Information Live List Section -->
+		<div class="live-activity-section" id="sec-winners">
+			<div class="activity-header">
+				<div class="activity-header-left">
+					<i class="fa fa-trophy"></i>
+					<h4 class="activity-header-title">Winning information</h4>
+				</div>
+				<div class="activity-live-badge">
+					<span class="activity-live-dot"></span>
+					<span>LIVE</span>
+				</div>
+			</div>
+			<div class="activity-feed" id="activityFeed">
+				<!-- Simulated real-time winners feed updated continuously -->
+			</div>
+		</div>
+
 		<!-- Floating Side Buttons -->
 		<div class="floating-side-actions">
 			<a href="/redenvelopes" class="side-action-btn" title="Wheel of Fortune">
@@ -737,6 +897,99 @@
 		
 		showBanner(currentBannerIndex);
 		startBannerAutoRotation();
+
+		// Continuous Real-Time Winning Feed Simulation
+		const memberSuffixes = [
+			'KGG', 'LKM', 'CTR', 'NKE', 'UTD', 'FCB', 'RMA', 'PSG', 'BAY', 'JUV',
+			'ARS', 'CHE', 'LIV', 'MCI', 'TOT', 'INT', 'MIL', 'NAP', 'ROM', 'ATL',
+			'SEV', 'VAL', 'DOR', 'LEI', 'WHU', 'EVE', 'WOL', 'CRY', 'BUR', 'SOU'
+		];
+		
+		const gameTypes = [
+			{ name: 'WinGo 1Min', color: 'rgba(32, 185, 107, 0.12)', text: '#1a9e5b' },
+			{ name: 'Aviator', color: 'rgba(235, 47, 47, 0.12)', text: '#eb2f2f' },
+			{ name: 'Mines', color: 'rgba(59, 130, 246, 0.12)', text: '#2563eb' },
+			{ name: 'Chicken Road', color: 'rgba(245, 158, 11, 0.12)', text: '#d97706' },
+			{ name: 'K3 3Min', color: 'rgba(168, 85, 247, 0.12)', text: '#9333ea' },
+			{ name: '5D 1Min', color: 'rgba(236, 72, 153, 0.12)', text: '#db2777' },
+			{ name: 'Slots', color: 'rgba(14, 165, 233, 0.12)', text: '#0284c7' }
+		];
+		
+		function getRandomMember() {
+			return 'Mem***' + memberSuffixes[Math.floor(Math.random() * memberSuffixes.length)];
+		}
+		
+		function getRandomGame() {
+			return gameTypes[Math.floor(Math.random() * gameTypes.length)];
+		}
+		
+		function getRandomAmount() {
+			const baseAmounts = [188, 288, 388, 488, 588, 688, 788, 888, 988, 1288, 1588, 1888, 2288, 2888, 3888, 5888];
+			const base = baseAmounts[Math.floor(Math.random() * baseAmounts.length)];
+			const decimal = Math.floor(Math.random() * 100);
+			return (base + '.' + (decimal < 10 ? '0' + decimal : decimal));
+		}
+		
+		function getRandomAvatarGradient() {
+			const gradients = [
+				'linear-gradient(135deg, #FF6B6B 0%, #EE5253 100%)',
+				'linear-gradient(135deg, #48DBFB 0%, #0ABDE3 100%)',
+				'linear-gradient(135deg, #1DD1A1 0%, #10AC84 100%)',
+				'linear-gradient(135deg, #FDA7DF 0%, #D980FA 100%)',
+				'linear-gradient(135deg, #FECA57 0%, #FF9F43 100%)',
+				'linear-gradient(135deg, #54A0FF 0%, #2E86DE 100%)',
+				'linear-gradient(135deg, #5F27CD 0%, #341F97 100%)'
+			];
+			return gradients[Math.floor(Math.random() * gradients.length)];
+		}
+		
+		function createActivityItem() {
+			const username = getRandomMember();
+			const game = getRandomGame();
+			const amount = getRandomAmount();
+			const initial = username.slice(-3, -2).toUpperCase();
+			const avatarGrad = getRandomAvatarGradient();
+			
+			const activityHTML = `
+				<div class="activity-item">
+					<div class="activity-user">
+						<div class="activity-avatar" style="background: ${avatarGrad};">${initial}</div>
+						<div>
+							<div class="activity-username">${username}</div>
+							<div class="activity-game-badge" style="background: ${game.color}; color: ${game.text};">${game.name}</div>
+						</div>
+					</div>
+					<div class="activity-win">
+						<div class="activity-amount">Receive ₹${amount}</div>
+						<div class="activity-status">Winning amount</div>
+					</div>
+				</div>
+			`;
+			
+			const feed = document.getElementById('activityFeed');
+			if (feed) {
+				feed.insertAdjacentHTML('afterbegin', activityHTML);
+				const items = feed.querySelectorAll('.activity-item');
+				if (items.length > 7) {
+					items[items.length - 1].remove();
+				}
+			}
+		}
+		
+		function initializeActivities() {
+			for (let i = 0; i < 5; i++) {
+				setTimeout(createActivityItem, i * 200);
+			}
+		}
+		
+		function startActivityFeed() {
+			setInterval(createActivityItem, 2200);
+		}
+		
+		if (document.getElementById('activityFeed')) {
+			initializeActivities();
+			startActivityFeed();
+		}
 
 		// Responsive font size
 		let getWBody = $('#app').width();
