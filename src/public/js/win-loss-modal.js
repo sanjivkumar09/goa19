@@ -318,7 +318,7 @@
     var maxPages = 4; // up to 120 records
 
     function scanPage(pageIndex) {
-      fetchUserBetPage(pageIndex * pageSize, pageSize, function(list) {
+      fetchUserBetPage(pageIndex, pageSize, function(list) {
         if (!list || list.length === 0) {
           isPollingActive = false;
           return;
