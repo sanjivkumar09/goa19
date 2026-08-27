@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/css/bet/wingo/chunk-4e7d3985.25c9d2c2.css" />
   <link rel="stylesheet" href="/css/bet/wingo/chunk-4e7d3985.25c9d2c3.css" />
   <link rel="stylesheet" href="/css/bet/wingo/chunk-4e7d3985.25c9d2c4.css" />
-  <link rel="stylesheet" href="/css/win-loss-modal.css" />
+  <link rel="stylesheet" href="/css/win-loss-modal.css?v=<%= Date.now() %>" />
   <link rel="shortcut icon" href="/images/bitbug_favicon.ico" type="image/x-icon">
   <style>
     html,
@@ -170,6 +170,7 @@
         </div>
       </div>
       <%- include('element/alert3.ejs') -%>
+      <%- include('../element/win-loss-modal.ejs') -%>
     </div>
     <div data-v-7692a079="" data-v-a9660e98="" class="Loading c-row c-row-middle-center" style="display: none;">
       <div data-v-7692a079="" class="van-loading van-loading--circular">
@@ -184,8 +185,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="/js/client.js"></script>
   <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
-  <script src="/js/win-loss-modal.js"></script>
-  <script src="/js/wingo10.js"></script>
+  <script src="/js/win-loss-modal.js?v=<%= Date.now() %>"></script>
+  <script src="/js/wingo10.js?v=<%= Date.now() %>"></script>
 </body>
 
 </html>

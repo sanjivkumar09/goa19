@@ -1685,7 +1685,7 @@ const listOrderOld = async (req, res) => {
 
     const [k5d] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = '${game}' ORDER BY id DESC LIMIT 10 `);
     const [period] = await connection.query(`SELECT period FROM 5d WHERE status = 0 AND game = '${game}' ORDER BY id DESC LIMIT 1 `);
-    const [waiting] = await connection.query(`SELECT phone, money, price, amount, bet FROM result_5d WHERE status = 0 AND level = 0 AND game = '${game}' ORDER BY id ASC `);
+    const [waiting] = await connection.query(`SELECT phone, money, price, amount, bet, join_bet FROM result_5d WHERE status = 0 AND game = '${game}' ORDER BY id ASC `);
     const [settings] = await connection.query(`SELECT ${join} FROM admin`);
     if (k5d.length == 0) {
         return res.status(200).json({
@@ -1741,7 +1741,7 @@ const listOrderOldK3 = async (req, res) => {
 
     const [k5d] = await connection.query(`SELECT * FROM k3 WHERE status != 0 AND game = '${game}' ORDER BY id DESC LIMIT 10 `);
     const [period] = await connection.query(`SELECT period FROM k3 WHERE status = 0 AND game = '${game}' ORDER BY id DESC LIMIT 1 `);
-    const [waiting] = await connection.query(`SELECT phone, money, price, typeGame, amount, bet FROM result_k3 WHERE status = 0 AND level = 0 AND game = '${game}' ORDER BY id ASC `);
+    const [waiting] = await connection.query(`SELECT phone, money, price, typeGame, amount, bet FROM result_k3 WHERE status = 0 AND game = '${game}' ORDER BY id ASC `);
     const [settings] = await connection.query(`SELECT ${join} FROM admin`);
     if (k5d.length == 0) {
         return res.status(200).json({

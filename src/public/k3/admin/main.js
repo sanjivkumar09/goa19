@@ -4,7 +4,8 @@ $(window).on('load', function () {
     setTimeout(() => {
         $('#preloader').fadeOut(0);
     }, 100);
-})
+});
+
 $(document).ready(function () {
     $(`a[href="${window.location.pathname}"]`).addClass('active');
     $(`a[href="${window.location.pathname}"]`).css('pointerEvents', 'none');
@@ -20,14 +21,14 @@ $('.back-to-tops').click(function() {
 const isNumber = (params) => {
     let pattern = /^[0-9]*\d$/;
     return pattern.test(params);
-}
+};
 
-function formatMoney(money) {
-    return String(money).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+function formatMoney(money, type) {
+    type = type || '.';
+    return String(money).replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${type}`);
 }
 
 function formatPeriodToDate(period) {
-    // Convert period like "2022070110001" to "2022-07-01 10:00"
     let periodStr = String(period);
     if (periodStr.length >= 10) {
         let year = periodStr.substr(0, 4);
@@ -37,7 +38,7 @@ function formatPeriodToDate(period) {
         let minute = periodStr.length >= 12 ? periodStr.substr(10, 2) : '00';
         return `${year}-${month}-${day} ${hour}:${minute}`;
     }
-    return period; // Return as-is if format doesn't match
+    return period;
 }
 
 function cownDownTimer() {
@@ -50,26 +51,25 @@ function cownDownTimer() {
         var minute = Math.ceil(minutes % Number(checkID));
         var seconds1 = Math.floor((distance % (1000 * 60)) / 10000);
         var seconds2 = Math.floor(((distance % (1000 * 60)) / 1000) % 10);
-        if(checkID != 1) {
+        if (checkID != 1) {
             $(".time .time-sub:eq(1)").text(minute);
         }
 
         $(".time .time-sub:eq(2)").text(seconds1);
         $(".time .time-sub:eq(3)").text(seconds2);
-    }, 0);
+    }, 100);
 }
 
 cownDownTimer();
 
-// -------------------------------------------------------------------------------------
-
 function showListOrder(datas) {
+    if (!datas || datas.length === 0) return;
     let html = '';
 
     datas.map((data) => {
         let list_kq = '';
         let total = 0;
-        String(data.result).split('').forEach((e) => {
+        String(data.result || '').split('').forEach((e) => {
             total += Number(e);
             list_kq += `<span data-v-a9660e98="" class="red box-xs"> ${e} </span>`;
         });
@@ -81,7 +81,6 @@ function showListOrder(datas) {
             </div>
             <div data-v-a9660e98="" class="van-col van-col--5">
                 <div data-v-a9660e98="" class="c-tc goItem" style="display: flex;justify-content: center;">
-                    <!---->
                     ${list_kq}
                     <span data-v-a9660e98="" class="red box-xs"> = </span>
                     <span data-v-a9660e98="" class="red box-xs" style="font-size: 14px"> ${total} </span>
@@ -104,45 +103,27 @@ function showListOrder(datas) {
 }
 
 function messNewJoin2(datas) {
+    if (!datas || datas.length === 0) {
+        $('.direct-chat-msg').html('<div class="text-center text-muted p-3">No active bets in this round yet</div>');
+        return;
+    }
     let result = '';
     datas.map((data) => {
-        if (data.typeGame == 'total') {
-            result += `
-                <div class="direct-chat-infos clearfix mt-2">
-                    <span class="direct-chat-name float-left"></span>
-                </div>
-                <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-                <div class="direct-chat-text" style="background-color: #1eb93d"> Join Total (${data.bet}) with the A mount of money ${data.money}</div>
-            `; 
-        }
-        if (data.typeGame == 'three-same') {
-            result += `
-                <div class="direct-chat-infos clearfix mt-2">
-                    <span class="direct-chat-name float-left"></span>
-                </div>
-                <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-                <div class="direct-chat-text" style="background-color: #1eb93d"> Join 3 same numbers(${data.bet}) with the A mount of money ${data.money}</div>
-            `; 
-        }
+        let amt = Number(data.money || data.price || 0) * Number(data.amount || 1);
+        let moneyStr = formatMoney(amt, ',');
+        let typeLabel = data.typeGame || 'Bet';
+        if (data.typeGame == 'total') typeLabel = 'Total Sum';
+        else if (data.typeGame == 'two-same') typeLabel = '2 Same';
+        else if (data.typeGame == 'three-same') typeLabel = '3 Same';
+        else if (data.typeGame == 'unlike') typeLabel = 'Unlike';
 
-        if (data.typeGame == 'two-same') {
-            result += `
-                <div class="direct-chat-infos clearfix mt-2">
-                    <span class="direct-chat-name float-left"></span>
-                </div>
-                <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-                <div class="direct-chat-text" style="background-color: #1eb93d"> Join 2 same numbers(${data.bet}) with the A mount of money ${data.money}</div>
-            `; 
-        }
-        if (data.typeGame == 'unlike') {
-            result += `
-                <div class="direct-chat-infos clearfix mt-2">
-                    <span class="direct-chat-name float-left"></span>
-                </div>
-                <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-                <div class="direct-chat-text" style="background-color: #1eb93d"> Join another number(${data.bet}) with the A mount of money ${data.money}</div>
-            `; 
-        }
+        result += `
+            <div class="direct-chat-infos clearfix mt-2">
+                <span class="direct-chat-name float-left">${data.phone || 'Player'}</span>
+            </div>
+            <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
+            <div class="direct-chat-text" style="background-color: #1eb93d"> Join ${typeLabel} (${data.bet}) with amount ₹${moneyStr}</div>
+        `;
     });
     $('.direct-chat-msg').html(result);
     $(".direct-chat-warning .direct-chat-messages").animate({
@@ -155,33 +136,34 @@ function messNewJoin3(datas) {
     let twoSame = 0;
     let threeSame = 0;
     let unlike = 0;
-    datas.map((data) => {
-        let typeGame = data.typeGame;
-        if (typeGame == "total") {
-            total += data.money;
-            $(`#total`).attr('totalMoney', total);
-            $(`#total`).text(total);
-        }
-        if (typeGame == "two-same") {
-            twoSame += data.money;
-            $(`#2-so-trung`).attr('totalMoney', twoSame);
-            $(`#2-so-trung`).text(twoSame);
-        }
-        if (typeGame == "three-same") {
-            threeSame += data.money;
-            $(`#3-so-trung`).attr('totalMoney', threeSame);
-            $(`#3-so-trung`).text(threeSame);
-        }
-        if (typeGame == "unlike") {
-            unlike += data.money;
-            $(`#khac-so`).attr('totalMoney', unlike);
-            $(`#khac-so`).text(unlike);
-        }
-    });
+    let totalAll = 0;
+
+    if (datas && Array.isArray(datas)) {
+        datas.forEach((data) => {
+            let amt = Number(data.money || data.price || 0) * Number(data.amount || 1);
+            totalAll += amt;
+            let typeGame = data.typeGame;
+            if (typeGame == "total") {
+                total += amt;
+            } else if (typeGame == "two-same") {
+                twoSame += amt;
+            } else if (typeGame == "three-same") {
+                threeSame += amt;
+            } else if (typeGame == "unlike") {
+                unlike += amt;
+            }
+        });
+    }
+
+    $('#total').attr('totalMoney', total).text('₹ ' + formatMoney(total.toFixed(2), ','));
+    $('#2-so-trung').attr('totalMoney', twoSame).text('₹ ' + formatMoney(twoSame.toFixed(2), ','));
+    $('#3-so-trung').attr('totalMoney', threeSame).text('₹ ' + formatMoney(threeSame.toFixed(2), ','));
+    $('#khac-so').attr('totalMoney', unlike).text('₹ ' + formatMoney(unlike.toFixed(2), ','));
+    $('#total_all_k3').text('₹ ' + formatMoney(totalAll.toFixed(2), ','));
 }
 
 function callListOrder() {
-    let game = $('html').attr('data-change');
+    let game = $('html').attr('data-change') || "1";
     $.ajax({
         type: "POST",
         url: "/api/webapi/admin/k3/listOrders",
@@ -190,117 +172,41 @@ function callListOrder() {
         },
         dataType: "json",
         success: function (response) {
-            showListOrder(response.data.gameslist);
-            messNewJoin2(response.bet);
-            messNewJoin3(response.bet);
-            let settings = response.settings[0];
-            if(game == 1) $('#ketQua').text('next result: ' + `${(settings.k3d == '-1') ? 'Random' : settings.k3d}`);
-            if(game == 3) $('#ketQua').text('next result: ' + `${(settings.k3d3 == '-1') ? 'Random' : settings.k3d3}`);
-            if(game == 5) $('#ketQua').text('next result: ' + `${(settings.k3d5 == '-1') ? 'Random' : settings.k3d5}`);
-            if(game == 10) $('#ketQua').text('next result: ' + `${(settings.k3d10 == '-1') ? 'Random' : settings.k3d10}`);
-            $(".reservation-chunk-sub-num").text(response.period);
+            if (response && response.status) {
+                showListOrder(response.data.gameslist);
+                messNewJoin2(response.bet);
+                messNewJoin3(response.bet);
+                let settings = (response.settings && response.settings[0]) || {};
+                let nextRes = 'Random';
+                if (game == 1 && settings.k3d && settings.k3d != '-1') nextRes = settings.k3d;
+                if (game == 3 && settings.k3d3 && settings.k3d3 != '-1') nextRes = settings.k3d3;
+                if (game == 5 && settings.k3d5 && settings.k3d5 != '-1') nextRes = settings.k3d5;
+                if (game == 10 && settings.k3d10 && settings.k3d10 != '-1') nextRes = settings.k3d10;
+
+                $('#ketQua').text('next result: ' + nextRes);
+                $(".reservation-chunk-sub-num").text(response.period || '-');
+            }
             $('#preloader').fadeOut(0);
         }
     });
 }
+
 callListOrder();
+
+// Real-time polling fallback every 2 seconds
+setInterval(callListOrder, 2000);
+
 socket.on("data-server-k3", function (msg) {
     if (msg) {
         callListOrder();
-        $('.direct-chat-msg').html('');
     }
 });
 
-function messNewJoin(data) {
-    let game = $('html').attr('data-change');
-    if (data.change == 1) return;
-    if (data.game != game) return;
-
-    let typeGame = '';
-    if (data.gameJoin == 1) typeGame = 'total';
-    if (data.gameJoin == 2) typeGame = 'two-same';
-    if (data.gameJoin == 3) typeGame = 'three-same';
-    if (data.gameJoin == 4) typeGame = 'unlike';
-    let result = '';
-
-    if (typeGame == 'total') {
-        result += `
-            <div class="direct-chat-infos clearfix mt-2">
-                <span class="direct-chat-name float-left"></span>
-            </div>
-            <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-            <div class="direct-chat-text" style="background-color: #1eb93d"> Join Total(${data.listJoin}) with the A mount of money ${Number(data.money) * Number(data.xvalue)}</div>
-        `; 
-    }
-    if (typeGame == 'three-same') {
-        result += `
-            <div class="direct-chat-infos clearfix mt-2">
-                <span class="direct-chat-name float-left"></span>
-            </div>
-            <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-            <div class="direct-chat-text" style="background-color: #1eb93d"> Join 3 same numbers(${data.listJoin}) with the A mount of money ${Number(data.money) * Number(data.xvalue)}</div>
-        `; 
-    }
-
-    if (typeGame == 'two-same') {
-        result += `
-            <div class="direct-chat-infos clearfix mt-2">
-                <span class="direct-chat-name float-left"></span>
-            </div>
-            <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-            <div class="direct-chat-text" style="background-color: #1eb93d"> Join 3 same numbers(${data.listJoin}) with the A mount of money ${Number(data.money) * Number(data.xvalue)}</div>
-        `; 
-    }
-    if (typeGame == 'unlike') {
-        result += `
-            <div class="direct-chat-infos clearfix mt-2">
-                <span class="direct-chat-name float-left"></span>
-            </div>
-            <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-            <div class="direct-chat-text" style="background-color: #1eb93d"> Join another number(${data.listJoin}) with the A mount of money ${Number(data.money) * Number(data.xvalue)}</div>
-        `; 
-    }
-    $('.direct-chat-msg').append(result);
-    $(".direct-chat-warning .direct-chat-messages").animate({
-        scrollTop: $(".direct-chat-msg").prop("scrollHeight")
-    }, 750);
-}
-
-function messNewJoin5(data) {
-    let game = $('html').attr('data-change');
-    if (data.change == 1) return;
-    if (data.game != game) return;
-    let typeGame = "";
-    if (data.gameJoin == 1) typeGame = "total";
-    if (data.gameJoin == 2) typeGame = "two-same";
-    if (data.gameJoin == 3) typeGame = "three-same";
-    if (data.gameJoin == 4) typeGame = "unlike";
-
-    if (typeGame == "total") {
-        let money = Number($(`#total`).attr('totalMoney')) + Number(data.money) * Number(data.xvalue);
-        $(`#total`).attr('totalMoney', money);
-        $(`#total`).text(money);
-    }
-    if (typeGame == "two-same") {
-        let money = Number($(`#2-so-trung`).attr('totalMoney')) + Number(data.money) * Number(data.xvalue);
-        $(`#2-so-trung`).attr('totalMoney', money);
-        $(`#2-so-trung`).text(money);
-    }
-    if (typeGame == "three-same") {
-        let money = Number($(`#3-so-trung`).attr('totalMoney')) + Number(data.money) * Number(data.xvalue);
-        $(`#3-so-trung`).attr('totalMoney', money);
-        $(`#3-so-trung`).text(money);
-    }
-    if (typeGame == "unlike") {
-        let money = Number($(`#khac-so`).attr('totalMoney')) + Number(data.money) * Number(data.xvalue);
-        $(`#khac-so`).attr('totalMoney', money);
-        $(`#khac-so`).text(money);
-    }
-}
-
 socket.on("data-server-3", function (msg) {
-    messNewJoin(msg);
-    messNewJoin5(msg);
+    let game = $('html').attr('data-change');
+    if (msg && msg.game == game) {
+        callListOrder();
+    }
 });
 
 $('#manage .col-12').click(async function (e) { 

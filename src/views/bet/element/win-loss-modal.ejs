@@ -1,0 +1,42 @@
+<!-- DiuWin Game Result Win & Loss Animation Popup -->
+<div id="game-result-overlay">
+  <canvas id="game-result-confetti"></canvas>
+  <div class="game-result-modal" id="game-result-card">
+    <div class="modal-close-x" id="game-result-close-x">&times;</div>
+    
+    <div class="modal-header" id="modal-header-bg">
+      <div class="modal-rays" id="modal-sunburst"></div>
+      <div id="modal-header-icon"></div>
+      <h2 id="modal-header-title"></h2>
+      <div id="modal-header-sub"></div>
+    </div>
+
+    <div class="modal-body">
+      <div class="money-highlight-box">
+        <div class="money-label" id="modal-money-label"></div>
+        <div class="money-val" id="modal-money-val">₹ 0.00</div>
+      </div>
+
+      <div class="result-info-card">
+        <div class="info-row">
+          <span class="info-label">Game</span>
+          <span class="info-value" id="modal-info-game"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Period</span>
+          <span class="info-value" id="modal-info-period"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Result</span>
+          <span class="info-value" id="modal-info-result"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Your Bet</span>
+          <span class="info-value" id="modal-info-bet"></span>
+        </div>
+      </div>
+
+      <button class="modal-btn" id="modal-action-btn"></button>
+    </div>
+  </div>
+</div>

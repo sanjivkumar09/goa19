@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/k3/css/chunk-9ca7d0dc.0f968705.css">
   <link rel="stylesheet" href="/k3/css/chunk-f7aaa136.30c67545.css">
   <link rel="stylesheet" href="/k3/css/chunk-vendors.b521b44f.css">
-  <link rel="stylesheet" href="/css/win-loss-modal.css">
+  <link rel="stylesheet" href="/css/win-loss-modal.css?v=<%= Date.now() %>">
   <style>
     html,
     body {
@@ -60,13 +60,14 @@
       <%- include('element/listOrder.ejs') -%>
       <%- include('element/popupJoin.ejs') -%>
       <%- include('element/quytac.ejs') -%>
+      <%- include('../element/win-loss-modal.ejs') -%>
     </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
-  <script src="/js/win-loss-modal.js"></script>
-  <script src="/k3/js/main.js"></script>
-  <script src="/k3/js/chuck.js"></script>
+  <script src="/js/win-loss-modal.js?v=<%= Date.now() %>"></script>
+  <script src="/k3/js/main.js?v=<%= Date.now() %>"></script>
+  <script src="/k3/js/chuck.js?v=<%= Date.now() %>"></script>
 </body>
 
 </html>
