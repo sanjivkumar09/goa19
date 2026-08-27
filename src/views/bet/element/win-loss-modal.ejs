@@ -1,42 +1,289 @@
-<!-- DiuWin Game Result Win & Loss Animation Popup -->
-<div id="game-result-overlay">
-  <canvas id="game-result-confetti"></canvas>
-  <div class="game-result-modal" id="game-result-card">
-    <div class="modal-close-x" id="game-result-close-x">&times;</div>
+<!-- DiuWin Floating Toast Win & Loss Banner (Inline Embed for 100% Hosting Reliability) -->
+<style id="diuwin-toast-styles">
+  #game-toast-container {
+    position: fixed !important;
+    top: 18px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 2147483647 !important;
+    width: 92% !important;
+    max-width: 360px !important;
+    pointer-events: none !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  }
+
+  .game-toast {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 16px !important;
+    border-radius: 16px !important;
+    color: #ffffff !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    margin-bottom: 10px !important;
+    transform: translateY(-150%) scale(0.9) !important;
+    opacity: 0 !important;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease !important;
+    pointer-events: auto !important;
+    box-sizing: border-box !important;
+    cursor: pointer !important;
+  }
+
+  .game-toast * {
+    box-sizing: border-box !important;
+  }
+
+  .game-toast.toast-show {
+    transform: translateY(0) scale(1) !important;
+    opacity: 1 !important;
+  }
+
+  .game-toast.toast-hide {
+    transform: translateY(-150%) scale(0.9) !important;
+    opacity: 0 !important;
+  }
+
+  /* Win Toast */
+  .game-toast.toast-win {
+    background: linear-gradient(135deg, #10b981 0%, #059669 60%, #047857 100%) !important;
+    border: 2px solid #fde047 !important;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5), 0 0 25px rgba(250, 204, 21, 0.45) !important;
+  }
+
+  /* Loss Toast */
+  .game-toast.toast-loss {
+    background: linear-gradient(135deg, #334155 0%, #1e293b 70%, #0f172a 100%) !important;
+    border: 2px solid rgba(239, 68, 68, 0.6) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(239, 68, 68, 0.3) !important;
+  }
+
+  .toast-icon-box {
+    font-size: 28px !important;
+    line-height: 1 !important;
+    margin-right: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .toast-win .toast-icon-box {
+    animation: toastWinBounce 1s infinite alternate ease-in-out !important;
+  }
+
+  @keyframes toastWinBounce {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.18) rotate(6deg); }
+  }
+
+  .toast-content-box {
+    flex: 1 !important;
+    text-align: left !important;
+  }
+
+  .toast-title {
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.3px !important;
+    margin: 0 0 2px !important;
+    line-height: 1.2 !important;
+  }
+
+  .toast-win .toast-title {
+    color: #ffffff !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .toast-win .toast-amount {
+    color: #fef08a !important;
+    font-weight: 900 !important;
+  }
+
+  .toast-loss .toast-title {
+    color: #f87171 !important;
+  }
+
+  .toast-loss .toast-amount {
+    color: #fca5a5 !important;
+    font-weight: 900 !important;
+  }
+
+  .toast-subtitle {
+    font-size: 11px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+  }
+
+  .toast-close-btn {
+    font-size: 20px !important;
+    line-height: 1 !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    margin-left: 10px !important;
+    padding: 4px !important;
+    cursor: pointer !important;
+    transition: color 0.2s !important;
+  }
+
+  .toast-close-btn:hover {
+    color: #ffffff !important;
+  }
+</style>
+
+<div id="game-toast-container"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var processedPeriods = new Set();
+  var activeToastTimer = null;
+
+  function formatMoney(num) {
+    return Number(num || 0).toLocaleString('en-IN', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function getContainer() {
+    var container = document.getElementById('game-toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'game-toast-container';
+      document.body.appendChild(container);
+    }
+    return container;
+  }
+
+  function showFloatingToast(type, options) {
+    options = options || {};
+    var container = getContainer();
+    container.innerHTML = '';
+
+    if (activeToastTimer) {
+      clearTimeout(activeToastTimer);
+      activeToastTimer = null;
+    }
+
+    var isWin = (type === 'win');
+    var icon = isWin ? '🏆' : '💔';
+    var title = isWin 
+      ? '🎉 Won <span class="toast-amount">+₹' + formatMoney(options.amount) + '</span>'
+      : '💔 Result: <span class="toast-amount">-₹' + formatMoney(options.amount) + '</span>';
     
-    <div class="modal-header" id="modal-header-bg">
-      <div class="modal-rays" id="modal-sunburst"></div>
-      <div id="modal-header-icon"></div>
-      <h2 id="modal-header-title"></h2>
-      <div id="modal-header-sub"></div>
-    </div>
+    var subtitle = (options.game ? options.game + ' | ' : '') + 'Period #' + (options.period || '-');
 
-    <div class="modal-body">
-      <div class="money-highlight-box">
-        <div class="money-label" id="modal-money-label"></div>
-        <div class="money-val" id="modal-money-val">₹ 0.00</div>
+    var toast = document.createElement('div');
+    toast.className = 'game-toast ' + (isWin ? 'toast-win' : 'toast-loss');
+    toast.innerHTML = `
+      <div class="toast-icon-box">${icon}</div>
+      <div class="toast-content-box">
+        <div class="toast-title">${title}</div>
+        <div class="toast-subtitle">${subtitle}</div>
       </div>
+      <div class="toast-close-btn">&times;</div>
+    `;
 
-      <div class="result-info-card">
-        <div class="info-row">
-          <span class="info-label">Game</span>
-          <span class="info-value" id="modal-info-game"></span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Period</span>
-          <span class="info-value" id="modal-info-period"></span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Result</span>
-          <span class="info-value" id="modal-info-result"></span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Your Bet</span>
-          <span class="info-value" id="modal-info-bet"></span>
-        </div>
-      </div>
+    container.appendChild(toast);
 
-      <button class="modal-btn" id="modal-action-btn"></button>
-    </div>
-  </div>
-</div>
+    requestAnimationFrame(function () {
+      toast.classList.add('toast-show');
+    });
+
+    function dismissToast() {
+      toast.classList.remove('toast-show');
+      toast.classList.add('toast-hide');
+      setTimeout(function () {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 400);
+    }
+
+    toast.onclick = dismissToast;
+    activeToastTimer = setTimeout(dismissToast, isWin ? 5000 : 3500);
+  }
+
+  function checkAndShowGameResult(gameType, endedPeriod, drawResult, gamesList) {
+    if (!endedPeriod || !gamesList || !Array.isArray(gamesList) || gamesList.length === 0) return;
+
+    var periodKey = String(gameType) + '_' + String(endedPeriod).trim();
+    if (processedPeriods.has(periodKey)) return;
+
+    var roundBets = gamesList.filter(function (item) {
+      var itemPeriod = String(item.stage || item.period || item.id_product || '').trim();
+      return itemPeriod === String(endedPeriod).trim();
+    });
+
+    if (roundBets.length === 0) return;
+
+    var hasPending = roundBets.some(function (b) {
+      return parseInt(b.status, 10) === 0;
+    });
+    if (hasPending) return;
+
+    processedPeriods.add(periodKey);
+    if (processedPeriods.size > 200) processedPeriods.clear();
+
+    var totalWinGet = 0;
+    var totalLossMoney = 0;
+    var isWin = false;
+
+    roundBets.forEach(function (b) {
+      var status = parseInt(b.status, 10);
+      var betMoney = parseFloat(b.money || b.price || 0);
+      var getMoney = parseFloat(b.get || 0);
+
+      if (status === 1) {
+        isWin = true;
+        totalWinGet += (getMoney > 0 ? getMoney : betMoney * 2);
+      } else if (status === 2) {
+        totalLossMoney += betMoney;
+      }
+    });
+
+    var gameTitle = 'Win Go';
+    if (String(gameType).indexOf('5d') !== -1) gameTitle = '5D Lotre';
+    if (String(gameType).indexOf('k3') !== -1) gameTitle = 'K3 Lotre';
+
+    if (isWin && totalWinGet > 0) {
+      showFloatingToast('win', {
+        amount: totalWinGet,
+        period: endedPeriod,
+        game: gameTitle
+      });
+    } else if (totalLossMoney > 0) {
+      showFloatingToast('loss', {
+        amount: totalLossMoney,
+        period: endedPeriod,
+        game: gameTitle
+      });
+    }
+  }
+
+  function testWinModal(amount) {
+    showFloatingToast('win', {
+      amount: amount || 196.00,
+      period: '202608270045',
+      game: 'Win Go 1Min'
+    });
+  }
+
+  function testLossModal(amount) {
+    showFloatingToast('loss', {
+      amount: amount || 100.00,
+      period: '202608270045',
+      game: 'Win Go 1Min'
+    });
+  }
+
+  window.checkAndShowGameResult = checkAndShowGameResult;
+  window.showFloatingToast = showFloatingToast;
+  window.testWinModal = testWinModal;
+  window.testLossModal = testLossModal;
+  window.testWinModel = testWinModal;
+  window.testLossModel = testLossModal;
+})();
+</script>
