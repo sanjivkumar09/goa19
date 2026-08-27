@@ -745,6 +745,9 @@ function callAjaxMeJoin() {
             $("#number_result").text("1/" + response.page);
             GetMyEmerdList(data);
             $('.Loading').fadeOut(0);
+            if (window.checkAndShowGameResult && data && data.length > 0 && data[0].status != 0) {
+                window.checkAndShowGameResult('5d' + $('html').attr('data-dpr'), data[0].stage, data[0].result, data);
+            }
         },
     });
 }

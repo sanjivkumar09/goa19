@@ -1,91 +1,106 @@
 /* =========================================================
    Win & Loss Animation Modal Styles for DiuWin Games
+   Fully responsive, high-z-index, isolated from vant root font
    ========================================================= */
 
 #game-result-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 999999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  user-select: none;
-  -webkit-user-select: none;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.78) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  z-index: 9999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s ease, visibility 0.35s ease !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  margin: 0 !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
 }
 
 #game-result-overlay.active {
-  opacity: 1;
-  visibility: visible;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 /* Confetti Canvas */
 #game-result-confetti {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1000000;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 10000000 !important;
 }
 
 /* Modal Box Container */
 .game-result-modal {
-  position: relative;
-  width: 90%;
-  max-width: 350px;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.2);
-  transform: scale(0.6) translateY(40px);
-  opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-  z-index: 1000001;
-  text-align: center;
+  position: relative !important;
+  width: 100% !important;
+  max-width: 340px !important;
+  border-radius: 22px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.25) !important;
+  transform: scale(0.65) translateY(30px) !important;
+  opacity: 0 !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease !important;
+  z-index: 10000001 !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+.game-result-modal * {
+  box-sizing: border-box !important;
 }
 
 #game-result-overlay.active .game-result-modal {
-  transform: scale(1) translateY(0);
-  opacity: 1;
+  transform: scale(1) translateY(0) !important;
+  opacity: 1 !important;
 }
 
 /* =========================================================
    WIN THEME
    ========================================================= */
 .game-result-modal.is-win {
-  background: linear-gradient(180deg, #1b263b 0%, #0d1b2a 100%);
-  border: 2px solid rgba(255, 215, 0, 0.6);
-  box-shadow: 0 0 40px rgba(255, 193, 7, 0.4), 0 20px 50px rgba(0, 0, 0, 0.8);
+  background: linear-gradient(180deg, #1b263b 0%, #0d1b2a 100%) !important;
+  border: 2px solid rgba(255, 215, 0, 0.75) !important;
+  box-shadow: 0 0 45px rgba(255, 193, 7, 0.45), 0 20px 50px rgba(0, 0, 0, 0.85) !important;
 }
 
 .game-result-modal.is-win .modal-header {
-  position: relative;
-  padding: 30px 20px 15px;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
-  overflow: hidden;
+  position: relative !important;
+  padding: 26px 16px 14px !important;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%) !important;
+  overflow: hidden !important;
 }
 
 /* Rotating Sunburst Rays */
 .modal-rays {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 10%, transparent 60%),
-              repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.18) 0deg 15deg, transparent 15deg 30deg);
-  animation: rotateRays 20s linear infinite;
-  pointer-events: none;
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 60%),
+              repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.2) 0deg 15deg, transparent 15deg 30deg) !important;
+  animation: rotateRays 20s linear infinite !important;
+  pointer-events: none !important;
 }
 
 @keyframes rotateRays {
@@ -94,141 +109,143 @@
 }
 
 .win-icon-wrap {
-  position: relative;
-  z-index: 2;
-  margin-bottom: 5px;
-  display: inline-block;
-  animation: bounceTrophy 1.2s ease infinite alternate;
+  position: relative !important;
+  z-index: 2 !important;
+  margin-bottom: 4px !important;
+  display: inline-block !important;
+  animation: bounceTrophy 1.2s ease infinite alternate !important;
 }
 
 @keyframes bounceTrophy {
   0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-8px) scale(1.08); }
+  100% { transform: translateY(-7px) scale(1.08); }
 }
 
 .win-crown {
-  font-size: 48px;
-  line-height: 1;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+  font-size: 44px !important;
+  line-height: 1 !important;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4)) !important;
 }
 
 .win-title {
-  position: relative;
-  z-index: 2;
-  font-size: 22px;
-  font-weight: 900;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.6);
-  margin: 0;
+  position: relative !important;
+  z-index: 2 !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.6) !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
 }
 
 .win-subtitle {
-  position: relative;
-  z-index: 2;
-  font-size: 13px;
-  font-weight: 700;
-  color: #fef08a;
-  margin-top: 4px;
-  letter-spacing: 1px;
+  position: relative !important;
+  z-index: 2 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #fef08a !important;
+  margin-top: 4px !important;
+  letter-spacing: 1px !important;
 }
 
 /* =========================================================
    LOSS THEME
    ========================================================= */
 .game-result-modal.is-loss {
-  background: linear-gradient(180deg, #1e1e2d 0%, #151521 100%);
-  border: 2px solid rgba(239, 68, 68, 0.4);
-  box-shadow: 0 0 35px rgba(239, 68, 68, 0.25), 0 20px 50px rgba(0, 0, 0, 0.8);
+  background: linear-gradient(180deg, #1e1e2d 0%, #151521 100%) !important;
+  border: 2px solid rgba(239, 68, 68, 0.45) !important;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.3), 0 20px 50px rgba(0, 0, 0, 0.85) !important;
 }
 
 .game-result-modal.is-loss .modal-header {
-  position: relative;
-  padding: 26px 20px 14px;
-  background: linear-gradient(135deg, #475569 0%, #334155 50%, #1e293b 100%);
+  position: relative !important;
+  padding: 24px 16px 12px !important;
+  background: linear-gradient(135deg, #475569 0%, #334155 50%, #1e293b 100%) !important;
 }
 
 .loss-icon-wrap {
-  font-size: 42px;
-  line-height: 1;
-  margin-bottom: 5px;
-  display: inline-block;
-  animation: pulseLoss 1.5s ease infinite;
+  font-size: 40px !important;
+  line-height: 1 !important;
+  margin-bottom: 4px !important;
+  display: inline-block !important;
+  animation: pulseLoss 1.5s ease infinite !important;
 }
 
 @keyframes pulseLoss {
   0% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.06); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 1; }
   100% { transform: scale(1); opacity: 0.9; }
 }
 
 .loss-title {
-  font-size: 20px;
-  font-weight: 800;
-  color: #f8fafc;
-  margin: 0;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: #f8fafc !important;
+  margin: 0 !important;
+  letter-spacing: 0.8px !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+  line-height: 1.2 !important;
 }
 
 .loss-subtitle {
-  font-size: 12px;
-  font-weight: 600;
-  color: #94a3b8;
-  margin-top: 4px;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+  margin-top: 4px !important;
 }
 
 /* =========================================================
    MODAL BODY
    ========================================================= */
 .modal-body {
-  padding: 16px 20px 22px;
+  padding: 14px 18px 20px !important;
 }
 
 /* Money Count Box */
 .money-highlight-box {
-  margin: 8px 0 16px;
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  margin: 6px 0 14px !important;
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .is-win .money-highlight-box {
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.18) 0%, rgba(255, 255, 255, 0.03) 100%);
-  border-color: rgba(34, 197, 94, 0.4);
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+  border-color: rgba(34, 197, 94, 0.45) !important;
 }
 
 .is-loss .money-highlight-box {
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
-  border-color: rgba(239, 68, 68, 0.3);
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.16) 0%, rgba(255, 255, 255, 0.03) 100%) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
 }
 
 .money-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #94a3b8;
-  margin-bottom: 2px;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  color: #94a3b8 !important;
+  margin-bottom: 2px !important;
 }
 
 .money-val {
-  font-size: 32px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  line-height: 1.2;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1.2 !important;
 }
 
 .is-win .money-val {
-  color: #4ade80;
-  text-shadow: 0 0 20px rgba(74, 222, 128, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
-  animation: winGlow 1.5s ease-in-out infinite alternate;
+  color: #4ade80 !important;
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+  animation: winGlow 1.5s ease-in-out infinite alternate !important;
 }
 
 @keyframes winGlow {
@@ -237,157 +254,160 @@
 }
 
 .is-loss .money-val {
-  color: #f87171;
-  text-shadow: 0 0 15px rgba(248, 113, 113, 0.4);
+  color: #f87171 !important;
+  text-shadow: 0 0 15px rgba(248, 113, 113, 0.4) !important;
 }
 
 /* Details Table Card */
 .result-info-card {
-  background: rgba(15, 23, 42, 0.6);
-  border-radius: 14px;
-  padding: 10px 14px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(15, 23, 42, 0.65) !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  margin-bottom: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 .info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-  font-size: 13px;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 5px 0 !important;
+  font-size: 12px !important;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08) !important;
 }
 
 .info-row:last-child {
-  border-bottom: none;
+  border-bottom: none !important;
 }
 
 .info-row .info-label {
-  color: #94a3b8;
-  font-weight: 500;
-  font-size: 12px;
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
 }
 
 .info-row .info-value {
-  color: #f1f5f9;
-  font-weight: 700;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  color: #f1f5f9 !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
 }
 
 /* Result Ball Styles */
 .res-ball {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  font-size: 13px;
-  font-weight: 800;
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+  line-height: 1 !important;
 }
 
 .res-ball.bg-green {
-  background: linear-gradient(135deg, #22c55e, #15803d);
+  background: linear-gradient(135deg, #22c55e, #15803d) !important;
 }
 
 .res-ball.bg-red {
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
 }
 
 .res-ball.bg-violet {
-  background: linear-gradient(135deg, #a855f7, #7e22ce);
+  background: linear-gradient(135deg, #a855f7, #7e22ce) !important;
 }
 
 .res-ball.bg-red-violet {
-  background: linear-gradient(135deg, #ef4444 50%, #a855f7 50%);
+  background: linear-gradient(135deg, #ef4444 50%, #a855f7 50%) !important;
 }
 
 .res-ball.bg-green-violet {
-  background: linear-gradient(135deg, #22c55e 50%, #a855f7 50%);
+  background: linear-gradient(135deg, #22c55e 50%, #a855f7 50%) !important;
 }
 
 .res-ball.bg-d5 {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  margin: 0 2px;
-  width: 22px;
-  height: 22px;
-  font-size: 12px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  margin: 0 1px !important;
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 11px !important;
 }
 
 .res-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #ffffff;
+  display: inline-block !important;
+  padding: 2px 6px !important;
+  border-radius: 5px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
 }
 
-.res-tag.tag-big { background: #eab308; }
-.res-tag.tag-small { background: #3b82f6; }
-.res-tag.tag-bet { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); }
+.res-tag.tag-big { background: #eab308 !important; }
+.res-tag.tag-small { background: #3b82f6 !important; }
+.res-tag.tag-bet { background: rgba(255, 255, 255, 0.15) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; }
 
 /* Modal Action Button */
 .modal-btn {
-  width: 100%;
-  padding: 13px 20px;
-  border-radius: 14px;
-  border: none;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  outline: none;
+  width: 100% !important;
+  padding: 12px 18px !important;
+  border-radius: 12px !important;
+  border: none !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+  display: block !important;
 }
 
 .is-win .modal-btn {
-  background: linear-gradient(135deg, #f59e0b 0%, #10b981 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #f59e0b 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
 }
 
 .is-win .modal-btn:active {
-  transform: scale(0.97);
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  transform: scale(0.97) !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
 }
 
 .is-loss .modal-btn {
-  background: linear-gradient(135deg, #475569 0%, #334155 100%);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
 }
 
 .is-loss .modal-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.97) !important;
 }
 
 /* Close Icon Button */
 .modal-close-x {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.3);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
-  z-index: 10;
-  transition: background 0.2s;
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  transition: background 0.2s !important;
+  line-height: 1 !important;
 }
 
 .modal-close-x:hover {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.65) !important;
 }

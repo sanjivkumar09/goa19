@@ -1060,6 +1060,9 @@ function refreshRealtime() {
         let data = response.data.gameslist;
         $(".game-list .con-box:eq(1) .page-nav .number").text("1/" + `${(response.page) ? response.page : '1'}`);
         showListOrder2(data, 1);
+        if (window.checkAndShowGameResult && data && data.length > 0 && data[0].status != 0) {
+          window.checkAndShowGameResult('wingo1', data[0].stage, data[0].result, data);
+        }
       }
     },
     complete: done,

@@ -1053,22 +1053,62 @@ function timerJoin(params = '', addHours = 0) {
   );
 }
   
-  $.ajax({
-    type: "POST",
-    url: "/api/webapi/GetMyEmerdList",
-    data: {
-      typeid: "3",
-      pageno: "0",
-      pageto: "10",
-      language: "vi",
-    },
-    dataType: "json",
-    success: function (response) {
-      let data = response.data.gameslist;
-      $(".game-list .con-box:eq(1) .page-nav .number").text("1/" + `${(response.page) ? response.page : '1'}`);
-      showListOrder2(data, 1);
-    },
-  });
+  let refreshInFlight = false;
+  function refreshRealtime() {
+    if (refreshInFlight) return;
+    refreshInFlight = true;
+    let pending = 2;
+    const done = () => {
+      pending -= 1;
+      if (pending <= 0) refreshInFlight = false;
+    };
+
+    $.ajax({
+      type: "POST",
+      url: "/api/webapi/GetNoaverageEmerdList",
+      data: {
+        typeid: "3",
+        pageno: "0",
+        pageto: "10",
+        language: "vi",
+      },
+      dataType: "json",
+      success: function (response) {
+        if (response && response.data && response.data.gameslist) {
+          let list_orders = response.data.gameslist;
+          $(".time-box .info .number").text(response.period);
+          $(".game-list .con-box:eq(0) .page-nav .number").text("1/" + (response.page || 1));
+          showListOrder(list_orders, 0);
+        }
+      },
+      complete: done,
+    });
+
+    $.ajax({
+      type: "POST",
+      url: "/api/webapi/GetMyEmerdList",
+      data: {
+        typeid: "3",
+        pageno: "0",
+        pageto: "10",
+        language: "vi",
+      },
+      dataType: "json",
+      success: function (response) {
+        if (response && response.data && response.data.gameslist) {
+          let data = response.data.gameslist;
+          $(".game-list .con-box:eq(1) .page-nav .number").text("1/" + `${(response.page) ? response.page : '1'}`);
+          showListOrder2(data, 1);
+          if (window.checkAndShowGameResult && data && data.length > 0 && data[0].status != 0) {
+            window.checkAndShowGameResult('wingo3', data[0].stage, data[0].result, data);
+          }
+        }
+      },
+      complete: done,
+    });
+  }
+
+  setInterval(refreshRealtime, 1500);
   
   var pageno = 0;
   var limit = 10;

@@ -7,12 +7,29 @@
 (function () {
   'use strict';
 
-  // Processed periods tracking to prevent duplicate popups
   var processedPeriods = new Set();
   var activeTimer = null;
   var confettiAnimationId = null;
+  var audioCtx = null;
+  var retryMap = new Map();
 
-  // Initialize Modal HTML when DOM is ready
+  // Unlock AudioContext on first user touch/click
+  function unlockAudioContext() {
+    if (!audioCtx) {
+      var AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(function () {});
+    }
+  }
+
+  window.addEventListener('click', unlockAudioContext, { once: true });
+  window.addEventListener('touchstart', unlockAudioContext, { once: true });
+
+  // Initialize Modal HTML DOM
   function initModalDom() {
     if (document.getElementById('game-result-overlay')) return;
 
@@ -62,25 +79,31 @@
 
     document.body.appendChild(overlay);
 
-    // Event listeners for closing
-    document.getElementById('game-result-close-x').addEventListener('click', closeGameResultModal);
-    document.getElementById('modal-action-btn').addEventListener('click', closeGameResultModal);
-    overlay.addEventListener('click', function (e) {
+    var closeBtn = document.getElementById('game-result-close-x');
+    var actionBtn = document.getElementById('modal-action-btn');
+
+    if (closeBtn) closeBtn.onclick = closeGameResultModal;
+    if (actionBtn) actionBtn.onclick = closeGameResultModal;
+    overlay.onclick = function (e) {
       if (e.target === overlay) {
         closeGameResultModal();
       }
-    });
+    };
   }
 
-  // Web Audio API Synthesis for Sound Effects
+  // Synthesized Web Audio Fanfare / Loss Tone
   function playSound(type) {
     try {
-      var AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      var ctx = new AudioContext();
+      unlockAudioContext();
+      if (!audioCtx) return;
+
+      var ctx = audioCtx;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
 
       if (type === 'win') {
-        // Joyful fanfare arpeggio (C5, E5, G5, C6)
+        // Joyful victory fanfare arpeggio (C5, E5, G5, C6)
         var notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach(function (freq, index) {
           var osc = ctx.createOscillator();
@@ -89,8 +112,8 @@
           osc.frequency.setValueAtTime(freq, ctx.currentTime + index * 0.1);
 
           gain.gain.setValueAtTime(0, ctx.currentTime + index * 0.1);
-          gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + index * 0.1 + 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.1 + 0.4);
+          gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + index * 0.1 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.1 + 0.42);
 
           osc.connect(gain);
           gain.connect(ctx.destination);
@@ -99,7 +122,7 @@
           osc.stop(ctx.currentTime + index * 0.1 + 0.45);
         });
       } else {
-        // Mellow soft loss tone
+        // Mellow loss tone
         var notesLoss = [392.00, 329.63, 261.63];
         notesLoss.forEach(function (freq, index) {
           var osc = ctx.createOscillator();
@@ -108,7 +131,7 @@
           osc.frequency.setValueAtTime(freq, ctx.currentTime + index * 0.15);
 
           gain.gain.setValueAtTime(0, ctx.currentTime + index * 0.15);
-          gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + index * 0.15 + 0.04);
+          gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + index * 0.15 + 0.04);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.15 + 0.35);
 
           osc.connect(gain);
@@ -119,7 +142,7 @@
         });
       }
     } catch (e) {
-      // Audio autoplay policy fallback
+      // Audio playback fails gracefully without impacting UI
     }
   }
 
@@ -132,7 +155,7 @@
     canvas.height = window.innerHeight;
 
     var pieces = [];
-    var numberOfPieces = 75;
+    var numberOfPieces = 70;
     var colors = ['#f59e0b', '#10b981', '#ef4444', '#3b82f6', '#ec4899', '#fbbf24', '#ffffff'];
 
     for (var i = 0; i < numberOfPieces; i++) {
@@ -202,7 +225,7 @@
 
   // Smooth Money Counter Animation
   function animateMoney(elem, targetVal, isWin, duration) {
-    duration = duration || 1200;
+    duration = duration || 1000;
     var startVal = 0;
     var startTime = null;
     var prefix = isWin ? '+ ₹ ' : '- ₹ ';
@@ -228,6 +251,7 @@
 
   // Format WinGo result ball HTML
   function formatWinGoResultHtml(resultNum) {
+    if (resultNum === undefined || resultNum === null || resultNum === '') return '-';
     resultNum = Number(resultNum);
     var colorClass = 'bg-green';
     var isBig = resultNum >= 5;
@@ -254,25 +278,27 @@
 
   // Format 5D result balls HTML
   function format5DResultHtml(resultStr) {
+    if (!resultStr) return '-';
     var digits = String(resultStr).split('');
     var balls = digits.map(function (d) {
       return `<span class="res-ball bg-d5">${d}</span>`;
     }).join('');
 
-    var sum = digits.reduce(function (acc, val) { return acc + (parseInt(val) || 0); }, 0);
+    var sum = digits.reduce(function (acc, val) { return acc + (parseInt(val, 10) || 0); }, 0);
     return `${balls} <span class="res-tag tag-bet">Sum ${sum}</span>`;
   }
 
   // Format K3 result dice HTML
   function formatK3ResultHtml(resultStr) {
+    if (!resultStr) return '-';
     var digits = String(resultStr).split('');
-    var sum = digits.reduce(function (acc, val) { return acc + (parseInt(val) || 0); }, 0);
+    var sum = digits.reduce(function (acc, val) { return acc + (parseInt(val, 10) || 0); }, 0);
     var isBig = sum >= 11;
     var diceIcons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
     
     var diceHtml = digits.map(function (d) {
-      var idx = (parseInt(d) || 1) - 1;
-      return `<span style="font-size: 20px; margin: 0 1px;">${diceIcons[idx] || d}</span>`;
+      var idx = (parseInt(d, 10) || 1) - 1;
+      return `<span style="font-size: 18px; margin: 0 1px;">${diceIcons[idx] || d}</span>`;
     }).join('');
 
     return `
@@ -291,7 +317,8 @@
       else if (label === 'd') label = 'Red';
       else if (label === 'x') label = 'Green';
       else if (label === 't') label = 'Violet';
-      return `<span class="res-tag tag-bet">${label} (₹${b.money || b.price})</span>`;
+      var amt = b.money || b.price || 0;
+      return `<span class="res-tag tag-bet">${label} (₹${amt})</span>`;
     }).join(' ');
   }
 
@@ -314,24 +341,30 @@
     var infoBet = document.getElementById('modal-info-bet');
     var actionBtn = document.getElementById('modal-action-btn');
 
+    if (!overlay || !card) return;
+
     card.className = 'game-result-modal is-win';
-    sunburst.style.display = 'block';
+    if (sunburst) sunburst.style.display = 'block';
 
-    headerIcon.innerHTML = `<div class="win-icon-wrap"><span class="win-crown">👑</span></div>`;
-    headerTitle.className = 'win-title';
-    headerTitle.textContent = 'Congratulations';
-    headerSub.className = 'win-subtitle';
-    headerSub.textContent = '🎉 WINNING BONUS 🎉';
+    if (headerIcon) headerIcon.innerHTML = `<div class="win-icon-wrap"><span class="win-crown">👑</span></div>`;
+    if (headerTitle) {
+      headerTitle.className = 'win-title';
+      headerTitle.textContent = 'Congratulations';
+    }
+    if (headerSub) {
+      headerSub.className = 'win-subtitle';
+      headerSub.textContent = '🎉 WINNING BONUS 🎉';
+    }
 
-    moneyLabel.textContent = 'Bonus Amount';
-    animateMoney(moneyVal, options.amount || 0, true, 1200);
+    if (moneyLabel) moneyLabel.textContent = 'Bonus Amount';
+    if (moneyVal) animateMoney(moneyVal, options.amount || 0, true, 1200);
 
-    infoGame.textContent = options.game || 'Win Go';
-    infoPeriod.textContent = options.period || '-';
-    infoResult.innerHTML = options.resultHtml || '-';
-    infoBet.innerHTML = formatBetsHtml(options.bets);
+    if (infoGame) infoGame.textContent = options.game || 'Win Go';
+    if (infoPeriod) infoPeriod.textContent = options.period || '-';
+    if (infoResult) infoResult.innerHTML = options.resultHtml || '-';
+    if (infoBet) infoBet.innerHTML = formatBetsHtml(options.bets);
 
-    actionBtn.textContent = 'Confirm & Collect';
+    if (actionBtn) actionBtn.textContent = 'Confirm & Collect';
 
     overlay.classList.add('active');
     startConfetti();
@@ -361,24 +394,30 @@
     var infoBet = document.getElementById('modal-info-bet');
     var actionBtn = document.getElementById('modal-action-btn');
 
+    if (!overlay || !card) return;
+
     card.className = 'game-result-modal is-loss';
-    sunburst.style.display = 'none';
+    if (sunburst) sunburst.style.display = 'none';
 
-    headerIcon.innerHTML = `<div class="loss-icon-wrap"><span>💔</span></div>`;
-    headerTitle.className = 'loss-title';
-    headerTitle.textContent = 'Better Luck Next Time';
-    headerSub.className = 'loss-subtitle';
-    headerSub.textContent = 'Game Draw Completed';
+    if (headerIcon) headerIcon.innerHTML = `<div class="loss-icon-wrap"><span>💔</span></div>`;
+    if (headerTitle) {
+      headerTitle.className = 'loss-title';
+      headerTitle.textContent = 'Better Luck Next Time';
+    }
+    if (headerSub) {
+      headerSub.className = 'loss-subtitle';
+      headerSub.textContent = 'Game Draw Completed';
+    }
 
-    moneyLabel.textContent = 'Loss Amount';
-    animateMoney(moneyVal, options.amount || 0, false, 1000);
+    if (moneyLabel) moneyLabel.textContent = 'Loss Amount';
+    if (moneyVal) animateMoney(moneyVal, options.amount || 0, false, 1000);
 
-    infoGame.textContent = options.game || 'Win Go';
-    infoPeriod.textContent = options.period || '-';
-    infoResult.innerHTML = options.resultHtml || '-';
-    infoBet.innerHTML = formatBetsHtml(options.bets);
+    if (infoGame) infoGame.textContent = options.game || 'Win Go';
+    if (infoPeriod) infoPeriod.textContent = options.period || '-';
+    if (infoResult) infoResult.innerHTML = options.resultHtml || '-';
+    if (infoBet) infoBet.innerHTML = formatBetsHtml(options.bets);
 
-    actionBtn.textContent = 'Continue Playing';
+    if (actionBtn) actionBtn.textContent = 'Continue Playing';
 
     overlay.classList.add('active');
     stopConfetti();
@@ -406,7 +445,7 @@
    * Main Dispatcher: Inspects the finished period and user bets,
    * then triggers the appropriate Win or Loss popup animation.
    *
-   * @param {string} gameType - 'wingo1', 'wingo3', 'wingo5', 'wingo10', '5d', 'k3'
+   * @param {string} gameType - 'wingo1', 'wingo3', 'wingo5', 'wingo10', '5d1', '5d3', '5d5', '5d10', 'k31', 'k33', 'k35', 'k310'
    * @param {string|number} endedPeriod - The period number that just drew
    * @param {string|number} drawResult - The result number/string (e.g. 5, "12345", "123")
    * @param {Array} gamesList - The user's bet history list from GetMyEmerdList
@@ -414,18 +453,66 @@
   function checkAndShowGameResult(gameType, endedPeriod, drawResult, gamesList) {
     if (!endedPeriod || !gamesList || !Array.isArray(gamesList) || gamesList.length === 0) return;
 
-    var periodKey = String(gameType) + '_' + String(endedPeriod);
+    var periodKey = String(gameType) + '_' + String(endedPeriod).trim();
     if (processedPeriods.has(periodKey)) return;
 
-    // Filter bets placed for this specific round
+    // Filter bets placed for this specific round (matching period/stage)
     var roundBets = gamesList.filter(function (item) {
-      var itemPeriod = item.stage || item.period || item.id_product;
-      return String(itemPeriod) === String(endedPeriod);
+      var itemPeriod = String(item.stage || item.period || item.id_product || '').trim();
+      return itemPeriod === String(endedPeriod).trim();
     });
 
     if (roundBets.length === 0) return; // User did not participate in this round
 
+    // Check if any bet in this round is still pending (status == 0)
+    var hasPending = roundBets.some(function (b) {
+      return parseInt(b.status, 10) === 0;
+    });
+
+    if (hasPending) {
+      var retries = retryMap.get(periodKey) || 0;
+      if (retries < 4) {
+        retryMap.set(periodKey, retries + 1);
+        setTimeout(function () {
+          // Re-fetch latest bet list
+          var endpoint = "/api/webapi/GetMyEmerdList";
+          var postData = { typeid: "1", pageno: "0", pageto: "10", language: "vi" };
+          
+          if (String(gameType).indexOf('wingo') !== -1) {
+            var tid = "1";
+            if (gameType === 'wingo3') tid = "3";
+            if (gameType === 'wingo5') tid = "5";
+            if (gameType === 'wingo10') tid = "10";
+            postData = { typeid: tid, pageno: "0", pageto: "10", language: "vi" };
+          } else if (String(gameType).indexOf('5d') !== -1) {
+            endpoint = "/api/webapi/5d/GetMyEmerdList";
+            postData = { gameJoin: (window.jQuery && $('html').attr('data-dpr')) || "1", pageno: "0", pageto: "10" };
+          } else if (String(gameType).indexOf('k3') !== -1) {
+            endpoint = "/api/webapi/k3/GetMyEmerdList";
+            postData = { gameJoin: (window.jQuery && $('html').attr('data-dpr')) || "1", pageno: "0", pageto: "10" };
+          }
+
+          if (window.jQuery) {
+            window.jQuery.ajax({
+              type: "POST",
+              url: endpoint,
+              data: postData,
+              dataType: "json",
+              success: function (res) {
+                if (res && res.data && res.data.gameslist) {
+                  checkAndShowGameResult(gameType, endedPeriod, drawResult, res.data.gameslist);
+                }
+              }
+            });
+          }
+        }, 800);
+        return;
+      }
+    }
+
+    // Mark as processed now that we have settled result
     processedPeriods.add(periodKey);
+    retryMap.delete(periodKey);
 
     // Keep processed cache manageable
     if (processedPeriods.size > 200) {
@@ -443,20 +530,25 @@
 
       if (status === 1) {
         isWin = true;
-        // If get is recorded, use get; otherwise calculate payout
         if (getMoney > 0) {
           totalWinGet += getMoney;
         } else {
-          totalWinGet += betMoney * 2; // fallback
+          totalWinGet += betMoney * 2;
         }
       } else if (status === 2) {
         totalLossMoney += betMoney;
       }
     });
 
+    // Extract effective draw result if not provided
+    var effectiveResult = (drawResult !== undefined && drawResult !== null && drawResult !== '') 
+      ? drawResult 
+      : ((roundBets[0] && roundBets[0].result !== undefined) ? roundBets[0].result : '');
+
     // Format Game Title & Result HTML
     var gameTitle = 'Win Go';
     var resultHtml = '';
+    var animDelay = 1000;
 
     if (String(gameType).indexOf('wingo') !== -1) {
       var minStr = '1Min';
@@ -464,24 +556,26 @@
       if (gameType === 'wingo5' || gameType === '5') minStr = '5Min';
       if (gameType === 'wingo10' || gameType === '10') minStr = '10Min';
       gameTitle = 'Win Go ' + minStr;
-      resultHtml = formatWinGoResultHtml(drawResult);
+      resultHtml = formatWinGoResultHtml(effectiveResult);
+      animDelay = 1000;
     } else if (String(gameType).indexOf('5d') !== -1) {
       var d5Time = '1Min';
       if (gameType === '5d3' || gameType === '3') d5Time = '3Min';
       if (gameType === '5d5' || gameType === '5') d5Time = '5Min';
       if (gameType === '5d10' || gameType === '10') d5Time = '10Min';
       gameTitle = '5D Lotre ' + d5Time;
-      resultHtml = format5DResultHtml(drawResult);
+      resultHtml = format5DResultHtml(effectiveResult);
+      animDelay = 2700; // Let 5D reel animation finish
     } else if (String(gameType).indexOf('k3') !== -1) {
       var k3Time = '1Min';
       if (gameType === 'k33' || gameType === '3') k3Time = '3Min';
       if (gameType === 'k35' || gameType === '5') k3Time = '5Min';
       if (gameType === 'k310' || gameType === '10') k3Time = '10Min';
       gameTitle = 'K3 Lotre ' + k3Time;
-      resultHtml = formatK3ResultHtml(drawResult);
+      resultHtml = formatK3ResultHtml(effectiveResult);
+      animDelay = 1600; // Let dice roll animation finish
     }
 
-    // Delay 600ms so user sees draw animation finish
     setTimeout(function () {
       if (isWin && totalWinGet > 0) {
         showGameWinModal({
@@ -500,7 +594,28 @@
           bets: roundBets
         });
       }
-    }, 600);
+    }, animDelay);
+  }
+
+  // Testing helpers for in-browser testing
+  function testWinModal(amount) {
+    showGameWinModal({
+      game: 'Win Go 1Min',
+      period: '202608270001',
+      resultHtml: formatWinGoResultHtml(5),
+      amount: amount || 196.00,
+      bets: [{ bet: 'x', money: 100 }, { bet: '5', money: 20 }]
+    });
+  }
+
+  function testLossModal(amount) {
+    showGameLossModal({
+      game: 'Win Go 1Min',
+      period: '202608270001',
+      resultHtml: formatWinGoResultHtml(2),
+      amount: amount || 100.00,
+      bets: [{ bet: 'x', money: 100 }]
+    });
   }
 
   // Export functions to global scope
@@ -509,6 +624,8 @@
   window.showGameLossModal = showGameLossModal;
   window.closeGameResultModal = closeGameResultModal;
   window.checkAndShowGameResult = checkAndShowGameResult;
+  window.testWinModal = testWinModal;
+  window.testLossModal = testLossModal;
 
   // Initialize on script load
   if (document.readyState === 'loading') {
