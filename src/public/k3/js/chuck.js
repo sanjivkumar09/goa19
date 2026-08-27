@@ -173,53 +173,9 @@ function timerJoin(params = '', addHours = 0) {
         return years + '-' + months + '-' + days + ' ' + hours + ':' + minutes + ':' + seconds + ' ' + ampm;
 }
 
-var notifiedK3BetIds = new Set();
-
 function displayGameResultNotice(list_orders) {
-    if (!list_orders || list_orders.length === 0) return;
-    var topBet = list_orders[0];
-    var stage = String(topBet.stage || topBet.period || '');
-    var betId = String(topBet.id_product || topBet.id || stage);
-    var status = parseInt(topBet.status, 10);
-
-    if (status === 0) return;
-    if (notifiedK3BetIds.has(betId)) return;
-
-    var betTime = Number(topBet.time || 0);
-    if (betTime > 0 && (Date.now() - betTime > 300000)) {
-        notifiedK3BetIds.add(betId);
-        return;
-    }
-
-    notifiedK3BetIds.add(betId);
-    if (notifiedK3BetIds.size > 200) notifiedK3BetIds.clear();
-
-    var stageBets = list_orders.filter(function(b) {
-        return String(b.stage || b.period || '') === stage;
-    });
-
-    var totalWin = 0;
-    var totalLoss = 0;
-    var isWin = false;
-
-    stageBets.forEach(function(b) {
-        var st = parseInt(b.status, 10);
-        var money = parseFloat(b.money || b.price || 0);
-        var get = parseFloat(b.get || 0);
-        if (st === 1) {
-            isWin = true;
-            totalWin += (get > 0 ? get : money * 2);
-        } else if (st === 2) {
-            totalLoss += money;
-        }
-    });
-
-    if (typeof window.showFloatingToast === 'function') {
-        if (isWin && totalWin > 0) {
-            window.showFloatingToast('win', { amount: totalWin, period: stage, game: 'K3 Lotre' });
-        } else if (totalLoss > 0) {
-            window.showFloatingToast('loss', { amount: totalLoss, period: stage, game: 'K3 Lotre' });
-        }
+    if (typeof window.triggerBetCheck === 'function') {
+        window.triggerBetCheck();
     }
 }
 

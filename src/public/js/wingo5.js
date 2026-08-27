@@ -766,53 +766,9 @@ function showListOrder3(list_orders, x) {
     return pattern.test(params);
   };
   
-var notifiedBetIds = new Set();
-
 function displayGameResultNotice(list_orders) {
-  if (!list_orders || list_orders.length === 0) return;
-  var topBet = list_orders[0];
-  var stage = String(topBet.stage || topBet.period || '');
-  var betId = String(topBet.id_product || topBet.id || stage);
-  var status = parseInt(topBet.status, 10);
-
-  if (status === 0) return;
-  if (notifiedBetIds.has(betId)) return;
-
-  var betTime = Number(topBet.time || 0);
-  if (betTime > 0 && (Date.now() - betTime > 500000)) {
-    notifiedBetIds.add(betId);
-    return;
-  }
-
-  notifiedBetIds.add(betId);
-  if (notifiedBetIds.size > 200) notifiedBetIds.clear();
-
-  var stageBets = list_orders.filter(function(b) {
-    return String(b.stage || b.period || '') === stage;
-  });
-
-  var totalWin = 0;
-  var totalLoss = 0;
-  var isWin = false;
-
-  stageBets.forEach(function(b) {
-    var st = parseInt(b.status, 10);
-    var money = parseFloat(b.money || b.price || 0);
-    var get = parseFloat(b.get || 0);
-    if (st === 1) {
-      isWin = true;
-      totalWin += (get > 0 ? get : money * 2);
-    } else if (st === 2) {
-      totalLoss += money;
-    }
-  });
-
-  if (typeof window.showFloatingToast === 'function') {
-    if (isWin && totalWin > 0) {
-      window.showFloatingToast('win', { amount: totalWin, period: stage, game: 'Win Go 5Min' });
-    } else if (totalLoss > 0) {
-      window.showFloatingToast('loss', { amount: totalLoss, period: stage, game: 'Win Go 5Min' });
-    }
+  if (typeof window.triggerBetCheck === 'function') {
+    window.triggerBetCheck();
   }
 }
 
@@ -1494,6 +1450,11 @@ function timerJoin(params = '', addHours = 0) {
         if (minute == 0 && seconds1 == 5 && seconds2 == 9) {
           if (clicked) {
             playAudio2();
+          }
+          if (typeof window.triggerBetCheck === 'function') {
+            setTimeout(window.triggerBetCheck, 500);
+            setTimeout(window.triggerBetCheck, 1500);
+            setTimeout(window.triggerBetCheck, 2500);
           }
         }
       }, 1000);

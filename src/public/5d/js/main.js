@@ -638,53 +638,9 @@ function isNumber(params) {
     let pattern = /^[0-9]*\d$/;
     return pattern.test(params);
 }
-var notified5DBetIds = new Set();
-
 function displayGameResultNotice(list_orders) {
-    if (!list_orders || list_orders.length === 0) return;
-    var topBet = list_orders[0];
-    var stage = String(topBet.stage || topBet.period || '');
-    var betId = String(topBet.id_product || topBet.id || stage);
-    var status = parseInt(topBet.status, 10);
-
-    if (status === 0) return;
-    if (notified5DBetIds.has(betId)) return;
-
-    var betTime = Number(topBet.time || 0);
-    if (betTime > 0 && (Date.now() - betTime > 300000)) {
-        notified5DBetIds.add(betId);
-        return;
-    }
-
-    notified5DBetIds.add(betId);
-    if (notified5DBetIds.size > 200) notified5DBetIds.clear();
-
-    var stageBets = list_orders.filter(function(b) {
-        return String(b.stage || b.period || '') === stage;
-    });
-
-    var totalWin = 0;
-    var totalLoss = 0;
-    var isWin = false;
-
-    stageBets.forEach(function(b) {
-        var st = parseInt(b.status, 10);
-        var money = parseFloat(b.money || b.price || 0);
-        var get = parseFloat(b.get || 0);
-        if (st === 1) {
-            isWin = true;
-            totalWin += (get > 0 ? get : money * 2);
-        } else if (st === 2) {
-            totalLoss += money;
-        }
-    });
-
-    if (typeof window.showFloatingToast === 'function') {
-        if (isWin && totalWin > 0) {
-            window.showFloatingToast('win', { amount: totalWin, period: stage, game: '5D Lotre' });
-        } else if (totalLoss > 0) {
-            window.showFloatingToast('loss', { amount: totalLoss, period: stage, game: '5D Lotre' });
-        }
+    if (typeof window.triggerBetCheck === 'function') {
+        window.triggerBetCheck();
     }
 }
 
