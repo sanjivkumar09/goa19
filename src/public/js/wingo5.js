@@ -723,77 +723,114 @@ function showListOrder3(list_orders, x) {
     return pattern.test(params);
   };
   
-  var lastSeenBetStage = null;
+var lastSeenBetStage = null;
+var isFirstLoad = true;
 
-  function displayGameResultNotice(list_orders) {
-    if (!list_orders || list_orders.length === 0) return;
-    var topBet = list_orders[0];
-    var stage = String(topBet.stage || topBet.period || '');
-    var status = parseInt(topBet.status, 10);
+function displayGameResultNotice(list_orders) {
+  if (!list_orders || list_orders.length === 0) return;
+  var topBet = list_orders[0];
+  var stage = String(topBet.stage || topBet.period || '');
+  var status = parseInt(topBet.status, 10);
 
-    if (status === 0) return;
-    if (lastSeenBetStage === stage) return;
-    
-    var betTime = Number(topBet.time || 0);
-    if (betTime > 0 && Date.now() - betTime > 90000) {
-      lastSeenBetStage = stage;
-      return;
-    }
+  if (status === 0) return;
 
+  if (isFirstLoad) {
+    isFirstLoad = false;
     lastSeenBetStage = stage;
+    return;
+  }
 
-    var stageBets = list_orders.filter(function(b) {
-      return String(b.stage || b.period || '') === stage;
-    });
+  if (lastSeenBetStage === stage) return;
+  lastSeenBetStage = stage;
 
-    var totalWin = 0;
-    var totalLoss = 0;
-    var isWin = false;
+  var stageBets = list_orders.filter(function(b) {
+    return String(b.stage || b.period || '') === stage;
+  });
 
-    stageBets.forEach(function(b) {
-      var st = parseInt(b.status, 10);
-      var money = parseFloat(b.money || 0);
-      var get = parseFloat(b.get || 0);
-      if (st === 1) {
-        isWin = true;
-        totalWin += (get > 0 ? get : money * 2);
-      } else if (st === 2) {
-        totalLoss += money;
-      }
-    });
+  var totalWin = 0;
+  var totalLoss = 0;
+  var isWin = false;
 
-    $(".game-win-loss-banner").remove();
+  stageBets.forEach(function(b) {
+    var st = parseInt(b.status, 10);
+    var money = parseFloat(b.money || b.price || 0);
+    var get = parseFloat(b.get || 0);
+    if (st === 1) {
+      isWin = true;
+      totalWin += (get > 0 ? get : money * 2);
+    } else if (st === 2) {
+      totalLoss += money;
+    }
+  });
 
-    if (isWin && totalWin > 0) {
-      $("body").append(`
-        <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
-          <div style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: 2.5px solid #fde047; box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 25px rgba(250,204,21,0.5); border-radius: 20px; padding: 18px 16px; color: #fff;">
-            <div style="font-size: 32px; line-height: 1;">👑 🎉 🏆</div>
-            <div style="font-size: 22px; font-weight: 900; color: #fff; margin-top: 6px; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.4);">YOU WON!</div>
-            <div style="font-size: 30px; font-weight: 900; color: #fef08a; margin: 6px 0; text-shadow: 0 0 12px rgba(254,240,138,0.7);">+ ₹ ${totalWin.toFixed(2)}</div>
-            <div style="font-size: 13px; color: #f1f5f9; font-weight: 600;">Period #${stage}</div>
-          </div>
+  $(".game-win-loss-banner").remove();
+
+  if (isWin && totalWin > 0) {
+    $("body").append(`
+      <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
+        <div style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: 2.5px solid #fde047; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(250,204,21,0.5); border-radius: 20px; padding: 20px 16px; color: #fff;">
+          <div style="font-size: 36px; line-height: 1;">👑 🎉 🏆</div>
+          <div style="font-size: 24px; font-weight: 900; color: #fff; margin-top: 6px; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">YOU WON!</div>
+          <div style="font-size: 32px; font-weight: 900; color: #fef08a; margin: 8px 0; text-shadow: 0 0 12px rgba(254,240,138,0.8);">+ ₹ ${Number(totalWin).toFixed(2)}</div>
+          <div style="font-size: 13px; color: #f1f5f9; font-weight: 600;">Period #${stage}</div>
         </div>
-      `);
-    } else if (totalLoss > 0) {
-      $("body").append(`
-        <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
-          <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #ef4444; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 20px rgba(239,68,68,0.3); border-radius: 20px; padding: 18px 16px; color: #fff;">
-            <div style="font-size: 30px; line-height: 1;">💔</div>
-            <div style="font-size: 20px; font-weight: 900; color: #f87171; margin-top: 6px;">ROUND RESULT</div>
-            <div style="font-size: 26px; font-weight: 900; color: #fca5a5; margin: 6px 0;">- ₹ ${totalLoss.toFixed(2)}</div>
-            <div style="font-size: 12px; color: #94a3b8; font-weight: 600;">Period #${stage}</div>
+      </div>
+    `);
+  } else if (totalLoss > 0) {
+    $("body").append(`
+      <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
+        <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #ef4444; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(239,68,68,0.3); border-radius: 20px; padding: 20px 16px; color: #fff;">
+          <div style="font-size: 32px; line-height: 1;">💔</div>
+          <div style="font-size: 22px; font-weight: 900; color: #f87171; margin-top: 6px;">YOU LOST</div>
+          <div style="font-size: 28px; font-weight: 900; color: #fca5a5; margin: 8px 0;">- ₹ ${Number(totalLoss).toFixed(2)}</div>
+          <div style="font-size: 13px; color: #94a3b8; font-weight: 600;">Period #${stage}</div>
         </div>
       </div>
     `);
   }
 
   setTimeout(function() {
-    $(".game-win-loss-banner").fadeOut(400, function() {
+    $(".game-win-loss-banner").fadeOut(500, function() {
       $(this).remove();
     });
-  }, 4500);
+  }, 5000);
 }
+
+window.testWinModal = function(amount) {
+  $(".game-win-loss-banner").remove();
+  $("body").append(`
+    <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
+      <div style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: 2.5px solid #fde047; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(250,204,21,0.5); border-radius: 20px; padding: 20px 16px; color: #fff;">
+        <div style="font-size: 36px; line-height: 1;">👑 🎉 🏆</div>
+        <div style="font-size: 24px; font-weight: 900; color: #fff; margin-top: 6px; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">YOU WON!</div>
+        <div style="font-size: 32px; font-weight: 900; color: #fef08a; margin: 8px 0; text-shadow: 0 0 12px rgba(254,240,138,0.8);">+ ₹ ${(amount || 196).toFixed(2)}</div>
+        <div style="font-size: 13px; color: #f1f5f9; font-weight: 600;">Period #202608270045</div>
+      </div>
+    </div>
+  `);
+  setTimeout(function() {
+    $(".game-win-loss-banner").fadeOut(500, function() { $(this).remove(); });
+  }, 5000);
+};
+
+window.testLossModal = function(amount) {
+  $(".game-win-loss-banner").remove();
+  $("body").append(`
+    <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
+      <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #ef4444; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(239,68,68,0.3); border-radius: 20px; padding: 20px 16px; color: #fff;">
+        <div style="font-size: 32px; line-height: 1;">💔</div>
+        <div style="font-size: 22px; font-weight: 900; color: #f87171; margin-top: 6px;">YOU LOST</div>
+        <div style="font-size: 28px; font-weight: 900; color: #fca5a5; margin: 8px 0;">- ₹ ${(amount || 100).toFixed(2)}</div>
+        <div style="font-size: 13px; color: #94a3b8; font-weight: 600;">Period #202608270045</div>
+      </div>
+    </div>
+  `);
+  setTimeout(function() {
+    $(".game-win-loss-banner").fadeOut(500, function() { $(this).remove(); });
+  }, 5000);
+};
+window.testWinModel = window.testWinModal;
+window.testLossModel = window.testLossModal;
 
 function showListOrder2(list_orders, x) {
   if (list_orders && list_orders.length > 0) {
