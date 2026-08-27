@@ -6,8 +6,10 @@
 (function () {
   'use strict';
 
-  var processedPeriods = new Set();
+  var seenSettledBets = new Set();
+  var isInitialFetch = true;
   var activeToastTimer = null;
+  var isPollingActive = false;
 
   // Format currency with commas
   function formatMoney(num) {
@@ -73,81 +75,141 @@
         if (toast.parentNode) {
           toast.parentNode.removeChild(toast);
         }
-      }, 400);
+      }, 450);
     }
 
     toast.onclick = dismissToast;
 
-    // Auto-dismiss after 4.5 seconds for win, 3.5 seconds for loss
-    activeToastTimer = setTimeout(dismissToast, isWin ? 4500 : 3500);
+    // Auto-dismiss after 5.5 seconds for win, 4 seconds for loss
+    activeToastTimer = setTimeout(dismissToast, isWin ? 5500 : 4000);
   }
 
-  // Check bets and dispatch toast
-  function checkAndShowGameResult(gameType, endedPeriod, drawResult, gamesList) {
-    if (!endedPeriod || !gamesList || !Array.isArray(gamesList) || gamesList.length === 0) return;
+  function getCurrentGameEndpoint() {
+    var path = window.location.pathname;
+    if (path.indexOf('/5d') !== -1) {
+      var dpr5d = $('html').attr('data-dpr') || '1';
+      return {
+        url: '/api/webapi/5d/GetMyEmerdList',
+        data: { gameJoin: dpr5d, pageno: '0', pageto: '10' },
+        game: '5D ' + dpr5d + 'Min'
+      };
+    }
+    if (path.indexOf('/k3') !== -1) {
+      var dprK3 = $('html').attr('data-dpr') || '1';
+      return {
+        url: '/api/webapi/k3/GetMyEmerdList',
+        data: { gameJoin: dprK3, pageno: '0', pageto: '10' },
+        game: 'K3 ' + dprK3 + 'Min'
+      };
+    }
 
-    var periodKey = String(gameType) + '_' + String(endedPeriod).trim();
-    if (processedPeriods.has(periodKey)) return;
+    // Win Go
+    var typeid = '1';
+    var gameName = 'Win Go 1Min';
+    if ($('.betting-box .nav .item:eq(1)').hasClass('action')) {
+      typeid = '3';
+      gameName = 'Win Go 3Min';
+    } else if ($('.betting-box .nav .item:eq(2)').hasClass('action')) {
+      typeid = '5';
+      gameName = 'Win Go 5Min';
+    } else if ($('.betting-box .nav .item:eq(3)').hasClass('action')) {
+      typeid = '10';
+      gameName = 'Win Go 10Min';
+    }
 
-    // Filter bets placed for this round
-    var roundBets = gamesList.filter(function (item) {
-      var itemPeriod = String(item.stage || item.period || item.id_product || '').trim();
-      return itemPeriod === String(endedPeriod).trim();
-    });
+    return {
+      url: '/api/webapi/GetMyEmerdList',
+      data: { typeid: typeid, pageno: '0', pageto: '10', language: 'vi' },
+      game: gameName
+    };
+  }
 
-    if (roundBets.length === 0) return; // User did not bet in this round
+  function checkActiveBetSettlement() {
+    if (isPollingActive) return;
+    isPollingActive = true;
+    var ep = getCurrentGameEndpoint();
 
-    // If any bet is still pending (status == 0), retry shortly
-    var hasPending = roundBets.some(function (b) {
-      return parseInt(b.status, 10) === 0;
-    });
-    if (hasPending) return;
+    $.ajax({
+      type: "POST",
+      url: ep.url,
+      data: ep.data,
+      dataType: "json",
+      success: function(resp) {
+        isPollingActive = false;
+        if (!resp || !resp.data || !Array.isArray(resp.data.gameslist)) return;
+        var list = resp.data.gameslist;
+        if (list.length === 0) return;
 
-    // Mark as processed
-    processedPeriods.add(periodKey);
-    if (processedPeriods.size > 200) processedPeriods.clear();
+        // On first page load: Seed existing history silently
+        if (isInitialFetch) {
+          isInitialFetch = false;
+          list.forEach(function(b) {
+            var st = parseInt(b.status, 10);
+            var id = String(b.id_product || b.id || b.stage || '');
+            if (st !== 0 && id) {
+              seenSettledBets.add(id);
+            }
+          });
+          return;
+        }
 
-    var totalWinGet = 0;
-    var totalLossMoney = 0;
-    var isWin = false;
+        // Check for new settled bets
+        var newlySettled = {};
+        list.forEach(function(b) {
+          var st = parseInt(b.status, 10);
+          var id = String(b.id_product || b.id || b.stage || '');
+          var stage = String(b.stage || b.period || '').trim();
 
-    roundBets.forEach(function (b) {
-      var status = parseInt(b.status, 10);
-      var betMoney = parseFloat(b.money || b.price || 0);
-      var getMoney = parseFloat(b.get || 0);
+          if (st !== 0 && id && !seenSettledBets.has(id)) {
+            seenSettledBets.add(id);
+            if (!newlySettled[stage]) {
+              newlySettled[stage] = [];
+            }
+            newlySettled[stage].push(b);
+          }
+        });
 
-      if (status === 1) {
-        isWin = true;
-        totalWinGet += (getMoney > 0 ? getMoney : betMoney * 2);
-      } else if (status === 2) {
-        totalLossMoney += betMoney;
+        // Trigger toast for newly resolved rounds
+        Object.keys(newlySettled).forEach(function(stage) {
+          var bets = newlySettled[stage];
+          var totalWin = 0;
+          var totalLoss = 0;
+          var isWin = false;
+
+          bets.forEach(function(b) {
+            var st = parseInt(b.status, 10);
+            var money = parseFloat(b.money || b.price || 0);
+            var get = parseFloat(b.get || 0);
+            if (st === 1) {
+              isWin = true;
+              totalWin += (get > 0 ? get : money * 2);
+            } else if (st === 2) {
+              totalLoss += money;
+            }
+          });
+
+          if (isWin && totalWin > 0) {
+            showFloatingToast('win', { amount: totalWin, period: stage, game: ep.game });
+          } else if (totalLoss > 0) {
+            showFloatingToast('loss', { amount: totalLoss, period: stage, game: ep.game });
+          }
+        });
+      },
+      error: function() {
+        isPollingActive = false;
       }
     });
-
-    var gameTitle = 'Win Go';
-    if (String(gameType).indexOf('5d') !== -1) gameTitle = '5D Lotre';
-    if (String(gameType).indexOf('k3') !== -1) gameTitle = 'K3 Lotre';
-
-    if (isWin && totalWinGet > 0) {
-      showFloatingToast('win', {
-        amount: totalWinGet,
-        period: endedPeriod,
-        game: gameTitle
-      });
-    } else if (totalLossMoney > 0) {
-      showFloatingToast('loss', {
-        amount: totalLossMoney,
-        period: endedPeriod,
-        game: gameTitle
-      });
-    }
   }
+
+  // Active interval check every 2 seconds (independent of WebSocket)
+  setInterval(checkActiveBetSettlement, 2000);
+  setTimeout(checkActiveBetSettlement, 600);
 
   // Testing helpers
   function testWinModal(amount) {
     showFloatingToast('win', {
       amount: amount || 196.00,
-      period: '202608270045',
+      period: '202608270498',
       game: 'Win Go 1Min'
     });
   }
@@ -155,16 +217,17 @@
   function testLossModal(amount) {
     showFloatingToast('loss', {
       amount: amount || 100.00,
-      period: '202608270045',
+      period: '202608270498',
       game: 'Win Go 1Min'
     });
   }
 
   // Global exports with spelling aliases
-  window.checkAndShowGameResult = checkAndShowGameResult;
+  window.checkAndShowGameResult = checkActiveBetSettlement;
   window.showFloatingToast = showFloatingToast;
   window.testWinModal = testWinModal;
   window.testLossModal = testLossModal;
   window.testWinModel = testWinModal;
   window.testLossModel = testLossModal;
+  window.triggerBetCheck = checkActiveBetSettlement;
 })();
