@@ -626,6 +626,8 @@
   window.checkAndShowGameResult = checkAndShowGameResult;
   window.testWinModal = testWinModal;
   window.testLossModal = testLossModal;
+  window.testWinModel = testWinModal;
+  window.testLossModel = testLossModal;
 
   // Initialize on script load
   if (document.readyState === 'loading') {
