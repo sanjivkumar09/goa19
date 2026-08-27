@@ -400,16 +400,11 @@ const listOrderOld = async (req, res) => {
             status: true
         });
     }
-    if (pageno < 0 || pageto < 0) {
-        return res.status(200).json({
-            code: 0,
-            msg: "No more data",
-            data: {
-                gameslist: [],
-            },
-            status: false
-        });
-    }
+    pageno = parseInt(pageno, 10);
+    pageto = parseInt(pageto, 10);
+    if (isNaN(pageno) || pageno < 0) pageno = 0;
+    if (isNaN(pageto) || pageto <= 0) pageto = 10;
+
     let auth = req.cookies.auth;
     const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
 
@@ -432,12 +427,7 @@ const listOrderOld = async (req, res) => {
             status: false
         });
     }
-    if (!pageno || !pageto || !user[0] || !wingo[0] || !period[0]) {
-        return res.status(200).json({
-            message: 'Error!',
-            status: true
-        });
-    }
+    let currentPeriod = (period && period[0]) ? period[0].period : '';
     let page = Math.ceil(wingoAll.length / 10);
     return res.status(200).json({
         code: 0,
@@ -445,7 +435,7 @@ const listOrderOld = async (req, res) => {
         data: {
             gameslist: wingo,
         },
-        period: period[0].period,
+        period: currentPeriod,
         page: page,
         status: true
     });

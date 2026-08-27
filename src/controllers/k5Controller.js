@@ -205,7 +205,7 @@ const listOrderOld = async (req, res) => {
     let auth = req.cookies.auth;
 
     let checkGame = ['1', '3', '5', '10'].includes(String(gameJoin));
-    if (!checkGame || pageno < 0 || pageto < 0) {
+    if (!checkGame) {
         return res.status(200).json({
             code: 0,
             msg: "No more data",
@@ -215,6 +215,11 @@ const listOrderOld = async (req, res) => {
             status: false
         });
     }
+    pageno = parseInt(pageno, 10);
+    pageto = parseInt(pageto, 10);
+    if (isNaN(pageno) || pageno < 0) pageno = 0;
+    if (isNaN(pageto) || pageto <= 0) pageto = 10;
+
     const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1  LIMIT 1 ', [auth]);
 
     let game = Number(gameJoin);
@@ -222,7 +227,7 @@ const listOrderOld = async (req, res) => {
     const [k5d] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = '${game}' ORDER BY id DESC LIMIT ${pageno}, ${pageto} `);
     const [k5dAll] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = '${game}' `);
     const [period] = await connection.query(`SELECT period FROM 5d WHERE status = 0 AND game = '${game}' ORDER BY id DESC LIMIT 1 `);
-    if (k5d.length == 0) {
+    if (!k5d || k5d.length == 0) {
         return res.status(200).json({
             code: 0,
             msg: "No more data",
@@ -233,12 +238,7 @@ const listOrderOld = async (req, res) => {
             status: false
         });
     }
-    if (!pageno || !pageto || !user[0] || !k5d[0] || !period[0]) {
-        return res.status(200).json({
-            message: 'Error!',
-            status: false
-        });
-    }
+    let currentPeriod = (period && period[0]) ? period[0].period : '';
     let page = Math.ceil(k5dAll.length / 10);
     return res.status(200).json({
         code: 0,
@@ -246,7 +246,7 @@ const listOrderOld = async (req, res) => {
         data: {
             gameslist: k5d,
         },
-        period: period[0].period,
+        period: currentPeriod,
         page: page,
         status: true
     });

@@ -841,7 +841,15 @@ function sendGame1() {
             if (response.status) {
                 $('.moneyU').text("₹ " +response.money + '.00');
                 socket.emit('data-server-3', { change, gameJoin: 1, listJoin, money, xvalue, game: $('html').attr('data-dpr') });
-                if (window.registerUserBet) window.registerUserBet(response.stage, response.id_product);
+                if (window.registerUserBet) {
+                    window.registerUserBet({
+                        id: response.id_product,
+                        stage: response.stage,
+                        game: 'K3',
+                        typeid: $('html').attr('data-dpr') || '1',
+                        money: parseFloat(money) * parseFloat(xvalue)
+                    });
+                }
             }
             dropDown();
         }
@@ -885,7 +893,15 @@ function sendGame2() {
             if (response.status) {
                 $('.moneyU').text("₹ " + response.money + '');
                 socket.emit('data-server-3', { change, gameJoin: 2, listJoin, money, xvalue, game: $('html').attr('data-dpr') });
-                if (window.registerUserBet) window.registerUserBet(response.stage, response.id_product);
+                if (window.registerUserBet) {
+                    window.registerUserBet({
+                        id: response.id_product,
+                        stage: response.stage,
+                        game: 'K3',
+                        typeid: $('html').attr('data-dpr') || '1',
+                        money: parseFloat(money) * parseFloat(xvalue)
+                    });
+                }
             }
             dropDown();
         }
@@ -925,7 +941,15 @@ function sendGame3() {
             if (response.status) {
                 $('.moneyU').text("₹ " + response.money + '.00');
                 socket.emit('data-server-3', { change, gameJoin: 3, listJoin, money, xvalue, game: $('html').attr('data-dpr') });
-                if (window.registerUserBet) window.registerUserBet(response.stage, response.id_product);
+                if (window.registerUserBet) {
+                    window.registerUserBet({
+                        id: response.id_product,
+                        stage: response.stage,
+                        game: 'K3',
+                        typeid: $('html').attr('data-dpr') || '1',
+                        money: parseFloat(money) * parseFloat(xvalue)
+                    });
+                }
             }
             dropDown();
         }
@@ -974,7 +998,15 @@ function sendGame4() {
             if (response.status) {
                 $('.moneyU').text("₹ " + response.money + '.00');
                 socket.emit('data-server-3', { change, gameJoin: 4, listJoin, money, xvalue, game: $('html').attr('data-dpr') });
-                if (window.registerUserBet) window.registerUserBet(response.stage, response.id_product);
+                if (window.registerUserBet) {
+                    window.registerUserBet({
+                        id: response.id_product,
+                        stage: response.stage,
+                        game: 'K3',
+                        typeid: $('html').attr('data-dpr') || '1',
+                        money: parseFloat(money) * parseFloat(xvalue)
+                    });
+                }
             }
             dropDown();
         }

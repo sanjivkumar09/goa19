@@ -541,7 +541,15 @@ $('.foot .right').click(function (e) {
             if (response.status == true) {
                 $('#money_show').text("₹ " + response.money + '.00');
                 showMeJoin();
-                if (window.registerUserBet) window.registerUserBet(response.stage, response.id_product);
+                if (window.registerUserBet) {
+                    window.registerUserBet({
+                        id: response.id_product,
+                        stage: response.stage,
+                        game: '5D',
+                        typeid: $('html').attr('data-dpr') || '1',
+                        money: parseFloat(value) * parseFloat(x)
+                    });
+                }
             }
         }
     });

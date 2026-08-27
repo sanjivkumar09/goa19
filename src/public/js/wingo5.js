@@ -633,8 +633,15 @@ function showListOrder3(list_orders, x) {
         $("#history-order").prepend(response.data);
         $(".total-box .num span").text("₹ " + response.money + ".00");
         socket.emit('data-server_2', { money: x * money, join, time: Date.now(), change: response.change });
-        var currentPeriod = $('.info .period').text().trim() || $('.time-box .info .period').text().trim();
-        if (window.registerUserBet) window.registerUserBet(currentPeriod);
+        if (window.registerUserBet) {
+          window.registerUserBet({
+            id: response.id_product,
+            stage: response.stage || $('.info .period').text().trim() || $('.time-box .info .period').text().trim(),
+            game: 'Win Go',
+            typeid: '5',
+            money: parseFloat(money) * parseFloat(x)
+          });
+        }
       },
     });
   
