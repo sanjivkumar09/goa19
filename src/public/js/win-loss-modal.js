@@ -1,6 +1,6 @@
 /**
  * DiuWin / Raja Club Official Receipt Win & Loss Modal
- * Complete End-to-End Centralized State Machine Controller
+ * Complete Production-Grade Centralized State Machine Controller
  */
 
 (function () {
@@ -10,7 +10,7 @@
   window.RESULT_MODAL_DEBUG = true;
 
   // Tracked State
-  // id_product -> { id, stage, game, typeid, stake, previousStatus, currentStatus, registeredAt, getMoney }
+  // Map: id_product -> { id, stage, game, typeid, stake, previousStatus, currentStatus, registeredAt, getMoney }
   var trackedBets = new Map();
   var resolvedKeys = new Set(); // game_typeid:stage
   var knownHistoricalBetIds = new Set();
@@ -105,15 +105,19 @@
     }
 
     // Set badges from actual draw number
-    var num = (options.resultNum !== undefined && options.resultNum !== null) ? String(options.resultNum) : (isWin ? '6' : '2');
-    if (badgeNum) badgeNum.innerText = num;
-    var isNumOdd = (parseInt(num, 10) % 2 !== 0);
-    if (badgeColor) {
-      badgeColor.innerText = (num == '0' || num == '5') ? 'Violet' : (isNumOdd ? 'Green' : 'Red');
-      badgeColor.className = 'lottery-badge ' + ((num == '0' || num == '5') ? 'badge-violet' : (isNumOdd ? 'badge-green' : 'badge-red'));
+    var num = (options.resultNum !== undefined && options.resultNum !== null) ? String(options.resultNum) : '';
+    if (badgeNum) {
+      badgeNum.innerText = num || '-';
     }
-    if (badgeSize) {
-      badgeSize.innerText = (parseInt(num, 10) >= 5) ? 'Big' : 'Small';
+    if (num) {
+      var isNumOdd = (parseInt(num, 10) % 2 !== 0);
+      if (badgeColor) {
+        badgeColor.innerText = (num == '0' || num == '5') ? 'Violet' : (isNumOdd ? 'Green' : 'Red');
+        badgeColor.className = 'lottery-badge ' + ((num == '0' || num == '5') ? 'badge-violet' : (isNumOdd ? 'badge-green' : 'badge-red'));
+      }
+      if (badgeSize) {
+        badgeSize.innerText = (parseInt(num, 10) >= 5) ? 'Big' : 'Small';
+      }
     }
 
     if (periodText) periodText.innerText = 'Period: ' + (options.period || '-');
@@ -215,13 +219,13 @@
       typeid: typeid,
       stake: stake,
       previousStatus: null,
-      currentStatus: 0, // PENDING
+      currentStatus: 0, // PENDING (0)
       registeredAt: Date.now(),
       getMoney: 0
     });
 
     log('BET_REGISTERED', {
-      id: id,
+      id: id || betKey,
       stage: stage,
       game: game,
       typeid: typeid,
@@ -241,8 +245,11 @@
     });
   }
 
-  function fetchActualDrawResult(stage, callback) {
+  // Fetch actual draw result without fake fallbacks; retries until found
+  function fetchActualDrawResult(stage, callback, retryCount) {
+    retryCount = retryCount || 0;
     var ep = getCurrentGameEndpoint();
+
     $.ajax({
       type: "POST",
       url: ep.historyUrl,
@@ -256,15 +263,30 @@
           });
           if (found) {
             drawNum = (found.amount !== undefined) ? found.amount : found.result;
-          } else if (resp.data.gameslist.length > 0) {
-            drawNum = resp.data.gameslist[0].amount || resp.data.gameslist[0].result;
           }
         }
-        log('DRAW_RESULT', { stage: stage, drawNum: drawNum });
-        callback(drawNum);
+
+        if (drawNum !== null && drawNum !== undefined) {
+          log('DRAW_RESULT', { stage: stage, drawNum: drawNum });
+          callback(drawNum);
+        } else if (retryCount < 8) {
+          // Result not recorded yet in MySQL; retry after 400ms
+          setTimeout(function() {
+            fetchActualDrawResult(stage, callback, retryCount + 1);
+          }, 400);
+        } else {
+          log('DRAW_RESULT_UNAVAILABLE', { stage: stage });
+          callback(null);
+        }
       },
       error: function() {
-        callback(null);
+        if (retryCount < 5) {
+          setTimeout(function() {
+            fetchActualDrawResult(stage, callback, retryCount + 1);
+          }, 500);
+        } else {
+          callback(null);
+        }
       }
     });
   }
@@ -287,33 +309,32 @@
     });
   }
 
+  // Dynamic Multi-Page Retrieval Loop
   function checkActiveBetSettlement() {
     if (isPollingActive) return;
     isPollingActive = true;
-    var ep = getCurrentGameEndpoint();
 
-    fetchUserBetPage(0, 30, function(list) {
-      processSettlementData(list, function() {
-        // If there are still pending/unfound tracked bets, check page 1 (records 30-60)
-        var hasUnsettled = Array.from(trackedBets.values()).some(function(b) {
-          return b.currentStatus === 0;
-        });
+    var pageSize = 30;
+    var maxPages = 4; // up to 120 records
 
-        if (hasUnsettled) {
-          fetchUserBetPage(30, 30, function(page1List) {
-            if (page1List.length > 0) {
-              processSettlementData(page1List, function() {
-                isPollingActive = false;
-              });
-            } else {
-              isPollingActive = false;
-            }
-          });
-        } else {
+    function scanPage(pageIndex) {
+      fetchUserBetPage(pageIndex * pageSize, pageSize, function(list) {
+        if (!list || list.length === 0) {
           isPollingActive = false;
+          return;
         }
+
+        processSettlementData(list, function(hasUnsettled) {
+          if (hasUnsettled && (pageIndex + 1) < maxPages) {
+            scanPage(pageIndex + 1);
+          } else {
+            isPollingActive = false;
+          }
+        });
       });
-    });
+    }
+
+    scanPage(0);
   }
 
   function processSettlementData(list, onComplete) {
@@ -323,44 +344,48 @@
     if (isInitialFetch) {
       isInitialFetch = false;
       list.forEach(function(b) {
-        var id = String(b.id_product || b.id || '');
+        var id = String(b.id_product || b.id || '').trim();
         var st = parseInt(b.status, 10);
         var stage = String(b.stage || b.period || '').trim();
 
         if (st === 0 && stage) {
           // Recover pending bet placed before refresh
           var betKey = id || (ep.game + '_' + ep.typeid + '_' + stage);
-          trackedBets.set(betKey, {
-            id: id || betKey,
-            stage: stage,
-            game: ep.game,
-            typeid: ep.typeid,
-            stake: parseFloat(b.money || b.price || 0),
-            previousStatus: null,
-            currentStatus: 0,
-            registeredAt: Date.now(),
-            getMoney: parseFloat(b.get || 0)
-          });
-          log('RECOVERED_PENDING_ON_LOAD', { id: id, stage: stage });
+          if (!trackedBets.has(betKey)) {
+            trackedBets.set(betKey, {
+              id: id || betKey,
+              stage: stage,
+              game: ep.game,
+              typeid: ep.typeid,
+              stake: parseFloat(b.money || b.price || 0),
+              previousStatus: null,
+              currentStatus: 0,
+              registeredAt: Date.now(),
+              getMoney: parseFloat(b.get || 0)
+            });
+            log('RECOVERED_PENDING_ON_LOAD', { id: id, stage: stage });
+          }
         } else if (id) {
-          knownHistoricalBetIds.add(id);
+          // Only add to historical if not registered in this session
+          if (!trackedBets.has(id)) {
+            knownHistoricalBetIds.add(id);
+          }
         }
       });
-      onComplete();
+      onComplete(false);
       return;
     }
 
-    // Auto-discover newly placed pending bets if registerUserBet wasn't called
+    // Auto-discover newly placed pending bets (status === 0)
     list.forEach(function(b) {
-      var id = String(b.id_product || b.id || '');
+      var id = String(b.id_product || b.id || '').trim();
       var st = parseInt(b.status, 10);
       var stage = String(b.stage || b.period || '').trim();
 
-      if (st === 0 && stage && !knownHistoricalBetIds.has(id)) {
-        var betKey = id || (ep.game + '_' + ep.typeid + '_' + stage);
-        if (!trackedBets.has(betKey)) {
-          trackedBets.set(betKey, {
-            id: id || betKey,
+      if (st === 0 && stage && id && !knownHistoricalBetIds.has(id)) {
+        if (!trackedBets.has(id)) {
+          trackedBets.set(id, {
+            id: id,
             stage: stage,
             game: ep.game,
             typeid: ep.typeid,
@@ -375,62 +400,63 @@
       }
     });
 
-    // Update tracked bets status transitions
+    // Update tracked bets status strictly by id_product
     list.forEach(function(b) {
       var id = String(b.id_product || b.id || '').trim();
-      var stage = String(b.stage || b.period || '').trim();
       var newStatus = parseInt(b.status, 10);
       var getMoney = parseFloat(b.get || 0);
       var money = parseFloat(b.money || b.price || 0);
 
-      trackedBets.forEach(function(tracked, key) {
-        var isMatch = (id && tracked.id === id) || (!tracked.id.includes('-') && tracked.stage === stage);
-        if (isMatch) {
-          var oldStatus = tracked.currentStatus;
-          tracked.previousStatus = oldStatus;
-          tracked.currentStatus = newStatus;
-          tracked.getMoney = getMoney;
-          if (money && !tracked.stake) tracked.stake = money;
+      if (id && trackedBets.has(id)) {
+        var tracked = trackedBets.get(id);
+        var oldStatus = tracked.currentStatus;
 
-          if (oldStatus === 0 && newStatus === 1) {
-            log('TRANSITION 0 -> 1', {
-              game: tracked.game,
-              typeid: tracked.typeid,
-              stage: tracked.stage,
-              id_product: tracked.id,
-              oldStatus: oldStatus,
-              newStatus: newStatus,
-              getMoney: getMoney
-            });
-          } else if (oldStatus === 0 && newStatus === 2) {
-            log('TRANSITION 0 -> 2', {
-              game: tracked.game,
-              typeid: tracked.typeid,
-              stage: tracked.stage,
-              id_product: tracked.id,
-              oldStatus: oldStatus,
-              newStatus: newStatus,
-              stake: tracked.stake
-            });
-          }
+        tracked.previousStatus = oldStatus;
+        tracked.currentStatus = newStatus;
+        tracked.getMoney = getMoney;
+        if (money && !tracked.stake) tracked.stake = money;
+
+        if (oldStatus === 0 && newStatus === 1) {
+          log('TRANSITION 0 -> 1', {
+            game: tracked.game,
+            typeid: tracked.typeid,
+            stage: tracked.stage,
+            id_product: tracked.id,
+            oldStatus: oldStatus,
+            newStatus: newStatus,
+            getMoney: getMoney
+          });
+        } else if (oldStatus === 0 && newStatus === 2) {
+          log('TRANSITION 0 -> 2', {
+            game: tracked.game,
+            typeid: tracked.typeid,
+            stage: tracked.stage,
+            id_product: tracked.id,
+            oldStatus: oldStatus,
+            newStatus: newStatus,
+            stake: tracked.stake
+          });
         }
-      });
+      }
     });
 
     // Group tracked bets by game + typeid + stage
     var groups = {};
-    trackedBets.forEach(function(tracked, key) {
+    trackedBets.forEach(function(tracked) {
       var groupKey = tracked.game + '_' + tracked.typeid + ':' + tracked.stage;
       if (!groups[groupKey]) groups[groupKey] = [];
       groups[groupKey].push(tracked);
     });
 
-    // Evaluate each group for settlement
     var groupKeys = Object.keys(groups);
     var processedCount = 0;
 
+    var hasPending = Array.from(trackedBets.values()).some(function(b) {
+      return b.currentStatus === 0;
+    });
+
     if (groupKeys.length === 0) {
-      onComplete();
+      onComplete(hasPending);
       return;
     }
 
@@ -442,7 +468,7 @@
       if (resolvedKeys.has(groupKey)) {
         groupBets.forEach(function(b) { trackedBets.delete(b.id); });
         processedCount++;
-        if (processedCount === groupKeys.length) onComplete();
+        if (processedCount === groupKeys.length) onComplete(hasPending);
         return;
       }
 
@@ -460,7 +486,7 @@
           pending: groupBets.filter(function(b) { return b.currentStatus === 0; }).length
         });
         processedCount++;
-        if (processedCount === groupKeys.length) onComplete();
+        if (processedCount === groupKeys.length) onComplete(hasPending);
         return;
       }
 
@@ -472,12 +498,10 @@
       // Aggregate Win / Loss totals
       var totalStake = 0;
       var totalPayout = 0;
-      var hasWin = false;
 
       groupBets.forEach(function(b) {
         totalStake += (b.stake || 0);
         if (b.currentStatus === 1) {
-          hasWin = true;
           totalPayout += (b.getMoney > 0 ? b.getMoney : (b.stake * 2));
         }
         trackedBets.delete(b.id);
@@ -488,16 +512,15 @@
 
       // Fetch actual lottery draw result number
       fetchActualDrawResult(stage, function(realDrawNum) {
-        var drawNum = (realDrawNum !== null) ? realDrawNum : (isWin ? '6' : '2');
         showOfficialReceipt(isWin ? 'win' : 'loss', {
           amount: displayAmount,
           period: stage,
-          resultNum: drawNum,
+          resultNum: realDrawNum,
           game: firstBet.game + ' ' + firstBet.typeid + 'Min'
         });
 
         processedCount++;
-        if (processedCount === groupKeys.length) onComplete();
+        if (processedCount === groupKeys.length) onComplete(hasPending);
       });
     });
   }
