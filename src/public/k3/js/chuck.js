@@ -25,22 +25,64 @@ socket.on("data-server-k3", function (msg) {
             $("#next").addClass("action");
             $("#next .van-icon-arrow").css("color", "#fff");
 
-            $.ajax({
-                type: "POST",
-                url: "/api/webapi/k3/GetMyEmerdList",
-                data: {
-                    gameJoin: $('html').attr('data-dpr'),
-                    pageno: "0",
-                    pageto: "10",
-                },
-                dataType: "json",
-                success: function (response) {
-                    let data = response.data.gameslist;
-                    if (window.checkAndShowGameResult && Result) {
-                        window.checkAndShowGameResult('k3' + msg.game, Result.period, Result.result, data);
+            function checkRoundResultK3(attempt) {
+                attempt = attempt || 1;
+                $.ajax({
+                    type: "POST",
+                    url: "/api/webapi/k3/GetMyEmerdList",
+                    data: {
+                        gameJoin: $('html').attr('data-dpr'),
+                        pageno: "0",
+                        pageto: "10",
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        let data = (response && response.data && response.data.gameslist) ? response.data.gameslist : [];
+                        if (Result && data.length > 0) {
+                            let endedPeriod = String(Result.period).trim();
+                            let roundBets = data.filter(function(b) {
+                                return String(b.stage || b.period || '').trim() === endedPeriod;
+                            });
+
+                            if (roundBets.length > 0) {
+                                let hasPending = roundBets.some(function(b) {
+                                    return parseInt(b.status, 10) === 0;
+                                });
+
+                                if (hasPending && attempt < 6) {
+                                    setTimeout(function() { checkRoundResultK3(attempt + 1); }, 700);
+                                    return;
+                                }
+
+                                let totalWin = 0;
+                                let totalLoss = 0;
+                                let isWin = false;
+
+                                roundBets.forEach(function(b) {
+                                    let st = parseInt(b.status, 10);
+                                    let money = parseFloat(b.money || b.price || 0);
+                                    let get = parseFloat(b.get || 0);
+                                    if (st === 1) {
+                                        isWin = true;
+                                        totalWin += (get > 0 ? get : money * 2);
+                                    } else if (st === 2) {
+                                        totalLoss += money;
+                                    }
+                                });
+
+                                if (typeof window.showFloatingToast === 'function') {
+                                    if (isWin && totalWin > 0) {
+                                        window.showFloatingToast('win', { amount: totalWin, period: endedPeriod, game: 'K3 Lotre' });
+                                    } else if (totalLoss > 0) {
+                                        window.showFloatingToast('loss', { amount: totalLoss, period: endedPeriod, game: 'K3 Lotre' });
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-            });
+                });
+            }
+            checkRoundResultK3(1);
         }
     }
 });

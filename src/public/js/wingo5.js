@@ -104,27 +104,70 @@ function showListOrder3(list_orders, x) {
         "color",
         "#fff"
       );
-      $.ajax({
-        type: "POST",
-        url: "/api/webapi/GetMyEmerdList",
-        data: {
-          typeid: "5",
-          pageno: "0",
-          pageto: "10",
-          language: "vi",
-        },
-        dataType: "json",
-        success: function (response) {
-          let data = response.data.gameslist;
-          $(".game-list .con-box:eq(1) .page-nav .number").text(
-            "1/" + `${(response.page) ? response.page : '1'}`
-          );
-          showListOrder2(data, 1);
-          if (window.checkAndShowGameResult && msg.data && msg.data[1]) {
-            window.checkAndShowGameResult('wingo5', msg.data[1].period, msg.data[1].amount, data);
-          }
-        },
-      });
+      function checkRoundResult(attempt) {
+        attempt = attempt || 1;
+        $.ajax({
+          type: "POST",
+          url: "/api/webapi/GetMyEmerdList",
+          data: {
+            typeid: "5",
+            pageno: "0",
+            pageto: "10",
+            language: "vi",
+          },
+          dataType: "json",
+          success: function (response) {
+            let data = (response && response.data && response.data.gameslist) ? response.data.gameslist : [];
+            $(".game-list .con-box:eq(1) .page-nav .number").text(
+              "1/" + `${(response.page) ? response.page : '1'}`
+            );
+            showListOrder2(data, 1);
+
+            if (msg.data && msg.data[1] && data.length > 0) {
+              let endedPeriod = String(msg.data[1].period).trim();
+              let roundBets = data.filter(function(b) {
+                return String(b.stage || b.period || '').trim() === endedPeriod;
+              });
+
+              if (roundBets.length > 0) {
+                let hasPending = roundBets.some(function(b) {
+                  return parseInt(b.status, 10) === 0;
+                });
+
+                if (hasPending && attempt < 6) {
+                  setTimeout(function() { checkRoundResult(attempt + 1); }, 700);
+                  return;
+                }
+
+                let totalWin = 0;
+                let totalLoss = 0;
+                let isWin = false;
+
+                roundBets.forEach(function(b) {
+                  let st = parseInt(b.status, 10);
+                  let money = parseFloat(b.money || b.price || 0);
+                  let get = parseFloat(b.get || 0);
+                  if (st === 1) {
+                    isWin = true;
+                    totalWin += (get > 0 ? get : money * 2);
+                  } else if (st === 2) {
+                    totalLoss += money;
+                  }
+                });
+
+                if (typeof window.showFloatingToast === 'function') {
+                  if (isWin && totalWin > 0) {
+                    window.showFloatingToast('win', { amount: totalWin, period: endedPeriod, game: 'Win Go 5Min' });
+                  } else if (totalLoss > 0) {
+                    window.showFloatingToast('loss', { amount: totalLoss, period: endedPeriod, game: 'Win Go 5Min' });
+                  }
+                }
+              }
+            }
+          },
+        });
+      }
+      checkRoundResult(1);
       $.ajax({
         type: "POST",
         url: "/api/webapi/GetNoaverageEmerdList",
