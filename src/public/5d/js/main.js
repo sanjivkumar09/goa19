@@ -4,25 +4,29 @@ var limit = 10;
 var page = 1;
 socket.on("data-server-5d", function (msg) {
     console.log(msg.chane);
-    if (msg) {
+    if (msg && Array.isArray(msg.data)) {
         let checkData = $('html').attr('data-dpr');
         if (checkData == msg.game) {
             pageno = 0;
             limit = 10;
             page = 1;
-            let notResult = msg.data[0];
-            let Result = msg.data[1];
+            let notResult = msg.data.find(function(item) { return item.status === 0; }) || msg.data[0];
+            let Result = msg.data.find(function(item) { return item.status === 1 || item.status === 2; }) || msg.data[1];
             let check = $('#number_result').attr('data-select');
-            if (check == 'all') {
-                reload_money();
-                callListOrder();
-                animationNewPar(Result.result);
-            } else {
-                reload_money();
-                showMeJoin();
-                animationNewPar(Result.result);
+            if (Result && Result.result) {
+                if (check == 'all') {
+                    reload_money();
+                    callListOrder();
+                    animationNewPar(Result.result);
+                } else {
+                    reload_money();
+                    showMeJoin();
+                    animationNewPar(Result.result);
+                }
             }
-            $('#period').text(notResult.period);
+            if (notResult && notResult.period) {
+                $('#period').text(notResult.period);
+            }
             $("#previous").addClass("block-click");
             $("#previous").removeClass("action");
             $("#previous .van-icon-arrow").css("color", "#7f7f7f");
@@ -30,6 +34,9 @@ socket.on("data-server-5d", function (msg) {
             $("#next").addClass("action");
             $("#next .van-icon-arrow").css("color", "#fff");
 
+            if (window.triggerBetCheck) {
+                setTimeout(window.triggerBetCheck, 500);
+            }
         }
     }
 });

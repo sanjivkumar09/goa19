@@ -502,7 +502,7 @@
       groupBets.forEach(function(b) {
         totalStake += (b.stake || 0);
         if (b.currentStatus === 1) {
-          totalPayout += (b.getMoney > 0 ? b.getMoney : (b.stake * 2));
+          totalPayout += (b.getMoney || 0);
         }
         trackedBets.delete(b.id);
       });
