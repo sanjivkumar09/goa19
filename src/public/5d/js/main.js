@@ -599,6 +599,7 @@ $('.foot .right').click(function (e) {
             if (response.status == true) {
                 $('#money_show').text("₹ " + response.money + '.00');
                 showMeJoin();
+                if (window.registerUserBet) window.registerUserBet(response.stage, response.id_product);
             }
         }
     });

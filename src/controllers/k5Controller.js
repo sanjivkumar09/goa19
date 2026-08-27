@@ -183,6 +183,8 @@ const betK5D = async (req, res) => {
             return res.status(200).json({
                 message: 'Successful bet',
                 status: true,
+                stage: period.period,
+                id_product: id_product,
                 // data: result,
                 change: users[0].level,
                 money: users[0].money,

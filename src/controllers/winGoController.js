@@ -378,6 +378,8 @@ const betWinGo = async (req, res) => {
             message: 'Successful bet',
             status: true,
             data: result,
+            stage: period,
+            id_product: id_product,
             change: users[0].level,
             money: users[0].money,
         });
