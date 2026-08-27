@@ -1,14 +1,17 @@
 /**
- * DiuWin / Raja Club Official Receipt Win & Loss Modal (Pixel-Perfect Match)
+ * DiuWin / Raja Club Official Receipt Win & Loss Modal (Single State Machine)
  */
 
 (function () {
   'use strict';
 
-  // State machine for tracking each bet's status transition (0 -> 1 or 2)
+  // Set of stages user bet on that are awaiting settlement
+  var activeUserBetStages = new Set();
+  // Set of stages that have already shown the modal to the user
+  var resolvedStages = new Set();
+  // Map of unique bet IDs to last seen status
   var knownBetStatuses = new Map();
-  var notifiedStages = new Set();
-  var isInitialFetch = true;
+
   var autoCloseTimer = null;
   var autoCloseInterval = null;
   var isPollingActive = false;
@@ -63,7 +66,10 @@
     var periodText = document.getElementById('receipt-period-text');
     var autoCloseText = document.getElementById('auto-close-text');
 
-    if (!overlay || !card) return;
+    if (!overlay || !card) {
+      console.warn('[DIUWIN_MODAL] Overlay element #diuwin-receipt-overlay not found in DOM');
+      return;
+    }
 
     if (isWin) {
       card.className = 'diuwin-modal-card win-card';
@@ -80,22 +86,26 @@
 
     // Set badges
     var num = (options.resultNum !== undefined && options.resultNum !== null) ? String(options.resultNum) : (isWin ? '6' : '2');
-    badgeNum.innerText = num;
+    if (badgeNum) badgeNum.innerText = num;
     var isNumOdd = (parseInt(num, 10) % 2 !== 0);
-    badgeColor.innerText = (num == '0' || num == '5') ? 'Violet' : (isNumOdd ? 'Green' : 'Red');
-    badgeColor.className = 'lottery-badge ' + ((num == '0' || num == '5') ? 'badge-violet' : (isNumOdd ? 'badge-green' : 'badge-red'));
-    badgeSize.innerText = (parseInt(num, 10) >= 5) ? 'Big' : 'Small';
+    if (badgeColor) {
+      badgeColor.innerText = (num == '0' || num == '5') ? 'Violet' : (isNumOdd ? 'Green' : 'Red');
+      badgeColor.className = 'lottery-badge ' + ((num == '0' || num == '5') ? 'badge-violet' : (isNumOdd ? 'badge-green' : 'badge-red'));
+    }
+    if (badgeSize) {
+      badgeSize.innerText = (parseInt(num, 10) >= 5) ? 'Big' : 'Small';
+    }
 
-    periodText.innerText = 'Period: ' + (options.period || '202608270045');
+    if (periodText) periodText.innerText = 'Period: ' + (options.period || '-');
 
     // Auto-close countdown (3, 2, 1...)
     var secondsLeft = 3;
-    autoCloseText.innerText = secondsLeft + ' seconds auto close';
+    if (autoCloseText) autoCloseText.innerText = secondsLeft + ' seconds auto close';
 
     if (autoCloseInterval) clearInterval(autoCloseInterval);
     autoCloseInterval = setInterval(function() {
       secondsLeft--;
-      if (secondsLeft > 0) {
+      if (secondsLeft > 0 && autoCloseText) {
         autoCloseText.innerText = secondsLeft + ' seconds auto close';
       }
     }, 1000);
@@ -112,7 +122,7 @@
       var dpr5d = $('html').attr('data-dpr') || '1';
       return {
         url: '/api/webapi/5d/GetMyEmerdList',
-        data: { gameJoin: dpr5d, pageno: '0', pageto: '10' },
+        data: { gameJoin: dpr5d, pageno: '0', pageto: '20' },
         game: '5D ' + dpr5d + 'Min'
       };
     }
@@ -120,7 +130,7 @@
       var dprK3 = $('html').attr('data-dpr') || '1';
       return {
         url: '/api/webapi/k3/GetMyEmerdList',
-        data: { gameJoin: dprK3, pageno: '0', pageto: '10' },
+        data: { gameJoin: dprK3, pageno: '0', pageto: '20' },
         game: 'K3 ' + dprK3 + 'Min'
       };
     }
@@ -141,9 +151,17 @@
 
     return {
       url: '/api/webapi/GetMyEmerdList',
-      data: { typeid: typeid, pageno: '0', pageto: '10', language: 'vi' },
+      data: { typeid: typeid, pageno: '0', pageto: '20', language: 'vi' },
       game: gameName
     };
+  }
+
+  // Register when a user places a bet
+  function registerUserBet(stage) {
+    if (stage) {
+      activeUserBetStages.add(String(stage).trim());
+    }
+    setTimeout(checkActiveBetSettlement, 300);
   }
 
   function checkActiveBetSettlement() {
@@ -162,59 +180,50 @@
         var list = resp.data.gameslist;
         if (list.length === 0) return;
 
-        // On first page load: Record known statuses of all historical bets
-        if (isInitialFetch) {
-          isInitialFetch = false;
-          list.forEach(function(b) {
-            var id = String(b.id_product || b.id || '');
-            if (id) {
-              knownBetStatuses.set(id, parseInt(b.status, 10));
-            }
-          });
-          return;
-        }
-
-        // State Transition Detection (Status 0 -> 1 or 2)
-        var justSettledStages = new Set();
-
+        // Auto-register any pending bets seen in API (e.g. after refresh)
         list.forEach(function(b) {
           var id = String(b.id_product || b.id || '');
-          if (!id) return;
-
-          var currentStatus = parseInt(b.status, 10);
-          var previousStatus = knownBetStatuses.has(id) ? knownBetStatuses.get(id) : null;
-
-          // Record new status
-          knownBetStatuses.set(id, currentStatus);
-
+          var st = parseInt(b.status, 10);
           var stage = String(b.stage || b.period || '').trim();
 
-          // Condition 1: Tracked pending bet (0) transitioned to Won (1) or Lost (2)
-          if (previousStatus === 0 && (currentStatus === 1 || currentStatus === 2)) {
-            justSettledStages.add(stage);
+          if (st === 0 && stage) {
+            activeUserBetStages.add(stage);
           }
-          // Condition 2: Newly fetched bet that arrived settled and stage was never shown
-          else if (previousStatus === null && (currentStatus === 1 || currentStatus === 2) && !notifiedStages.has(stage)) {
-            justSettledStages.add(stage);
+
+          // State transition check (0 -> 1 or 2)
+          var prevStatus = knownBetStatuses.get(id);
+          if (prevStatus === 0 && (st === 1 || st === 2) && stage) {
+            activeUserBetStages.add(stage);
+          }
+
+          if (id) {
+            knownBetStatuses.set(id, st);
           }
         });
 
-        // Trigger receipt modal for each settled stage
-        justSettledStages.forEach(function(stage) {
-          if (notifiedStages.has(stage)) return;
+        // Check if any tracked bet stages have completely settled
+        activeUserBetStages.forEach(function(stage) {
+          if (resolvedStages.has(stage)) {
+            activeUserBetStages.delete(stage);
+            return;
+          }
 
           var stageBets = list.filter(function(b) {
             return String(b.stage || b.period || '').trim() === stage;
           });
 
-          // If any bet for this stage is still processing (status == 0), wait for it
+          if (stageBets.length === 0) return;
+
+          // Check if all bets for this stage have status != 0
           var hasPending = stageBets.some(function(b) {
             return parseInt(b.status, 10) === 0;
           });
-          if (hasPending) return;
+          if (hasPending) return; // Still resolving
 
-          notifiedStages.add(stage);
-          if (notifiedStages.size > 200) notifiedStages.clear();
+          // All bets for this stage are settled! Mark resolved.
+          resolvedStages.add(stage);
+          activeUserBetStages.delete(stage);
+          if (resolvedStages.size > 200) resolvedStages.clear();
 
           var totalWin = 0;
           var totalLoss = 0;
@@ -250,7 +259,7 @@
     });
   }
 
-  // Active check every 1.5 seconds
+  // Active polling interval
   setInterval(checkActiveBetSettlement, 1500);
   setTimeout(checkActiveBetSettlement, 500);
 
@@ -271,6 +280,7 @@
     });
   }
 
+  // Global Exports
   window.showOfficialReceipt = showOfficialReceipt;
   window.showFloatingToast = showOfficialReceipt;
   window.testWinModal = testWinModal;
@@ -278,5 +288,6 @@
   window.testWinModel = testWinModal;
   window.testLossModel = testLossModal;
   window.triggerBetCheck = checkActiveBetSettlement;
+  window.registerUserBet = registerUserBet;
   window.closeReceiptModal = closeReceiptModal;
 })();
