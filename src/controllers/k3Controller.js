@@ -316,12 +316,17 @@ const addK3 = async (game) => {
             await connection.execute(`UPDATE k3 SET result = ?,status = ? WHERE period = ? AND game = ${game}`, [result, 1, period]);
         }
         
-        // Generate period based on current date (Format: YYYYMMDD + 4 digits: 0001, 0002, 0003...)
-        let date = new Date();
-        let years = date.getFullYear();
-        let months = String(date.getMonth() + 1).padStart(2, '0');
-        let days = String(date.getDate()).padStart(2, '0');
-        let todayPrefix = `${years}${months}${days}`;
+        // Generate period based on India date (Asia/Kolkata) (Format: YYYYMMDD + 4 digits: 0001, 0002, 0003...)
+        const kolkataParts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Kolkata',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).formatToParts(new Date());
+        const kYear = kolkataParts.find(p => p.type === 'year').value;
+        const kMonth = kolkataParts.find(p => p.type === 'month').value;
+        const kDay = kolkataParts.find(p => p.type === 'day').value;
+        let todayPrefix = `${kYear}${kMonth}${kDay}`;
 
         let nextPeriod;
         if (period && String(period).startsWith(todayPrefix)) {
@@ -332,8 +337,10 @@ const addK3 = async (game) => {
             nextPeriod = `${todayPrefix}0001`;
         }
         
-        const sql = `INSERT INTO k3 SET period = ?, result = ?, game = ?, status = ?, time = ?`;
+        const sql = `INSERT INTO k3 (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`;
         await connection.execute(sql, [nextPeriod, 0, game, 0, timeNow]);
+
+        console.log(`[K3_ENGINE] serverTime=${new Date().toISOString()} timezone=Asia/Kolkata currentPeriod=${nextPeriod} previousPeriod=${period} resultPeriod=${period} result=${result}`);
 
         if (game == 1) join = 'k3d';
         if (game == 3) join = 'k3d3';
@@ -342,8 +349,8 @@ const addK3 = async (game) => {
 
         await connection.execute(`UPDATE admin SET ${join} = ?`, [newArr]);
     } catch (error) {
-        if (error) {
-        }
+        console.error(`[K3_ENGINE] Error in addK3 for game ${game}:`, error.message || error);
+        throw error;
     }
 }
 
@@ -1021,20 +1028,24 @@ async function plusMoney(game) {
                     }
                 }
             }
-            await connection.execute('UPDATE `result_k3` SET `get` = ?, `status` = 1 WHERE `id` = ? ', [nhan_duoc, id]);
-            const sql = 'UPDATE `users` SET `money` = IFNULL(`money`, `money_user`) + ?, `money_user` = IFNULL(`money_user`, `money`) + ? WHERE `phone` = ? ';
-            await connection.execute(sql, [nhan_duoc, nhan_duoc, phone]);
+            const [updateResult] = await connection.execute('UPDATE `result_k3` SET `get` = ?, `status` = 1 WHERE `id` = ? AND `status` = 0', [nhan_duoc, id]);
+            if (updateResult && updateResult.affectedRows > 0) {
+                const sql = 'UPDATE `users` SET `money` = IFNULL(`money`, `money_user`) + ?, `money_user` = IFNULL(`money_user`, `money`) + ? WHERE `phone` = ? ';
+                await connection.execute(sql, [nhan_duoc, nhan_duoc, phone]);
+            }
         }
     }
 }
 
 const handlingK3 = async (typeid) => {
-
     let game = Number(typeid);
-
-    await funHanding(game);
-
-    await plusMoney(game);
+    try {
+        await funHanding(game);
+        await plusMoney(game);
+    } catch (error) {
+        console.error(`[K3_ENGINE] Error in handlingK3 for game ${game}:`, error.message || error);
+        throw error;
+    }
 }
 
 const listOrderOld = async (req, res) => {

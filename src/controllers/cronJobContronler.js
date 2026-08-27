@@ -109,89 +109,113 @@ const initializeGamePeriods = async () => {
     }
 };
 
-const cronJobGame1p = (io) => {
-    cron.schedule('*/1 * * * *', async() => {
-        await winGoController.addWinGo(1);
-        await winGoController.handlingWinGo1P(1);
-        const [winGo1] = await connection.execute('SELECT * FROM `wingo` WHERE `game` = "wingo" ORDER BY `id` DESC LIMIT 2 ', []);
-        const data = winGo1; // Cầu mới chưa có kết quả
-        io.emit('data-server', { data: data });
+// Concurrency guard map to prevent overlapping ticks
+const runningLocks = {
+    1: false,
+    3: false,
+    5: false,
+    10: false
+};
 
-        await k5Controller.add5D(1);
-        await k5Controller.handling5D(1);
-        const [k5D] = await connection.execute('SELECT * FROM 5d WHERE `game` = 1 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data2 = k5D; // Cầu mới chưa có kết quả
-        io.emit('data-server-5d', { data: data2, 'game': '1' });
-
-        await k3Controller.addK3(1);
-        await k3Controller.handlingK3(1);
-        const [k3] = await connection.execute('SELECT * FROM k3 WHERE `game` = 1 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data3 = k3; // Cầu mới chưa có kết quả
-        io.emit('data-server-k3', { data: data3, 'game': '1' });
-    });
-    cron.schedule('*/3 * * * *', async() => {
-        await winGoController.addWinGo(3);
-        await winGoController.handlingWinGo1P(3);
-        const [winGo1] = await connection.execute('SELECT * FROM `wingo` WHERE `game` = "wingo3" ORDER BY `id` DESC LIMIT 2 ', []);
-        const data = winGo1; // Cầu mới chưa có kết quả
-        io.emit('data-server', { data: data });
-
-        await k5Controller.add5D(3);
-        await k5Controller.handling5D(3);
-        const [k5D] = await connection.execute('SELECT * FROM 5d WHERE `game` = 3 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data2 = k5D; // Cầu mới chưa có kết quả
-        io.emit('data-server-5d', { data: data2, 'game': '3' });
-
-        await k3Controller.addK3(3);
-        await k3Controller.handlingK3(3);
-        const [k3] = await connection.execute('SELECT * FROM k3 WHERE `game` = 3 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data3 = k3; // Cầu mới chưa có kết quả
-        io.emit('data-server-k3', { data: data3, 'game': '3' });
-    });
-    cron.schedule('*/5 * * * *', async() => {
-        await winGoController.addWinGo(5);
-        await winGoController.handlingWinGo1P(5);
-        const [winGo1] = await connection.execute('SELECT * FROM `wingo` WHERE `game` = "wingo5" ORDER BY `id` DESC LIMIT 2 ', []);
-        const data = winGo1; // Cầu mới chưa có kết quả
-        io.emit('data-server', { data: data });
-
-        await k5Controller.add5D(5);
-        await k5Controller.handling5D(5);
-        const [k5D] = await connection.execute('SELECT * FROM 5d WHERE `game` = 5 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data2 = k5D; // Cầu mới chưa có kết quả
-        io.emit('data-server-5d', { data: data2, 'game': '5' });
-
-        await k3Controller.addK3(5);
-        await k3Controller.handlingK3(5);
-        const [k3] = await connection.execute('SELECT * FROM k3 WHERE `game` = 5 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data3 = k3; // Cầu mới chưa có kết quả
-        io.emit('data-server-k3', { data: data3, 'game': '5' });
-    });
-    cron.schedule('*/10 * * * *', async() => {
-        await winGoController.addWinGo(10);
-        await winGoController.handlingWinGo1P(10);
-        const [winGo1] = await connection.execute('SELECT * FROM `wingo` WHERE `game` = "wingo10" ORDER BY `id` DESC LIMIT 2 ', []);
-        const data = winGo1; // Cầu mới chưa có kết quả
-        io.emit('data-server', { data: data });
-
-        
-        await k5Controller.add5D(10);
-        await k5Controller.handling5D(10);
-        const [k5D] = await connection.execute('SELECT * FROM 5d WHERE `game` = 10 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data2 = k5D; // Cầu mới chưa có kết quả
-        io.emit('data-server-5d', { data: data2, 'game': '10' });
-
-        await k3Controller.addK3(10);
-        await k3Controller.handlingK3(10);
-        const [k3] = await connection.execute('SELECT * FROM k3 WHERE `game` = 10 ORDER BY `id` DESC LIMIT 2 ', []);
-        const data3 = k3; // Cầu mới chưa có kết quả
-        io.emit('data-server-k3', { data: data3, 'game': '10' });
-    });
-
-    cron.schedule('* * 0 * * *', async() => {
-        await connection.execute('UPDATE users SET roses_today = ?', [0]);
-        await connection.execute('UPDATE point_list SET money = ?', [0]);
-    });
+// Bounded retry helper for MySQL deadlocks (ER_LOCK_DEADLOCK / errno 1213 / SQLSTATE 40001)
+async function runWithDeadlockRetry(fn, maxRetries = 3, initialDelayMs = 50) {
+    let attempts = 0;
+    while (true) {
+        try {
+            return await fn();
+        } catch (err) {
+            attempts++;
+            const isDeadlock = err && (
+                err.code === 'ER_LOCK_DEADLOCK' ||
+                err.errno === 1213 ||
+                err.sqlState === '40001' ||
+                (err.message && err.message.includes('Deadlock found'))
+            );
+            if (isDeadlock && attempts <= maxRetries) {
+                const backoff = initialDelayMs * Math.pow(2, attempts - 1) + Math.floor(Math.random() * 30);
+                console.warn(`[MYSQL_RETRY] Deadlock detected (attempt ${attempts}/${maxRetries}), retrying in ${backoff}ms...`);
+                await new Promise(resolve => setTimeout(resolve, backoff));
+                continue;
+            }
+            throw err;
+        }
+    }
 }
 
-module.exports = { cronJobGame1p, initializeGamePeriods };
+// Process a single game tick with full isolation between WinGo, 5D, and K3
+async function processGameTick(io, gameType) {
+    if (runningLocks[gameType]) {
+        console.warn(`[SCHEDULER] ${gameType}m tick already running, skipping overlapping invocation`);
+        return;
+    }
+    runningLocks[gameType] = true;
+
+    try {
+        // --- WinGo Engine ---
+        try {
+            await runWithDeadlockRetry(() => winGoController.addWinGo(gameType));
+            await runWithDeadlockRetry(() => winGoController.handlingWinGo1P(gameType));
+            const gameName = gameType === 1 ? 'wingo' : `wingo${gameType}`;
+            const [winGo] = await connection.execute('SELECT * FROM `wingo` WHERE `game` = ? ORDER BY `id` DESC LIMIT 2', [gameName]);
+            io.emit('data-server', { data: winGo });
+        } catch (err) {
+            console.error(`[WINGO_ENGINE] Error processing WinGo ${gameType}m:`, err.message || err);
+        }
+
+        // --- 5D Engine ---
+        try {
+            await runWithDeadlockRetry(() => k5Controller.add5D(gameType));
+            await runWithDeadlockRetry(() => k5Controller.handling5D(gameType));
+            const [k5D] = await connection.execute('SELECT * FROM 5d WHERE `game` = ? ORDER BY `id` DESC LIMIT 2', [gameType]);
+            io.emit('data-server-5d', { data: k5D, 'game': String(gameType) });
+        } catch (err) {
+            console.error(`[5D_ENGINE] Error processing 5D ${gameType}m:`, err.message || err);
+        }
+
+        // --- K3 Engine ---
+        try {
+            await runWithDeadlockRetry(() => k3Controller.addK3(gameType));
+            await runWithDeadlockRetry(() => k3Controller.handlingK3(gameType));
+            const [k3] = await connection.execute('SELECT * FROM k3 WHERE `game` = ? ORDER BY `id` DESC LIMIT 2', [gameType]);
+            io.emit('data-server-k3', { data: k3, 'game': String(gameType) });
+        } catch (err) {
+            console.error(`[K3_ENGINE] Error processing K3 ${gameType}m:`, err.message || err);
+        }
+    } finally {
+        runningLocks[gameType] = false;
+    }
+}
+
+const cronJobGame1p = (io) => {
+    // 1-Minute Cron
+    cron.schedule('*/1 * * * *', async () => {
+        await processGameTick(io, 1);
+    });
+
+    // 3-Minute Cron
+    cron.schedule('*/3 * * * *', async () => {
+        await processGameTick(io, 3);
+    });
+
+    // 5-Minute Cron
+    cron.schedule('*/5 * * * *', async () => {
+        await processGameTick(io, 5);
+    });
+
+    // 10-Minute Cron
+    cron.schedule('*/10 * * * *', async () => {
+        await processGameTick(io, 10);
+    });
+
+    // Daily Midnight Reset
+    cron.schedule('* * 0 * * *', async () => {
+        try {
+            await connection.execute('UPDATE users SET roses_today = ?', [0]);
+            await connection.execute('UPDATE point_list SET money = ?', [0]);
+        } catch (err) {
+            console.error('[SCHEDULER] Daily reset error:', err.message || err);
+        }
+    });
+};
+
+module.exports = { cronJobGame1p, initializeGamePeriods, runWithDeadlockRetry };

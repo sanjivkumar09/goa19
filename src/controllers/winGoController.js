@@ -721,9 +721,8 @@ const addWinGo = async (game) => {
 
         await connection.execute(`UPDATE admin SET ${join} = ?`, [newArr]);
     } catch (error) {
-        if (error) {
-            console.log(error);
-        }
+        console.error(`[WINGO_ENGINE] Error in addWinGo for game ${game}:`, error.message || error);
+        throw error;
     }
 }
 
@@ -878,11 +877,11 @@ const handlingWinGo1P = async (typeid) => {
                 }
             }
         }
-        const [users] = await connection.execute('SELECT IFNULL(`money_user`, `money`) AS `money` FROM `users` WHERE `phone` = ?', [phone]);
-        let totals = parseFloat(users[0].money) + parseFloat(nhan_duoc);
-        await connection.execute('UPDATE `minutes_1` SET `get` = ?, `status` = 1 WHERE `id` = ? ', [parseFloat(nhan_duoc), id]);
-        const sql = 'UPDATE `users` SET `money` = ?, `money_user` = ? WHERE `phone` = ? ';
-        await connection.execute(sql, [totals, totals, phone]);
+        const [updateResult] = await connection.execute('UPDATE `minutes_1` SET `get` = ?, `status` = 1 WHERE `id` = ? AND `status` = 0', [parseFloat(nhan_duoc), id]);
+        if (updateResult && updateResult.affectedRows > 0) {
+            const sql = 'UPDATE `users` SET `money` = IFNULL(`money`, `money_user`) + ?, `money_user` = IFNULL(`money_user`, `money`) + ? WHERE `phone` = ? ';
+            await connection.execute(sql, [parseFloat(nhan_duoc), parseFloat(nhan_duoc), phone]);
+        }
     }
 }
 

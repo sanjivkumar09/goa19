@@ -399,9 +399,8 @@ const add5D = async(game) => {
 
         await connection.execute(`UPDATE admin SET ${join} = ?`, [newArr]);
     } catch (error) {
-        if (error) {
-            console.log(error);
-        }
+        console.error(`[5D_ENGINE] Error in add5D for game ${game}:`, error.message || error);
+        throw error;
     }
 }
 
@@ -588,33 +587,44 @@ async function funHanding(game, period) {
 
 const handling5D = async(typeid) => {
     let game = Number(typeid);
+    try {
+        const [k5d] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = ? ORDER BY id DESC LIMIT 1 `, [game]);
+        if (!k5d || k5d.length === 0) return;
+        let period = k5d[0].period;
 
-    const [k5d] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = ? ORDER BY id DESC LIMIT 1 `, [game]);
-    if (!k5d || k5d.length === 0) return;
-    let period = k5d[0].period;
+        await funHanding(game, period);
 
-    await funHanding(game, period);
+        const [order] = await connection.execute(`SELECT id, phone, bet, price, money, fee, amount FROM result_5d WHERE status = 0 AND game = ? AND stage = ? `, [game, period]);
+        let winCount = 0;
+        for (let i = 0; i < order.length; i++) {
+            let orders = order[i];
+            let id = orders.id;
+            let phone = orders.phone;
+            let nhan_duoc = 0;
+            let check = isNumber(orders.bet); 
+            if (check) {
+                let arr = orders.bet.split('');
+                let total = (orders.money / arr.length / orders.amount);
+                let fee = total * 0.02;
+                let price = total - fee;
+                nhan_duoc += price * 9;
+            } else {
+                nhan_duoc += orders.price * 2;
+            }
 
-    const [order] = await connection.execute(`SELECT id, phone, bet, price, money, fee, amount FROM result_5d WHERE status = 0 AND game = ? AND stage = ? `, [game, period]);
-    for (let i = 0; i < order.length; i++) {
-        let orders = order[i];
-        let id = orders.id;
-        let phone = orders.phone;
-        let nhan_duoc = 0;
-        let check = isNumber(orders.bet); 
-        if (check) {
-            let arr = orders.bet.split('');
-            let total = (orders.money / arr.length / orders.amount);
-            let fee = total * 0.02;
-            let price = total - fee;
-            nhan_duoc += price * 9;
-        } else {
-            nhan_duoc += orders.price * 2;
+            const [updateResult] = await connection.execute('UPDATE `result_5d` SET `get` = ?, `status` = 1 WHERE `id` = ? AND `status` = 0', [nhan_duoc, id]);
+            if (updateResult && updateResult.affectedRows > 0) {
+                const sql = 'UPDATE `users` SET `money` = IFNULL(`money`, `money_user`) + ?, `money_user` = IFNULL(`money_user`, `money`) + ? WHERE `phone` = ? ';
+                await connection.execute(sql, [nhan_duoc, nhan_duoc, phone]);
+                winCount++;
+            }
         }
-
-        await connection.execute('UPDATE `result_5d` SET `get` = ?, `status` = 1 WHERE `id` = ? ', [nhan_duoc, id]);
-        const sql = 'UPDATE `users` SET `money` = IFNULL(`money`, `money_user`) + ?, `money_user` = IFNULL(`money_user`, `money`) + ? WHERE `phone` = ? ';
-        await connection.execute(sql, [nhan_duoc, nhan_duoc, phone]);
+        if (order.length > 0) {
+            console.log(`[5D_ENGINE] Settlement complete for 5D ${game}m (period: ${period}, processed: ${order.length}, winners: ${winCount})`);
+        }
+    } catch (error) {
+        console.error(`[5D_ENGINE] Error in handling5D for game ${game}:`, error.message || error);
+        throw error;
     }
 }
 
