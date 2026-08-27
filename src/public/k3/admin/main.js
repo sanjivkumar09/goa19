@@ -109,20 +109,23 @@ function messNewJoin2(datas) {
     }
     let result = '';
     datas.map((data) => {
-        let amt = Number(data.money || data.price || 0) * Number(data.amount || 1);
-        let moneyStr = formatMoney(amt, ',');
+        let grossMoney = Number(data.money || 0);
+        let moneyStr = formatMoney(grossMoney, ',');
         let typeLabel = data.typeGame || 'Bet';
         if (data.typeGame == 'total') typeLabel = 'Total Sum';
         else if (data.typeGame == 'two-same') typeLabel = '2 Same';
         else if (data.typeGame == 'three-same') typeLabel = '3 Same';
         else if (data.typeGame == 'unlike') typeLabel = 'Unlike';
 
+        let idProduct = data.id_product ? `[#${data.id_product}] ` : '';
+        let mult = (data.amount && Number(data.amount) > 1) ? ` (x${data.amount})` : '';
+
         result += `
             <div class="direct-chat-infos clearfix mt-2">
-                <span class="direct-chat-name float-left">${data.phone || 'Player'}</span>
+                <span class="direct-chat-name float-left">${data.phone || 'Player'} ${idProduct}</span>
             </div>
             <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-            <div class="direct-chat-text" style="background-color: #1eb93d"> Join ${typeLabel} (${data.bet}) with amount ₹${moneyStr}</div>
+            <div class="direct-chat-text" style="background-color: #1eb93d"> Join ${typeLabel} (${data.bet})${mult} ₹${moneyStr}</div>
         `;
     });
     $('.direct-chat-msg').html(result);
@@ -140,17 +143,17 @@ function messNewJoin3(datas) {
 
     if (datas && Array.isArray(datas)) {
         datas.forEach((data) => {
-            let amt = Number(data.money || data.price || 0) * Number(data.amount || 1);
-            totalAll += amt;
+            let grossStake = Number(data.money || 0);
+            totalAll += grossStake;
             let typeGame = data.typeGame;
             if (typeGame == "total") {
-                total += amt;
+                total += grossStake;
             } else if (typeGame == "two-same") {
-                twoSame += amt;
+                twoSame += grossStake;
             } else if (typeGame == "three-same") {
-                threeSame += amt;
+                threeSame += grossStake;
             } else if (typeGame == "unlike") {
-                unlike += amt;
+                unlike += grossStake;
             }
         });
     }
@@ -159,7 +162,7 @@ function messNewJoin3(datas) {
     $('#2-so-trung').attr('totalMoney', twoSame).text('₹ ' + formatMoney(twoSame.toFixed(2), ','));
     $('#3-so-trung').attr('totalMoney', threeSame).text('₹ ' + formatMoney(threeSame.toFixed(2), ','));
     $('#khac-so').attr('totalMoney', unlike).text('₹ ' + formatMoney(unlike.toFixed(2), ','));
-    $('#total_all_k3').text('₹ ' + formatMoney(totalAll.toFixed(2), ','));
+    $('#total_all_k3').attr('totalMoney', totalAll).text('₹ ' + formatMoney(totalAll.toFixed(2), ','));
 }
 
 function callListOrder() {

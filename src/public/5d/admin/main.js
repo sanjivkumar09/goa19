@@ -109,20 +109,20 @@ function messNewJoin2(datas) {
     }
     let result = '';
     datas.map((data) => {
-        let list_join = String(data.bet || '').split('');
-        let list_join2 = data.bet;
-        let x = data.amount || 1;
-        let total_money = (Number(data.money || data.price || 0) * Number(x));
-        let money = formatMoney(total_money, ',');
+        let list_join2 = String(data.bet || '');
+        let grossMoney = Number(data.money || 0);
+        let money = formatMoney(grossMoney, ',');
         let betLabel = (isNumber(list_join2)) ? `Number ( ${list_join2} )` : (list_join2 == 'b') ? 'Big' : (list_join2 == 's') ? 'Small' : (list_join2 == 'c') ? 'Even' : (list_join2 == 'l') ? 'Odd' : list_join2;
-        let pos = data.join_bet ? `[${data.join_bet.toUpperCase()}] ` : '';
+        let pos = data.join_bet ? `[Position ${data.join_bet.toUpperCase()}] ` : '';
+        let idProduct = data.id_product ? `[#${data.id_product}] ` : '';
+        let mult = (data.amount && Number(data.amount) > 1) ? ` (x${data.amount})` : '';
 
         result += `
         <div class="direct-chat-infos clearfix mt-2">
-            <span class="direct-chat-name float-left">${data.phone || 'Player'}</span>
+            <span class="direct-chat-name float-left">${data.phone || 'Player'} ${idProduct}</span>
         </div>
         <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
-        <div class="direct-chat-text" style="background-color: #1eb93d"> ${pos}Join ${betLabel} ₹${money} </div>
+        <div class="direct-chat-text" style="background-color: #1eb93d"> ${pos}Join ${betLabel}${mult} ₹${money} </div>
         `; 
     });
     $('.direct-chat-msg').html(result);
@@ -139,17 +139,18 @@ function messNewJoin3(datas) {
 
     if (datas && Array.isArray(datas)) {
         datas.forEach((data) => {
-            let betStr = String(data.bet || '');
-            let betMoney = Number(data.money || data.price || 0) * Number(data.amount || 1);
+            let betStr = String(data.bet || '').trim();
+            let betMoney = Number(data.money || 0);
             totalAll += betMoney;
 
             if (arr.includes(betStr)) {
                 totals[betStr] = (totals[betStr] || 0) + betMoney;
             } else {
                 let digits = betStr.split('');
+                let perDigit = digits.length > 0 ? (betMoney / digits.length) : 0;
                 digits.forEach(d => {
                     if (totals[d] !== undefined) {
-                        totals[d] += (betMoney / (digits.length || 1));
+                        totals[d] += perDigit;
                     }
                 });
             }
@@ -161,7 +162,7 @@ function messNewJoin3(datas) {
         $(`#${k}`).attr('totalMoney', val);
         $(`#${k}`).text('₹ ' + formatMoney(val.toFixed(2), ','));
     });
-    $('#total_all').text('₹ ' + formatMoney(totalAll.toFixed(2), ','));
+    $('#total_all').text('₹ ' + formatMoney(totalAll.toFixed(2), ',')).attr('totalMoney', totalAll);
 }
 
 function callListOrder() {

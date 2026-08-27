@@ -50,21 +50,28 @@ function formatPeriodDate(period) {
     return String(period);
 }
 
+function getWinGoGrossStake(data) {
+    if (!data) return 0;
+    return Number(data.money || 0) + Number(data.fee || 0);
+}
+
 function showJoinMember(data) {
-    let phone = data.phone;
+    let phone = data.phone || 'Player';
     let bet = data.bet;
-    let money = formatMoney(data.money + data.fee, ',');
-    let name = data.bet;
+    let grossMoney = getWinGoGrossStake(data);
+    let money = formatMoney(grossMoney, ',');
     let time = timerJoin(data.time);
+    let idProduct = data.id_product ? `[#${data.id_product}] ` : '';
+    let stage = data.stage ? `(Period ${data.stage}) ` : '';
     let result = '';
     result += `
-      <div class="direct-chat-infos clearfix">
-        <span class="direct-chat-name float-left"></span>
+      <div class="direct-chat-infos clearfix mt-2">
+        <span class="direct-chat-name float-left">${phone} ${idProduct}</span>
         <span class="direct-chat-timestamp float-right text-primary">${time}</span>
       </div>
       <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
       <div class="direct-chat-text" style="background-color: ${(isNumber(bet)) ? '#007acc' : (bet == 'x') ? '#1eb93d' : (bet == 'd') ? '#f52828' : (bet == 't') ? '#ea3af0' : (bet == 'l') ? '#ffc511' : '#5cba47'}">
-        Join ${((isNumber(bet)) ? bet : (bet == 'd') ? 'Red' : (bet == 'x') ? 'Green' : (bet == 't') ? 'Violet' : (bet == 'l') ? 'Big' : 'Small')} ${money}
+        ${stage}Join ${((isNumber(bet)) ? bet : (bet == 'd') ? 'Red' : (bet == 'x') ? 'Green' : (bet == 't') ? 'Violet' : (bet == 'l') ? 'Big' : 'Small')} ₹${money}
       </div>`;
     $('.direct-chat-msg').append(result);
 }
@@ -73,17 +80,16 @@ function showJoinMember2(data) {
     if (data.change == 1) return;
     let bet = data.join;
     let money = formatMoney(data.money, ',');
-    let name = data.bet;
     let time = timerJoin(data.time);
     let result = '';
     result += `
-      <div class="direct-chat-infos clearfix">
-        <span class="direct-chat-name float-left"></span>
+      <div class="direct-chat-infos clearfix mt-2">
+        <span class="direct-chat-name float-left">Live Bet</span>
         <span class="direct-chat-timestamp float-right text-primary">${time}</span>
       </div>
       <img class="direct-chat-img" src="/images/myimg.png" alt="message user image">
       <div class="direct-chat-text" style="background-color: ${(isNumber(bet)) ? '#007acc' : (bet == 'x') ? '#1eb93d' : (bet == 'd') ? '#f52828' : (bet == 't') ? '#ea3af0' : (bet == 'l') ? '#ffc511' : '#5cba47'}">
-        Join ${((isNumber(bet)) ? bet : (bet == 'd') ? 'Red' : (bet == 'x') ? 'Green' : (bet == 't') ? 'Violet' : (bet == 'l') ? 'Big' : 'Small')} ${money}
+        Join ${((isNumber(bet)) ? bet : (bet == 'd') ? 'Red' : (bet == 'x') ? 'Green' : (bet == 't') ? 'Violet' : (bet == 'l') ? 'Big' : 'Small')} ₹${money}
       </div>`;
     $('.direct-chat-msg').append(result);
 }
@@ -95,118 +101,126 @@ socket.on("data-server_2", function (msg) {
         scrollTop: $(".direct-chat-msg").prop("scrollHeight")
     }, 750);
     if (msg.level == 1) return;
-    var red = Number($('.orderRed').attr('totalmoney'));
-    var green = Number($('.orderViolet').attr('totalmoney'));
-    var violet = Number($('.orderGreen').attr('totalmoney'));
-    var n0 = Number($('.orderNumber:eq(0)').attr('totalmoney'));
-    var n1 = Number($('.orderNumber:eq(1)').attr('totalmoney'));
-    var n2 = Number($('.orderNumber:eq(2)').attr('totalmoney'));
-    var n3 = Number($('.orderNumber:eq(3)').attr('totalmoney'));
-    var n4 = Number($('.orderNumber:eq(4)').attr('totalmoney'));
-    var n5 = Number($('.orderNumber:eq(5)').attr('totalmoney'));
-    var n6 = Number($('.orderNumber:eq(6)').attr('totalmoney'));
-    var n7 = Number($('.orderNumber:eq(7)').attr('totalmoney'));
-    var n8 = Number($('.orderNumber:eq(8)').attr('totalmoney'));
-    var n9 = Number($('.orderNumber:eq(9)').attr('totalmoney'));
-    var n = Number($('.orderNumber:eq(10)').attr('totalmoney'));
-    var l = Number($('.orderNumber:eq(11)').attr('totalmoney'));
-    var ns = Number($('.orderNumbers').attr('totalmoney', ns));
+    var red = Number($('.orderRed').attr('totalmoney') || 0);
+    var violet = Number($('.orderViolet').attr('totalmoney') || 0);
+    var green = Number($('.orderGreen').attr('totalmoney') || 0);
+    var n0 = Number($('.orderNumber:eq(0)').attr('totalmoney') || 0);
+    var n1 = Number($('.orderNumber:eq(1)').attr('totalmoney') || 0);
+    var n2 = Number($('.orderNumber:eq(2)').attr('totalmoney') || 0);
+    var n3 = Number($('.orderNumber:eq(3)').attr('totalmoney') || 0);
+    var n4 = Number($('.orderNumber:eq(4)').attr('totalmoney') || 0);
+    var n5 = Number($('.orderNumber:eq(5)').attr('totalmoney') || 0);
+    var n6 = Number($('.orderNumber:eq(6)').attr('totalmoney') || 0);
+    var n7 = Number($('.orderNumber:eq(7)').attr('totalmoney') || 0);
+    var n8 = Number($('.orderNumber:eq(8)').attr('totalmoney') || 0);
+    var n9 = Number($('.orderNumber:eq(9)').attr('totalmoney') || 0);
+    var l = Number($('.orderNumber:eq(10)').attr('totalmoney') || 0); // Big
+    var n = Number($('.orderNumber:eq(11)').attr('totalmoney') || 0); // Small
 
-    if (msg.join == '0') n0 += msg.money - (msg.money * 0.02);
-    if (msg.join == '1') n1 += msg.money - (msg.money * 0.02);
-    if (msg.join == '2') n2 += msg.money - (msg.money * 0.02);
-    if (msg.join == '3') n3 += msg.money - (msg.money * 0.02);
-    if (msg.join == '4') n4 += msg.money - (msg.money * 0.02);
-    if (msg.join == '5') n5 += msg.money - (msg.money * 0.02);
-    if (msg.join == '6') n6 += msg.money - (msg.money * 0.02);
-    if (msg.join == '7') n7 += msg.money - (msg.money * 0.02);
-    if (msg.join == '8') n8 += msg.money - (msg.money * 0.02);
-    if (msg.join == '9') n9 += msg.money - (msg.money * 0.02);
-    if (msg.join == 'x') green += msg.money - (msg.money * 0.02);
-    if (msg.join == 't') violet += msg.money - (msg.money * 0.02);
-    if (msg.join == 'd') red += msg.money - (msg.money * 0.02);
-    if (msg.join == 'l') l += msg.money - (msg.money * 0.02);
-    if (msg.join == 'n') n += msg.money - (msg.money * 0.02);
-    ns = n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9;
+    var betStake = Number(msg.money || 0);
 
-    $('.orderRed').text(formatMoney(red, ','));
-    $('.orderViolet').text(formatMoney(violet, ','));
-    $('.orderGreen').text(formatMoney(green, ','));
-    $('.orderNumber:eq(0)').text(formatMoney(n0, ','));
-    $('.orderNumber:eq(1)').text(formatMoney(n1, ','));
-    $('.orderNumber:eq(2)').text(formatMoney(n2, ','));
-    $('.orderNumber:eq(3)').text(formatMoney(n3, ','));
-    $('.orderNumber:eq(4)').text(formatMoney(n4, ','));
-    $('.orderNumber:eq(5)').text(formatMoney(n5, ','));
-    $('.orderNumber:eq(6)').text(formatMoney(n6, ','));
-    $('.orderNumber:eq(7)').text(formatMoney(n7, ','));
-    $('.orderNumber:eq(8)').text(formatMoney(n8, ','));
-    $('.orderNumber:eq(9)').text(formatMoney(n9, ','));
-    $('.orderNumber:eq(10)').text(formatMoney(l, ','));
-    $('.orderNumber:eq(11)').text(formatMoney(n, ','));
-    $('.orderNumbers').text(formatMoney(ns, ','));
+    if (msg.join == '0') n0 += betStake;
+    if (msg.join == '1') n1 += betStake;
+    if (msg.join == '2') n2 += betStake;
+    if (msg.join == '3') n3 += betStake;
+    if (msg.join == '4') n4 += betStake;
+    if (msg.join == '5') n5 += betStake;
+    if (msg.join == '6') n6 += betStake;
+    if (msg.join == '7') n7 += betStake;
+    if (msg.join == '8') n8 += betStake;
+    if (msg.join == '9') n9 += betStake;
+    if (msg.join == 'x') green += betStake;
+    if (msg.join == 't') violet += betStake;
+    if (msg.join == 'd') red += betStake;
+    if (msg.join == 'l') l += betStake;
+    if (msg.join == 'n') n += betStake;
 
-    $('.orderRed').attr('totalmoney', red);
-    $('.orderViolet').attr('totalmoney', green);
-    $('.orderGreen').attr('totalmoney', violet);
-    $('.orderNumber:eq(0)').attr('totalmoney', n0);
-    $('.orderNumber:eq(1)').attr('totalmoney', n1);
-    $('.orderNumber:eq(2)').attr('totalmoney', n2);
-    $('.orderNumber:eq(3)').attr('totalmoney', n3);
-    $('.orderNumber:eq(4)').attr('totalmoney', n4);
-    $('.orderNumber:eq(5)').attr('totalmoney', n5);
-    $('.orderNumber:eq(6)').attr('totalmoney', n6);
-    $('.orderNumber:eq(7)').attr('totalmoney', n7);
-    $('.orderNumber:eq(8)').attr('totalmoney', n8);
-    $('.orderNumber:eq(9)').attr('totalmoney', n9);
-    $('.orderNumber:eq(10)').attr('totalmoney', n);
-    $('.orderNumber:eq(11)').attr('totalmoney', l);
-    $('.orderNumbers').attr('totalmoney', ns);
+    var totalVolume = n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9 + red + green + violet + l + n;
+
+    $('.orderRed').text(formatMoney(red, ',')).attr('totalmoney', red);
+    $('.orderViolet').text(formatMoney(violet, ',')).attr('totalmoney', violet);
+    $('.orderGreen').text(formatMoney(green, ',')).attr('totalmoney', green);
+    $('.orderNumber:eq(0)').text(formatMoney(n0, ',')).attr('totalmoney', n0);
+    $('.orderNumber:eq(1)').text(formatMoney(n1, ',')).attr('totalmoney', n1);
+    $('.orderNumber:eq(2)').text(formatMoney(n2, ',')).attr('totalmoney', n2);
+    $('.orderNumber:eq(3)').text(formatMoney(n3, ',')).attr('totalmoney', n3);
+    $('.orderNumber:eq(4)').text(formatMoney(n4, ',')).attr('totalmoney', n4);
+    $('.orderNumber:eq(5)').text(formatMoney(n5, ',')).attr('totalmoney', n5);
+    $('.orderNumber:eq(6)').text(formatMoney(n6, ',')).attr('totalmoney', n6);
+    $('.orderNumber:eq(7)').text(formatMoney(n7, ',')).attr('totalmoney', n7);
+    $('.orderNumber:eq(8)').text(formatMoney(n8, ',')).attr('totalmoney', n8);
+    $('.orderNumber:eq(9)').text(formatMoney(n9, ',')).attr('totalmoney', n9);
+    $('.orderNumber:eq(10)').text(formatMoney(l, ',')).attr('totalmoney', l); // Big
+    $('.orderNumber:eq(11)').text(formatMoney(n, ',')).attr('totalmoney', n); // Small
+    $('.orderNumbers').text(formatMoney(totalVolume, ',')).attr('totalmoney', totalVolume);
 });
 
-function showListOrder4(list_orders, x) {
-    let htmls = "";
-    let result = list_orders.map((list_orders) => {
-        return (htmls += `
-                    <div data-v-a9660e98="" class="c-tc item van-row">
-                        <div data-v-a9660e98="" class="van-col van-col--12">
-                            <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${formatPeriodDate(list_orders.period)}</div>
-                        </div>
-                        <div data-v-a9660e98="" class="van-col van-col--4">
-                            <div data-v-a9660e98="" class="c-tc goItem">
-                                <!---->
-                                <span data-v-a9660e98="" class="${list_orders.amount % 2 == 0 ? "red" : "green"}"> ${list_orders.amount} </span>
-                            </div>
-                        </div>
-                        <div data-v-a9660e98="" class="van-col van-col--4">
-                            <div data-v-a9660e98="" class="c-tc goItem">
-                                <span data-v-a9660e98=""> ${list_orders.amount < 5 ? "Small" : "Big"} </span>
-                                <!---->
-                            </div>
-                        </div>
-                        <div data-v-a9660e98="" class="van-col van-col--4">
-                            <div data-v-a9660e98="" class="goItem c-row c-tc c-row-center">
-                                <div data-v-a9660e98="" class="c-tc c-row box c-row-center">
-                                    <span data-v-a9660e98="" class="li ${list_orders.amount % 2 == 0 ? "red" : "green"}"></span>
-                                    ${list_orders.amount == 0 || list_orders.amount == 5 ? '<span data-v-a9660e98="" class="li violet"></span>' : ""}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    `);
-    });
-    $(`#list-orders`).html(htmls);
+function calculateAndRenderWinGoStats(response) {
+    var red = 0;
+    var green = 0;
+    var violet = 0;
+    var n0 = 0;
+    var n1 = 0;
+    var n2 = 0;
+    var n3 = 0;
+    var n4 = 0;
+    var n5 = 0;
+    var n6 = 0;
+    var n7 = 0;
+    var n8 = 0;
+    var n9 = 0;
+    var l = 0; // Big
+    var n = 0; // Small
+    var totalVolume = 0;
+
+    var datas = (response && Array.isArray(response.datas)) ? response.datas : [];
+    for (let i = 0; i < datas.length; i++) {
+        let stake = getWinGoGrossStake(datas[i]);
+        let bet = String(datas[i].bet || '').trim();
+
+        if (bet === '0') n0 += stake;
+        else if (bet === '1') n1 += stake;
+        else if (bet === '2') n2 += stake;
+        else if (bet === '3') n3 += stake;
+        else if (bet === '4') n4 += stake;
+        else if (bet === '5') n5 += stake;
+        else if (bet === '6') n6 += stake;
+        else if (bet === '7') n7 += stake;
+        else if (bet === '8') n8 += stake;
+        else if (bet === '9') n9 += stake;
+        else if (bet === 'x') green += stake;
+        else if (bet === 't') violet += stake;
+        else if (bet === 'd') red += stake;
+        else if (bet === 'l') l += stake;
+        else if (bet === 'n') n += stake;
+
+        totalVolume += stake;
+    }
+
+    $('.orderRed').text(formatMoney(red, ',')).attr('totalmoney', red);
+    $('.orderViolet').text(formatMoney(violet, ',')).attr('totalmoney', violet);
+    $('.orderGreen').text(formatMoney(green, ',')).attr('totalmoney', green);
+    $('.orderNumber:eq(0)').text(formatMoney(n0, ',')).attr('totalmoney', n0);
+    $('.orderNumber:eq(1)').text(formatMoney(n1, ',')).attr('totalmoney', n1);
+    $('.orderNumber:eq(2)').text(formatMoney(n2, ',')).attr('totalmoney', n2);
+    $('.orderNumber:eq(3)').text(formatMoney(n3, ',')).attr('totalmoney', n3);
+    $('.orderNumber:eq(4)').text(formatMoney(n4, ',')).attr('totalmoney', n4);
+    $('.orderNumber:eq(5)').text(formatMoney(n5, ',')).attr('totalmoney', n5);
+    $('.orderNumber:eq(6)').text(formatMoney(n6, ',')).attr('totalmoney', n6);
+    $('.orderNumber:eq(7)').text(formatMoney(n7, ',')).attr('totalmoney', n7);
+    $('.orderNumber:eq(8)').text(formatMoney(n8, ',')).attr('totalmoney', n8);
+    $('.orderNumber:eq(9)').text(formatMoney(n9, ',')).attr('totalmoney', n9);
+    $('.orderNumber:eq(10)').text(formatMoney(l, ',')).attr('totalmoney', l); // Big
+    $('.orderNumber:eq(11)').text(formatMoney(n, ',')).attr('totalmoney', n); // Small
+    $('.orderNumbers').text(formatMoney(totalVolume, ',')).attr('totalmoney', totalVolume);
 }
 
-
 socket.on("data-server", function (msg) {
-    if (msg.data[0].game != game) return;
+    if (!msg || !msg.data || !msg.data[0] || msg.data[0].game != game) return;
     $(".direct-chat-msg").html('');
     $('.info-box-number').text('0');
-    let data1 = msg.data[0]; // lấy ra cầu mới nhất
+    let data1 = msg.data[0];
     $(".reservation-chunk-sub-num").text(data1.period);
-    let data2 = []; // lấy ra cầu cũ
-    let data3 = data2.push(msg.data[1]);
     $(".direct-chat-warning .direct-chat-messages").animate({
         scrollTop: $(".direct-chat-msg").prop("scrollHeight")
     }, 750);
@@ -218,128 +232,66 @@ socket.on("data-server", function (msg) {
         },
         dataType: "json",
         success: function (response) {
-            var red = 0;
-            var green = 0;
-            var violet = 0;
-            var n0 = 0;
-            var n1 = 0;
-            var n2 = 0;
-            var n3 = 0;
-            var n4 = 0;
-            var n5 = 0;
-            var n6 = 0;
-            var n7 = 0;
-            var n8 = 0;
-            var n9 = 0;
-            var n = 0;
-            var l = 0;
-            var ns = 0;
-            var length = response.datas.length;
-            var datas = response.datas;
-            for (let i = 0; i < length; i++) {
-                if (datas[i].bet == '0') n0 += datas[i].money;
-                if (datas[i].bet == '1') n1 += datas[i].money;
-                if (datas[i].bet == '2') n2 += datas[i].money;
-                if (datas[i].bet == '3') n3 += datas[i].money;
-                if (datas[i].bet == '4') n4 += datas[i].money;
-                if (datas[i].bet == '5') n5 += datas[i].money;
-                if (datas[i].bet == '6') n6 += datas[i].money;
-                if (datas[i].bet == '7') n7 += datas[i].money;
-                if (datas[i].bet == '8') n8 += datas[i].money;
-                if (datas[i].bet == '9') n9 += datas[i].money;
-                if (datas[i].bet == 'x') green += datas[i].money;
-                if (datas[i].bet == 't') violet += datas[i].money;
-                if (datas[i].bet == 'd') red += datas[i].money;
-                if (datas[i].bet == 'l') l += datas[i].money;
-                if (datas[i].bet == 'n') n += datas[i].money;
+            calculateAndRenderWinGoStats(response);
+
+            if (response.datas && response.datas.length > 0) {
+                response.datas.map((data) => {
+                    showJoinMember(data);
+                });
             }
-            ns = n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9;
-            $('.orderRed').text(formatMoney(red, ','));
-            $('.orderViolet').text(formatMoney(violet, ','));
-            $('.orderGreen').text(formatMoney(green, ','));
-            $('.orderNumber:eq(0)').text(formatMoney(n0, ','));
-            $('.orderNumber:eq(1)').text(formatMoney(n1, ','));
-            $('.orderNumber:eq(2)').text(formatMoney(n2, ','));
-            $('.orderNumber:eq(3)').text(formatMoney(n3, ','));
-            $('.orderNumber:eq(4)').text(formatMoney(n4, ','));
-            $('.orderNumber:eq(5)').text(formatMoney(n5, ','));
-            $('.orderNumber:eq(6)').text(formatMoney(n6, ','));
-            $('.orderNumber:eq(7)').text(formatMoney(n7, ','));
-            $('.orderNumber:eq(8)').text(formatMoney(n8, ','));
-            $('.orderNumber:eq(9)').text(formatMoney(n9, ','));
-            $('.orderNumber:eq(10)').text(formatMoney(l, ','));
-            $('.orderNumber:eq(11)').text(formatMoney(n, ','));
-            $('.orderNumbers').text(formatMoney(ns, ','));
-
-            $('.orderRed').attr('totalmoney', red);
-            $('.orderViolet').attr('totalmoney', violet);
-            $('.orderGreen').attr('totalmoney', green);
-            $('.orderNumber:eq(0)').attr('totalmoney', n0);
-            $('.orderNumber:eq(1)').attr('totalmoney', n1);
-            $('.orderNumber:eq(2)').attr('totalmoney', n2);
-            $('.orderNumber:eq(3)').attr('totalmoney', n3);
-            $('.orderNumber:eq(4)').attr('totalmoney', n4);
-            $('.orderNumber:eq(5)').attr('totalmoney', n5);
-            $('.orderNumber:eq(6)').attr('totalmoney', n6);
-            $('.orderNumber:eq(7)').attr('totalmoney', n7);
-            $('.orderNumber:eq(8)').attr('totalmoney', n8);
-            $('.orderNumber:eq(9)').attr('totalmoney', n9);
-            $('.orderNumber:eq(10)').attr('totalmoney', l);
-            $('.orderNumber:eq(11)').attr('totalmoney', n);
-            $('.orderNumbers').attr('totalmoney', ns);
-
-            response.datas.map((data) => {
-                showJoinMember(data);
-            });
-            showListOrder3(response.list_orders);
+            if (response.list_orders) {
+                showListOrder3(response.list_orders);
+            }
             $(".direct-chat-warning .direct-chat-messages").animate({
                 scrollTop: $(".direct-chat-msg").prop("scrollHeight")
             }, 750);
-            $('.reservation-chunk-sub-num').text(response.lotterys[0].period);
-            let is = ''
-            if (typeid == '1') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo1 == '-1') ? 'Random' : response.setting[0].wingo1}`);
-            if (typeid == '2') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo3 == '-1') ? 'Random' : response.setting[0].wingo3}`);
-            if (typeid == '3') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo5 == '-1') ? 'Random' : response.setting[0].wingo5}`);
-            if (typeid == '4') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo10 == '-1') ? 'Random' : response.setting[0].wingo10}`);
-            
-            let winRateText = response.setting[0] && response.setting[0].win_rate !== undefined ? response.setting[0].win_rate + '%' : '80%';
-            $('#winrate').text(`Win Rate: ${winRateText}`);
+            if (response.lotterys && response.lotterys[0]) {
+                $('.reservation-chunk-sub-num').text(response.lotterys[0].period);
+            }
+            if (response.setting && response.setting[0]) {
+                if (typeid == '1') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo1 == '-1') ? 'Random' : response.setting[0].wingo1}`);
+                if (typeid == '2') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo3 == '-1') ? 'Random' : response.setting[0].wingo3}`);
+                if (typeid == '3') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo5 == '-1') ? 'Random' : response.setting[0].wingo5}`);
+                if (typeid == '4') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo10 == '-1') ? 'Random' : response.setting[0].wingo10}`);
+                
+                let winRateText = response.setting[0].win_rate !== undefined ? response.setting[0].win_rate + '%' : '80%';
+                $('#winrate').text(`Win Rate: ${winRateText}`);
+            }
         }
     });
 });
+
 function showListOrder3(list_orders, x) {
+    if (!list_orders || !Array.isArray(list_orders)) return;
     let htmls = "";
-    let result = list_orders.map((list_orders) => {
-        return (htmls += `
-                    <div data-v-a9660e98="" class="c-tc item van-row">
-                        <div data-v-a9660e98="" class="van-col van-col--12">
-                            <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${formatPeriodDate(list_orders.period)}</div>
-                        </div>
-                        <div data-v-a9660e98="" class="van-col van-col--4">
-                            <div data-v-a9660e98="" class="c-tc goItem">
-                                <!---->
-                                <span data-v-a9660e98="" class="${list_orders.amount % 2 == 0 ? "red" : "green"}"> ${list_orders.amount} </span>
-                            </div>
-                        </div>
-                        <div data-v-a9660e98="" class="van-col van-col--4">
-                            <div data-v-a9660e98="" class="c-tc goItem">
-                                <span data-v-a9660e98=""> ${list_orders.amount < 5 ? "Small" : "Big"} </span>
-                                <!---->
-                            </div>
-                        </div>
-                        <div data-v-a9660e98="" class="van-col van-col--4">
-                            <div data-v-a9660e98="" class="goItem c-row c-tc c-row-center">
-                                <div data-v-a9660e98="" class="c-tc c-row box c-row-center">
-                                    <span data-v-a9660e98="" class="li ${list_orders.amount % 2 == 0 ? "red" : "green"}"></span>
-                                    ${list_orders.amount == 0 || list_orders.amount == 5 ? '<span data-v-a9660e98="" class="li violet"></span>' : ""}
-                                </div>
-                            </div>
+    list_orders.forEach((item) => {
+        htmls += `
+            <div data-v-a9660e98="" class="c-tc item van-row">
+                <div data-v-a9660e98="" class="van-col van-col--12">
+                    <div data-v-a9660e98="" class="c-tc goItem" style="font-size: 13px;">${formatPeriodDate(item.period)}</div>
+                </div>
+                <div data-v-a9660e98="" class="van-col van-col--4">
+                    <div data-v-a9660e98="" class="c-tc goItem">
+                        <span data-v-a9660e98="" class="${item.amount % 2 == 0 ? "red" : "green"}"> ${item.amount} </span>
+                    </div>
+                </div>
+                <div data-v-a9660e98="" class="van-col van-col--4">
+                    <div data-v-a9660e98="" class="c-tc goItem">
+                        <span data-v-a9660e98=""> ${item.amount < 5 ? "Small" : "Big"} </span>
+                    </div>
+                </div>
+                <div data-v-a9660e98="" class="van-col van-col--4">
+                    <div data-v-a9660e98="" class="goItem c-row c-tc c-row-center">
+                        <div data-v-a9660e98="" class="c-tc c-row box c-row-center">
+                            <span data-v-a9660e98="" class="li ${item.amount % 2 == 0 ? "red" : "green"}"></span>
+                            ${item.amount == 0 || item.amount == 5 ? '<span data-v-a9660e98="" class="li violet"></span>' : ""}
                         </div>
                     </div>
-                    `);
+                </div>
+            </div>
+        `;
     });
     $(`#list-orders`).html(htmls);
-    // $(`.game-list .con-box:eq(${x}) .hb .c-tc`).last().remove();
 }
 
 function refreshAdminData() {
@@ -351,75 +303,7 @@ function refreshAdminData() {
         },
         dataType: "json",
         success: function (response) {
-            var red = 0;
-            var green = 0;
-            var violet = 0;
-            var n0 = 0;
-            var n1 = 0;
-            var n2 = 0;
-            var n3 = 0;
-            var n4 = 0;
-            var n5 = 0;
-            var n6 = 0;
-            var n7 = 0;
-            var n8 = 0;
-            var n9 = 0;
-            var n = 0;
-            var l = 0;
-            var ns = 0;
-            var length = response.datas.length;
-            var datas = response.datas;
-            for (let i = 0; i < length; i++) {
-                if (datas[i].bet == '0') n0 += datas[i].money;
-                if (datas[i].bet == '1') n1 += datas[i].money;
-                if (datas[i].bet == '2') n2 += datas[i].money;
-                if (datas[i].bet == '3') n3 += datas[i].money;
-                if (datas[i].bet == '4') n4 += datas[i].money;
-                if (datas[i].bet == '5') n5 += datas[i].money;
-                if (datas[i].bet == '6') n6 += datas[i].money;
-                if (datas[i].bet == '7') n7 += datas[i].money;
-                if (datas[i].bet == '8') n8 += datas[i].money;
-                if (datas[i].bet == '9') n9 += datas[i].money;
-                if (datas[i].bet == 'x') green += datas[i].money;
-                if (datas[i].bet == 't') violet += datas[i].money;
-                if (datas[i].bet == 'd') red += datas[i].money;
-                if (datas[i].bet == 'l') l += datas[i].money;
-                if (datas[i].bet == 'n') n += datas[i].money;
-            }
-            ns = n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7 + n8 + n9;
-            $('.orderRed').text(formatMoney(red, ','));
-            $('.orderViolet').text(formatMoney(violet, ','));
-            $('.orderGreen').text(formatMoney(green, ','));
-            $('.orderNumber:eq(0)').text(formatMoney(n0, ','));
-            $('.orderNumber:eq(1)').text(formatMoney(n1, ','));
-            $('.orderNumber:eq(2)').text(formatMoney(n2, ','));
-            $('.orderNumber:eq(3)').text(formatMoney(n3, ','));
-            $('.orderNumber:eq(4)').text(formatMoney(n4, ','));
-            $('.orderNumber:eq(5)').text(formatMoney(n5, ','));
-            $('.orderNumber:eq(6)').text(formatMoney(n6, ','));
-            $('.orderNumber:eq(7)').text(formatMoney(n7, ','));
-            $('.orderNumber:eq(8)').text(formatMoney(n8, ','));
-            $('.orderNumber:eq(9)').text(formatMoney(n9, ','));
-            $('.orderNumber:eq(10)').text(formatMoney(l, ','));
-            $('.orderNumber:eq(11)').text(formatMoney(n, ','));
-            $('.orderNumbers').text(formatMoney(ns, ','));
-
-            $('.orderRed').attr('totalmoney', red);
-            $('.orderViolet').attr('totalmoney', violet);
-            $('.orderGreen').attr('totalmoney', green);
-            $('.orderNumber:eq(0)').attr('totalmoney', n0);
-            $('.orderNumber:eq(1)').attr('totalmoney', n1);
-            $('.orderNumber:eq(2)').attr('totalmoney', n2);
-            $('.orderNumber:eq(3)').attr('totalmoney', n3);
-            $('.orderNumber:eq(4)').attr('totalmoney', n4);
-            $('.orderNumber:eq(5)').attr('totalmoney', n5);
-            $('.orderNumber:eq(6)').attr('totalmoney', n6);
-            $('.orderNumber:eq(7)').attr('totalmoney', n7);
-            $('.orderNumber:eq(8)').attr('totalmoney', n8);
-            $('.orderNumber:eq(9)').attr('totalmoney', n9);
-            $('.orderNumber:eq(10)').attr('totalmoney', l);
-            $('.orderNumber:eq(11)').attr('totalmoney', n);
-            $('.orderNumbers').attr('totalmoney', ns);
+            calculateAndRenderWinGoStats(response);
 
             $('.direct-chat-msg').html('');
             if (response.datas && response.datas.length > 0) {
@@ -431,23 +315,28 @@ function refreshAdminData() {
                     <div class="text-center py-5" style="color: #8c93a0;">
                         <i class="fas fa-coins fa-2x mb-3 text-warning d-block"></i>
                         <h6 class="font-weight-bold mb-1">Waiting for bets</h6>
-                        <p class="small text-muted mb-0">No active bets placed yet for active round #${response.lotterys[0]?.period || ''}</p>
+                        <p class="small text-muted mb-0">No active bets placed yet for active round #${response.lotterys && response.lotterys[0]?.period || ''}</p>
                     </div>
                 `);
             }
-            showListOrder3(response.list_orders);
+            if (response.list_orders) {
+                showListOrder3(response.list_orders);
+            }
             $(".direct-chat-warning .direct-chat-messages, .direct-chat-success .direct-chat-messages").animate({
                 scrollTop: $(".direct-chat-msg").prop("scrollHeight")
             }, 750);
-            $('.reservation-chunk-sub-num').text(response.lotterys[0].period);
-            let is = ''
-            if (typeid == '1') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo1 == '-1') ? 'Random' : response.setting[0].wingo1}`);
-            if (typeid == '2') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo3 == '-1') ? 'Random' : response.setting[0].wingo3}`);
-            if (typeid == '3') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo5 == '-1') ? 'Random' : response.setting[0].wingo5}`);
-            if (typeid == '4') is = $('#ketQua').text(`Next Result: ${(response.setting[0].wingo10 == '-1') ? 'Random' : response.setting[0].wingo10}`);
+            if (response.lotterys && response.lotterys[0]) {
+                $('.reservation-chunk-sub-num').text(response.lotterys[0].period);
+            }
+            if (response.setting && response.setting[0]) {
+                if (typeid == '1') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo1 == '-1') ? 'Random' : response.setting[0].wingo1}`);
+                if (typeid == '2') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo3 == '-1') ? 'Random' : response.setting[0].wingo3}`);
+                if (typeid == '3') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo5 == '-1') ? 'Random' : response.setting[0].wingo5}`);
+                if (typeid == '4') $('#ketQua').text(`Next Result: ${(response.setting[0].wingo10 == '-1') ? 'Random' : response.setting[0].wingo10}`);
 
-            let winRateText2 = response.setting[0] && response.setting[0].win_rate !== undefined ? response.setting[0].win_rate + '%' : '80%';
-            $('#winrate').text(`Win Rate: ${winRateText2}`);
+                let winRateText2 = response.setting[0].win_rate !== undefined ? response.setting[0].win_rate + '%' : '80%';
+                $('#winrate').text(`Win Rate: ${winRateText2}`);
+            }
         }
     });
 }

@@ -134,10 +134,18 @@ const totalJoin = async (req, res) => {
     const [rows] = await connection.query('SELECT * FROM users WHERE `token` = ? ', [auth]);
 
     if (rows.length > 0) {
-        const [wingoall] = await connection.query('SELECT * FROM minutes_1 WHERE game = ? AND status = 0 ORDER BY id ASC', [game]);
         const [winGo1] = await connection.execute('SELECT * FROM wingo WHERE status = 0 AND game = ? ORDER BY id DESC LIMIT 1', [game]);
         const [winGo10] = await connection.execute('SELECT * FROM wingo WHERE status != 0 AND game = ? ORDER BY id DESC LIMIT 10', [game]);
         const [setting] = await connection.execute('SELECT * FROM admin', []);
+
+        let wingoall = [];
+        if (winGo1 && winGo1.length > 0 && winGo1[0].period) {
+            const [activeBets] = await connection.execute(
+                'SELECT * FROM minutes_1 WHERE game = ? AND stage = ? AND status = 0 ORDER BY id ASC',
+                [game, winGo1[0].period]
+            );
+            wingoall = activeBets;
+        }
 
         return res.status(200).json({
             message: 'Success',
@@ -1683,26 +1691,29 @@ const listOrderOld = async (req, res) => {
     if (game == 5) join = 'k5d5';
     if (game == 10) join = 'k5d10';
 
-    const [k5d] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = '${game}' ORDER BY id DESC LIMIT 10 `);
-    const [period] = await connection.query(`SELECT period FROM 5d WHERE status = 0 AND game = '${game}' ORDER BY id DESC LIMIT 1 `);
-    const [waiting] = await connection.query(`SELECT phone, money, price, amount, bet, join_bet FROM result_5d WHERE status = 0 AND game = '${game}' ORDER BY id ASC `);
+    const [k5d] = await connection.execute('SELECT * FROM 5d WHERE status != 0 AND game = ? ORDER BY id DESC LIMIT 10', [game]);
+    const [period] = await connection.execute('SELECT period FROM 5d WHERE status = 0 AND game = ? ORDER BY id DESC LIMIT 1', [game]);
     const [settings] = await connection.query(`SELECT ${join} FROM admin`);
-    if (k5d.length == 0) {
+    if (k5d.length == 0 || !period[0]) {
         return res.status(200).json({
             code: 0,
             msg: "No more data",
             data: {
-                gameslist: [],
+                gameslist: k5d,
             },
+            bet: [],
+            settings: settings,
+            join: join,
+            period: period[0] ? period[0].period : '',
             status: false
         });
     }
-    if (!k5d[0] || !period[0]) {
-        return res.status(200).json({
-            message: 'Error!',
-            status: false
-        });
-    }
+
+    const [waiting] = await connection.execute(
+        'SELECT id_product, phone, stage, money, price, amount, fee, `get`, game, join_bet, typeGame, bet, status, time FROM result_5d WHERE game = ? AND stage = ? AND status = 0 ORDER BY id ASC',
+        [game, period[0].period]
+    );
+
     return res.status(200).json({
         code: 0,
         msg: "Get success",
@@ -1739,26 +1750,29 @@ const listOrderOldK3 = async (req, res) => {
     if (game == 5) join = 'k3d5';
     if (game == 10) join = 'k3d10';
 
-    const [k5d] = await connection.query(`SELECT * FROM k3 WHERE status != 0 AND game = '${game}' ORDER BY id DESC LIMIT 10 `);
-    const [period] = await connection.query(`SELECT period FROM k3 WHERE status = 0 AND game = '${game}' ORDER BY id DESC LIMIT 1 `);
-    const [waiting] = await connection.query(`SELECT phone, money, price, typeGame, amount, bet FROM result_k3 WHERE status = 0 AND game = '${game}' ORDER BY id ASC `);
+    const [k5d] = await connection.execute('SELECT * FROM k3 WHERE status != 0 AND game = ? ORDER BY id DESC LIMIT 10', [game]);
+    const [period] = await connection.execute('SELECT period FROM k3 WHERE status = 0 AND game = ? ORDER BY id DESC LIMIT 1', [game]);
     const [settings] = await connection.query(`SELECT ${join} FROM admin`);
-    if (k5d.length == 0) {
+    if (k5d.length == 0 || !period[0]) {
         return res.status(200).json({
             code: 0,
             msg: "No more data",
             data: {
-                gameslist: [],
+                gameslist: k5d,
             },
+            bet: [],
+            settings: settings,
+            join: join,
+            period: period[0] ? period[0].period : '',
             status: false
         });
     }
-    if (!k5d[0] || !period[0]) {
-        return res.status(200).json({
-            message: 'Error!',
-            status: false
-        });
-    }
+
+    const [waiting] = await connection.execute(
+        'SELECT id_product, phone, stage, money, price, amount, fee, `get`, game, join_bet, typeGame, bet, status, time FROM result_k3 WHERE game = ? AND stage = ? AND status = 0 ORDER BY id ASC',
+        [game, period[0].period]
+    );
+
     return res.status(200).json({
         code: 0,
         msg: "Get Success",
