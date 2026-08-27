@@ -1,8 +1,8 @@
-<!-- DiuWin Floating Toast Win & Loss Banner (Inline Embed for 100% Hosting Reliability) -->
+<!-- DiuWin Floating Toast Win & Loss Banner (Inline Embed for 100% Reliability) -->
 <style id="diuwin-toast-styles">
   #game-toast-container {
     position: fixed !important;
-    top: 22px !important;
+    top: 25px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 2147483647 !important;
@@ -17,14 +17,14 @@
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    padding: 14px 18px !important;
+    padding: 16px 18px !important;
     border-radius: 18px !important;
     color: #ffffff !important;
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.3) !important;
     margin-bottom: 10px !important;
-    transform: translateY(-150%) scale(0.9) !important;
+    transform: translateY(-160%) scale(0.85) !important;
     opacity: 0 !important;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease !important;
+    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease !important;
     pointer-events: auto !important;
     box-sizing: border-box !important;
     cursor: pointer !important;
@@ -40,7 +40,7 @@
   }
 
   .game-toast.toast-hide {
-    transform: translateY(-150%) scale(0.9) !important;
+    transform: translateY(-160%) scale(0.85) !important;
     opacity: 0 !important;
   }
 
@@ -48,18 +48,18 @@
   .game-toast.toast-win {
     background: linear-gradient(135deg, #10b981 0%, #059669 60%, #047857 100%) !important;
     border: 2px solid #fde047 !important;
-    box-shadow: 0 12px 35px rgba(16, 185, 129, 0.6), 0 0 25px rgba(250, 204, 21, 0.5) !important;
+    box-shadow: 0 14px 40px rgba(16, 185, 129, 0.65), 0 0 25px rgba(250, 204, 21, 0.5) !important;
   }
 
   /* Loss Toast */
   .game-toast.toast-loss {
     background: linear-gradient(135deg, #334155 0%, #1e293b 70%, #0f172a 100%) !important;
-    border: 2px solid rgba(239, 68, 68, 0.7) !important;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(239, 68, 68, 0.35) !important;
+    border: 2px solid rgba(239, 68, 68, 0.8) !important;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(239, 68, 68, 0.4) !important;
   }
 
   .toast-icon-box {
-    font-size: 30px !important;
+    font-size: 32px !important;
     line-height: 1 !important;
     margin-right: 14px !important;
     display: flex !important;
@@ -82,10 +82,10 @@
   }
 
   .toast-title {
-    font-size: 16px !important;
+    font-size: 17px !important;
     font-weight: 900 !important;
     letter-spacing: 0.3px !important;
-    margin: 0 0 2px !important;
+    margin: 0 0 3px !important;
     line-height: 1.2 !important;
   }
 
@@ -97,6 +97,7 @@
   .toast-win .toast-amount {
     color: #fef08a !important;
     font-weight: 900 !important;
+    font-size: 19px !important;
   }
 
   .toast-loss .toast-title {
@@ -106,6 +107,7 @@
   .toast-loss .toast-amount {
     color: #fca5a5 !important;
     font-weight: 900 !important;
+    font-size: 19px !important;
   }
 
   .toast-subtitle {
@@ -117,7 +119,7 @@
   }
 
   .toast-close-btn {
-    font-size: 22px !important;
+    font-size: 24px !important;
     line-height: 1 !important;
     color: rgba(255, 255, 255, 0.7) !important;
     margin-left: 10px !important;
@@ -137,8 +139,10 @@
 (function () {
   'use strict';
 
-  var processedPeriods = new Set();
+  var seenSettledBets = new Set();
+  var isInitialFetch = true;
   var activeToastTimer = null;
+  var isPollingActive = false;
 
   function formatMoney(num) {
     return Number(num || 0).toLocaleString('en-IN', {
@@ -199,130 +203,133 @@
         if (toast.parentNode) {
           toast.parentNode.removeChild(toast);
         }
-      }, 400);
+      }, 450);
     }
 
     toast.onclick = dismissToast;
     activeToastTimer = setTimeout(dismissToast, isWin ? 5500 : 4000);
   }
 
-  function fetchMyBetsAndCheck(gameType, endedPeriod, drawResult, retryCount) {
-    var url = "/api/webapi/GetMyEmerdList";
-    var typeid = "1";
-    if (String(gameType).indexOf('3') !== -1) typeid = "3";
-    if (String(gameType).indexOf('5') !== -1 && String(gameType).indexOf('5d') === -1) typeid = "5";
-    if (String(gameType).indexOf('10') !== -1) typeid = "10";
-
-    if (String(gameType).indexOf('5d') !== -1) {
-      url = "/api/webapi/5d/GetMyEmerdList";
-      typeid = String(gameType).replace(/[^0-9]/g, '') || "1";
-    } else if (String(gameType).indexOf('k3') !== -1) {
-      url = "/api/webapi/k3/GetMyEmerdList";
-      typeid = String(gameType).replace(/[^0-9]/g, '') || "1";
+  function getCurrentGameEndpoint() {
+    var path = window.location.pathname;
+    if (path.indexOf('/5d') !== -1) {
+      var dpr5d = $('html').attr('data-dpr') || '1';
+      return {
+        url: '/api/webapi/5d/GetMyEmerdList',
+        data: { gameJoin: dpr5d, pageno: '0', pageto: '10' },
+        game: '5D ' + dpr5d + 'Min'
+      };
     }
+    if (path.indexOf('/k3') !== -1) {
+      var dprK3 = $('html').attr('data-dpr') || '1';
+      return {
+        url: '/api/webapi/k3/GetMyEmerdList',
+        data: { gameJoin: dprK3, pageno: '0', pageto: '10' },
+        game: 'K3 ' + dprK3 + 'Min'
+      };
+    }
+
+    // Win Go
+    var typeid = '1';
+    var gameName = 'Win Go 1Min';
+    if ($('.betting-box .nav .item:eq(1)').hasClass('action')) {
+      typeid = '3';
+      gameName = 'Win Go 3Min';
+    } else if ($('.betting-box .nav .item:eq(2)').hasClass('action')) {
+      typeid = '5';
+      gameName = 'Win Go 5Min';
+    } else if ($('.betting-box .nav .item:eq(3)').hasClass('action')) {
+      typeid = '10';
+      gameName = 'Win Go 10Min';
+    }
+
+    return {
+      url: '/api/webapi/GetMyEmerdList',
+      data: { typeid: typeid, pageno: '0', pageto: '10', language: 'vi' },
+      game: gameName
+    };
+  }
+
+  function checkActiveBetSettlement() {
+    if (isPollingActive) return;
+    isPollingActive = true;
+    var ep = getCurrentGameEndpoint();
 
     $.ajax({
       type: "POST",
-      url: url,
-      data: {
-        typeid: typeid,
-        game: typeid,
-        pageno: "0",
-        pageto: "10",
-        language: "vi"
-      },
+      url: ep.url,
+      data: ep.data,
       dataType: "json",
       success: function(resp) {
-        if (resp && resp.data && resp.data.gameslist) {
-          checkAndShowGameResult(gameType, endedPeriod, drawResult, resp.data.gameslist, retryCount);
+        isPollingActive = false;
+        if (!resp || !resp.data || !Array.isArray(resp.data.gameslist)) return;
+        var list = resp.data.gameslist;
+        if (list.length === 0) return;
+
+        // On first page load: Seed existing history silently
+        if (isInitialFetch) {
+          isInitialFetch = false;
+          list.forEach(function(b) {
+            var st = parseInt(b.status, 10);
+            var id = String(b.id_product || b.id || b.stage || '');
+            if (st !== 0 && id) {
+              seenSettledBets.add(id);
+            }
+          });
+          return;
         }
+
+        // Check for new settled bets
+        var newlySettled = {};
+        list.forEach(function(b) {
+          var st = parseInt(b.status, 10);
+          var id = String(b.id_product || b.id || b.stage || '');
+          var stage = String(b.stage || b.period || '').trim();
+
+          if (st !== 0 && id && !seenSettledBets.has(id)) {
+            seenSettledBets.add(id);
+            if (!newlySettled[stage]) {
+              newlySettled[stage] = [];
+            }
+            newlySettled[stage].push(b);
+          }
+        });
+
+        // Trigger toast for newly resolved rounds
+        Object.keys(newlySettled).forEach(function(stage) {
+          var bets = newlySettled[stage];
+          var totalWin = 0;
+          var totalLoss = 0;
+          var isWin = false;
+
+          bets.forEach(function(b) {
+            var st = parseInt(b.status, 10);
+            var money = parseFloat(b.money || b.price || 0);
+            var get = parseFloat(b.get || 0);
+            if (st === 1) {
+              isWin = true;
+              totalWin += (get > 0 ? get : money * 2);
+            } else if (st === 2) {
+              totalLoss += money;
+            }
+          });
+
+          if (isWin && totalWin > 0) {
+            showFloatingToast('win', { amount: totalWin, period: stage, game: ep.game });
+          } else if (totalLoss > 0) {
+            showFloatingToast('loss', { amount: totalLoss, period: stage, game: ep.game });
+          }
+        });
+      },
+      error: function() {
+        isPollingActive = false;
       }
     });
   }
 
-  function checkAndShowGameResult(gameType, endedPeriod, drawResult, gamesList, retryCount) {
-    retryCount = retryCount || 0;
-    if (!endedPeriod) return;
-
-    var periodKey = String(gameType) + '_' + String(endedPeriod).trim();
-    if (processedPeriods.has(periodKey)) return;
-
-    if (!gamesList || !Array.isArray(gamesList) || gamesList.length === 0) {
-      if (retryCount < 4) {
-        setTimeout(function() {
-          fetchMyBetsAndCheck(gameType, endedPeriod, drawResult, retryCount + 1);
-        }, 800);
-      }
-      return;
-    }
-
-    var roundBets = gamesList.filter(function (item) {
-      var itemPeriod = String(item.stage || item.period || item.id_product || '').trim();
-      return itemPeriod === String(endedPeriod).trim();
-    });
-
-    if (roundBets.length === 0) {
-      if (retryCount < 3) {
-        setTimeout(function() {
-          fetchMyBetsAndCheck(gameType, endedPeriod, drawResult, retryCount + 1);
-        }, 900);
-      }
-      return;
-    }
-
-    // If bets exist for this round but status is still pending (0), auto-retry!
-    var hasPending = roundBets.some(function (b) {
-      return parseInt(b.status, 10) === 0;
-    });
-
-    if (hasPending) {
-      if (retryCount < 6) {
-        setTimeout(function() {
-          fetchMyBetsAndCheck(gameType, endedPeriod, drawResult, retryCount + 1);
-        }, 800);
-      }
-      return;
-    }
-
-    // Bets are settled!
-    processedPeriods.add(periodKey);
-    if (processedPeriods.size > 300) processedPeriods.clear();
-
-    var totalWinGet = 0;
-    var totalLossMoney = 0;
-    var isWin = false;
-
-    roundBets.forEach(function (b) {
-      var status = parseInt(b.status, 10);
-      var betMoney = parseFloat(b.money || b.price || 0);
-      var getMoney = parseFloat(b.get || 0);
-
-      if (status === 1) {
-        isWin = true;
-        totalWinGet += (getMoney > 0 ? getMoney : betMoney * 2);
-      } else if (status === 2) {
-        totalLossMoney += betMoney;
-      }
-    });
-
-    var gameTitle = 'Win Go';
-    if (String(gameType).indexOf('5d') !== -1) gameTitle = '5D Lotre';
-    if (String(gameType).indexOf('k3') !== -1) gameTitle = 'K3 Lotre';
-
-    if (isWin && totalWinGet > 0) {
-      showFloatingToast('win', {
-        amount: totalWinGet,
-        period: endedPeriod,
-        game: gameTitle
-      });
-    } else if (totalLossMoney > 0) {
-      showFloatingToast('loss', {
-        amount: totalLossMoney,
-        period: endedPeriod,
-        game: gameTitle
-      });
-    }
-  }
+  // Active interval check every 2 seconds (independent of WebSocket)
+  setInterval(checkActiveBetSettlement, 2000);
+  setTimeout(checkActiveBetSettlement, 600);
 
   function testWinModal(amount) {
     showFloatingToast('win', {
@@ -340,11 +347,11 @@
     });
   }
 
-  window.checkAndShowGameResult = checkAndShowGameResult;
   window.showFloatingToast = showFloatingToast;
   window.testWinModal = testWinModal;
   window.testLossModal = testLossModal;
   window.testWinModel = testWinModal;
   window.testLossModel = testLossModal;
+  window.triggerBetCheck = checkActiveBetSettlement;
 })();
 </script>
