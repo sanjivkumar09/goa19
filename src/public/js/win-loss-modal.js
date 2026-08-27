@@ -12,7 +12,8 @@
   // Tracked State
   // Map: id_product -> { id, stage, game, typeid, stake, previousStatus, currentStatus, registeredAt, getMoney }
   var trackedBets = new Map();
-  var resolvedKeys = new Set(); // game_typeid:stage
+  var resolvedStageKeys = new Set(); // game_typeid:stage
+  var resolvedBetIds = new Set();
   var knownHistoricalBetIds = new Set();
   var isInitialFetch = true;
   var isPollingActive = false;
@@ -31,6 +32,63 @@
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+  }
+
+  function ensureModalDOM() {
+    var overlay = document.getElementById('diuwin-receipt-overlay');
+    if (!overlay) {
+      log('MODAL_DOM_MISSING', 'Injecting modal DOM markup dynamically into body');
+      var modalHTML = '<div id="diuwin-receipt-overlay" class="diuwin-result-overlay">' +
+        '<div id="diuwin-receipt-card" class="diuwin-modal-card loss-card">' +
+        '<div class="diuwin-top-emblem">' +
+        '<svg class="emblem-svg" viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M20 55 C35 30, 60 40, 80 50 C100 40, 125 30, 140 55 C125 65, 100 55, 80 60 C60 55, 35 65, 20 55 Z" fill="#93c5fd" opacity="0.9"/>' +
+        '<path d="M10 65 C30 45, 55 52, 80 58 C105 52, 130 45, 150 65 C130 75, 105 65, 80 68 C55 65, 30 75, 10 65 Z" fill="#60a5fa" opacity="0.7"/>' +
+        '<circle cx="80" cy="46" r="32" fill="url(#emblemGrad)" stroke="#ffffff" stroke-width="3.5"/>' +
+        '<path d="M36 76 Q80 88 124 76 Q80 94 36 76 Z" fill="#3b82f6"/>' +
+        '<g id="emblem-icon-group" transform="translate(62, 28) scale(0.9)">' +
+        '<path d="M20 2 C20 2, 28 10, 28 22 C28 26, 26 30, 24 32 L16 32 C14 30, 12 26, 12 22 C12 10, 20 2, 20 2 Z" fill="#ffffff"/>' +
+        '<circle cx="20" cy="16" r="3.5" fill="#3b82f6"/>' +
+        '<path d="M12 24 L6 30 L12 30 Z" fill="#ffffff" opacity="0.85"/>' +
+        '<path d="M28 24 L34 30 L28 30 Z" fill="#ffffff" opacity="0.85"/>' +
+        '<path d="M16 33 L20 38 L24 33 Z" fill="#f59e0b"/>' +
+        '</g>' +
+        '<defs>' +
+        '<linearGradient id="emblemGrad" x1="48" y1="14" x2="112" y2="78" gradientUnits="userSpaceOnUse">' +
+        '<stop stop-color="#93c5fd"/>' +
+        '<stop offset="1" stop-color="#3b82f6"/>' +
+        '</linearGradient>' +
+        '</defs>' +
+        '</svg>' +
+        '</div>' +
+        '<div id="diuwin-modal-title" class="diuwin-modal-title">Sorry</div>' +
+        '<div class="diuwin-lottery-results-row">' +
+        '<span>Lottery results</span>' +
+        '<span id="badge-color" class="lottery-badge badge-red">Red</span>' +
+        '<span id="badge-num" class="lottery-badge badge-num">-</span>' +
+        '<span id="badge-size" class="lottery-badge badge-size">Small</span>' +
+        '</div>' +
+        '<div class="receipt-slit-box">' +
+        '<div class="receipt-slit"></div>' +
+        '<div class="receipt-paper">' +
+        '<div id="receipt-result-text" class="receipt-result-text">Lose</div>' +
+        '<div id="receipt-amount-text" class="receipt-amount-text" style="display: none;">+ ₹ 0.00</div>' +
+        '<div id="receipt-period-text" class="receipt-period-text">Period: -</div>' +
+        '</div>' +
+        '</div>' +
+        '<div class="auto-close-row">' +
+        '<span class="auto-close-circle"></span>' +
+        '<span id="auto-close-text">3 seconds auto close</span>' +
+        '</div>' +
+        '</div>' +
+        '<div id="diuwin-modal-close-btn" class="diuwin-modal-close-btn">&times;</div>' +
+        '</div>';
+
+      var container = document.createElement('div');
+      container.innerHTML = modalHTML;
+      document.body.appendChild(container.firstElementChild);
+      initDOMBindings();
+    }
   }
 
   function closeReceiptModal() {
@@ -55,21 +113,75 @@
 
     var overlay = document.getElementById('diuwin-receipt-overlay');
     if (overlay) {
-      overlay.onclick = function(e) {
+      overlay.onclick = function (e) {
         if (e.target === overlay) closeReceiptModal();
       };
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDOMBindings);
+    document.addEventListener('DOMContentLoaded', function () {
+      ensureModalDOM();
+      initDOMBindings();
+    });
   } else {
+    ensureModalDOM();
     initDOMBindings();
+  }
+
+  function formatDrawBadges(game, rawNum) {
+    if (rawNum === null || rawNum === undefined || rawNum === '') {
+      return { numText: '-', colorText: '', colorClass: '', sizeText: '' };
+    }
+    var numStr = String(rawNum).trim();
+    var gameName = String(game || '').toUpperCase();
+
+    if (gameName.indexOf('5D') !== -1) {
+      // 5D draw: e.g. "89635"
+      var digits = numStr.split('');
+      var sum = digits.reduce(function (acc, d) { return acc + (parseInt(d, 10) || 0); }, 0);
+      var isBig = (sum > 22);
+      return {
+        numText: digits.join(' '),
+        colorText: 'Total: ' + sum,
+        colorClass: 'badge-num',
+        sizeText: isBig ? 'Big' : 'Small'
+      };
+    } else if (gameName.indexOf('K3') !== -1) {
+      // K3 draw: e.g. "123"
+      var kDigits = numStr.split('');
+      var kSum = kDigits.reduce(function (acc, d) { return acc + (parseInt(d, 10) || 0); }, 0);
+      var kIsBig = (kSum >= 11);
+      var kIsOdd = (kSum % 2 !== 0);
+      return {
+        numText: kDigits.join(' ') + ' = ' + kSum,
+        colorText: kIsOdd ? 'Odd' : 'Even',
+        colorClass: kIsOdd ? 'badge-green' : 'badge-red',
+        sizeText: kIsBig ? 'Big' : 'Small'
+      };
+    } else {
+      // WinGo: single digit 0-9
+      var n = parseInt(numStr, 10);
+      if (isNaN(n)) return { numText: numStr, colorText: '', colorClass: '', sizeText: '' };
+      var isOdd = (n % 2 !== 0);
+      var isViolet = (n === 0 || n === 5);
+      var colorText = isViolet ? 'Violet' : (isOdd ? 'Green' : 'Red');
+      var colorClass = isViolet ? 'badge-violet' : (isOdd ? 'badge-green' : 'badge-red');
+      var sizeText = (n >= 5) ? 'Big' : 'Small';
+      return {
+        numText: String(n),
+        colorText: colorText,
+        colorClass: colorClass,
+        sizeText: sizeText
+      };
+    }
   }
 
   function showOfficialReceipt(type, options) {
     options = options || {};
     var isWin = (type === 'win');
+
+    ensureModalDOM();
 
     var overlay = document.getElementById('diuwin-receipt-overlay');
     var card = document.getElementById('diuwin-receipt-card');
@@ -83,12 +195,12 @@
     var autoCloseText = document.getElementById('auto-close-text');
 
     if (!overlay || !card) {
-      console.warn('[RESULT_MODAL] Overlay element #diuwin-receipt-overlay not found in DOM');
+      log('MODAL_DOM_MISSING', 'Unable to find or inject overlay');
       return;
     }
 
     if (isWin) {
-      log('SHOW_WIN', options);
+      log('WIN_MODAL', options);
       card.className = 'diuwin-modal-card win-card';
       if (title) title.innerText = 'Congratulations';
       if (resultText) resultText.innerText = 'Bonus';
@@ -97,27 +209,24 @@
         amountText.style.display = 'block';
       }
     } else {
-      log('SHOW_LOSS', options);
+      log('LOSS_MODAL', options);
       card.className = 'diuwin-modal-card loss-card';
       if (title) title.innerText = 'Sorry';
       if (resultText) resultText.innerText = 'Lose';
       if (amountText) amountText.style.display = 'none';
     }
 
-    // Set badges from actual draw number
-    var num = (options.resultNum !== undefined && options.resultNum !== null) ? String(options.resultNum) : '';
-    if (badgeNum) {
-      badgeNum.innerText = num || '-';
+    // Set badges
+    var badgeInfo = formatDrawBadges(options.game, options.resultNum);
+    if (badgeNum) badgeNum.innerText = badgeInfo.numText;
+    if (badgeColor) {
+      badgeColor.innerText = badgeInfo.colorText;
+      badgeColor.className = 'lottery-badge ' + (badgeInfo.colorClass || 'badge-red');
+      badgeColor.style.display = badgeInfo.colorText ? 'inline-block' : 'none';
     }
-    if (num) {
-      var isNumOdd = (parseInt(num, 10) % 2 !== 0);
-      if (badgeColor) {
-        badgeColor.innerText = (num == '0' || num == '5') ? 'Violet' : (isNumOdd ? 'Green' : 'Red');
-        badgeColor.className = 'lottery-badge ' + ((num == '0' || num == '5') ? 'badge-violet' : (isNumOdd ? 'badge-green' : 'badge-red'));
-      }
-      if (badgeSize) {
-        badgeSize.innerText = (parseInt(num, 10) >= 5) ? 'Big' : 'Small';
-      }
+    if (badgeSize) {
+      badgeSize.innerText = badgeInfo.sizeText;
+      badgeSize.style.display = badgeInfo.sizeText ? 'inline-block' : 'none';
     }
 
     if (periodText) periodText.innerText = 'Period: ' + (options.period || '-');
@@ -127,7 +236,7 @@
     if (autoCloseText) autoCloseText.innerText = secondsLeft + ' seconds auto close';
 
     if (autoCloseInterval) clearInterval(autoCloseInterval);
-    autoCloseInterval = setInterval(function() {
+    autoCloseInterval = setInterval(function () {
       secondsLeft--;
       if (secondsLeft > 0 && autoCloseText) {
         autoCloseText.innerText = secondsLeft + ' seconds auto close';
@@ -236,8 +345,8 @@
   }
 
   function scheduleSettlementChecks() {
-    [200, 600, 1200, 2200, 3500, 5000].forEach(function(delay) {
-      setTimeout(function() {
+    [100, 400, 800, 1500, 2500, 4000].forEach(function (delay) {
+      setTimeout(function () {
         if (trackedBets.size > 0) {
           checkActiveBetSettlement();
         }
@@ -245,9 +354,19 @@
     });
   }
 
-  // Fetch actual draw result without fake fallbacks; retries until found
-  function fetchActualDrawResult(stage, callback, retryCount) {
-    retryCount = retryCount || 0;
+  // Draw Result Cache
+  var drawResultCache = new Map();
+
+  // Fetch actual draw result without fake fallbacks
+  function fetchActualDrawResult(stage, game, typeid, callback) {
+    var cacheKey = game + '_' + typeid + ':' + stage;
+    if (drawResultCache.has(cacheKey)) {
+      var cached = drawResultCache.get(cacheKey);
+      log('DRAW_RESULT', { stage: stage, drawNum: cached, fromCache: true });
+      callback(cached);
+      return;
+    }
+
     var ep = getCurrentGameEndpoint();
 
     $.ajax({
@@ -255,10 +374,10 @@
       url: ep.historyUrl,
       data: ep.historyData,
       dataType: "json",
-      success: function(resp) {
+      success: function (resp) {
         var drawNum = null;
         if (resp && resp.data && Array.isArray(resp.data.gameslist)) {
-          var found = resp.data.gameslist.find(function(item) {
+          var found = resp.data.gameslist.find(function (item) {
             return String(item.period || item.stage || '').trim() === String(stage).trim();
           });
           if (found) {
@@ -267,26 +386,16 @@
         }
 
         if (drawNum !== null && drawNum !== undefined) {
+          drawResultCache.set(cacheKey, drawNum);
           log('DRAW_RESULT', { stage: stage, drawNum: drawNum });
           callback(drawNum);
-        } else if (retryCount < 8) {
-          // Result not recorded yet in MySQL; retry after 400ms
-          setTimeout(function() {
-            fetchActualDrawResult(stage, callback, retryCount + 1);
-          }, 400);
         } else {
-          log('DRAW_RESULT_UNAVAILABLE', { stage: stage });
+          log('DRAW_RESULT', { stage: stage, drawNum: null, status: 'pending' });
           callback(null);
         }
       },
-      error: function() {
-        if (retryCount < 5) {
-          setTimeout(function() {
-            fetchActualDrawResult(stage, callback, retryCount + 1);
-          }, 500);
-        } else {
-          callback(null);
-        }
+      error: function () {
+        callback(null);
       }
     });
   }
@@ -300,10 +409,10 @@
       url: ep.myUrl,
       data: data,
       dataType: "json",
-      success: function(resp) {
+      success: function (resp) {
         callback(resp && resp.data && Array.isArray(resp.data.gameslist) ? resp.data.gameslist : []);
       },
-      error: function() {
+      error: function () {
         callback([]);
       }
     });
@@ -318,13 +427,13 @@
     var maxPages = 4; // up to 120 records
 
     function scanPage(pageIndex) {
-      fetchUserBetPage(pageIndex, pageSize, function(list) {
+      fetchUserBetPage(pageIndex, pageSize, function (list) {
         if (!list || list.length === 0) {
           isPollingActive = false;
           return;
         }
 
-        processSettlementData(list, function(hasUnsettled) {
+        processSettlementData(list, function (hasUnsettled) {
           if (hasUnsettled && (pageIndex + 1) < maxPages) {
             scanPage(pageIndex + 1);
           } else {
@@ -343,7 +452,7 @@
     // On first page load: Seed historical settled bets so past bets never pop up
     if (isInitialFetch) {
       isInitialFetch = false;
-      list.forEach(function(b) {
+      list.forEach(function (b) {
         var id = String(b.id_product || b.id || '').trim();
         var st = parseInt(b.status, 10);
         var stage = String(b.stage || b.period || '').trim();
@@ -363,10 +472,10 @@
               registeredAt: Date.now(),
               getMoney: parseFloat(b.get || 0)
             });
-            log('RECOVERED_PENDING_ON_LOAD', { id: id, stage: stage });
+            log('PENDING_DETECTED', { id: id, stage: stage, recovered: true });
           }
         } else if (id) {
-          // Only add to historical if not registered in this session
+          // Add to historical so it never triggers a modal
           if (!trackedBets.has(id)) {
             knownHistoricalBetIds.add(id);
           }
@@ -376,73 +485,64 @@
       return;
     }
 
-    // Auto-discover newly placed pending bets (status === 0)
-    list.forEach(function(b) {
+    // Process bets returned by API during active session
+    list.forEach(function (b) {
       var id = String(b.id_product || b.id || '').trim();
       var st = parseInt(b.status, 10);
       var stage = String(b.stage || b.period || '').trim();
+      var getMoney = parseFloat(b.get || 0);
+      var stake = parseFloat(b.money || b.price || 0);
 
-      if (st === 0 && stage && id && !knownHistoricalBetIds.has(id)) {
+      if (!id || knownHistoricalBetIds.has(id) || resolvedBetIds.has(id)) {
+        return;
+      }
+
+      if (st === 0 && stage) {
+        // Pending bet observed in this session
         if (!trackedBets.has(id)) {
           trackedBets.set(id, {
             id: id,
             stage: stage,
             game: ep.game,
             typeid: ep.typeid,
-            stake: parseFloat(b.money || b.price || 0),
+            stake: stake,
             previousStatus: null,
             currentStatus: 0,
             registeredAt: Date.now(),
-            getMoney: parseFloat(b.get || 0)
+            getMoney: 0
           });
-          log('AUTO_DISCOVERED_PENDING', { id: id, stage: stage });
+          log('PENDING_DETECTED', { id: id, stage: stage });
         }
-      }
-    });
-
-    // Update tracked bets status strictly by id_product
-    list.forEach(function(b) {
-      var id = String(b.id_product || b.id || '').trim();
-      var newStatus = parseInt(b.status, 10);
-      var getMoney = parseFloat(b.get || 0);
-      var money = parseFloat(b.money || b.price || 0);
-
-      if (id && trackedBets.has(id)) {
-        var tracked = trackedBets.get(id);
-        var oldStatus = tracked.currentStatus;
-
-        tracked.previousStatus = oldStatus;
-        tracked.currentStatus = newStatus;
-        tracked.getMoney = getMoney;
-        if (money && !tracked.stake) tracked.stake = money;
-
-        if (oldStatus === 0 && newStatus === 1) {
-          log('TRANSITION 0 -> 1', {
-            game: tracked.game,
-            typeid: tracked.typeid,
-            stage: tracked.stage,
-            id_product: tracked.id,
-            oldStatus: oldStatus,
-            newStatus: newStatus,
+      } else if (st === 1 || st === 2) {
+        // Settled bet observed in this session
+        if (trackedBets.has(id)) {
+          var tracked = trackedBets.get(id);
+          tracked.previousStatus = tracked.currentStatus;
+          tracked.currentStatus = st;
+          tracked.getMoney = getMoney;
+          if (stake && !tracked.stake) tracked.stake = stake;
+          log('SETTLEMENT_DETECTED', { id: id, stage: stage, status: st, getMoney: getMoney });
+        } else {
+          // Bet was placed in this session and settled before intermediate status=0 poll
+          trackedBets.set(id, {
+            id: id,
+            stage: stage,
+            game: ep.game,
+            typeid: ep.typeid,
+            stake: stake,
+            previousStatus: 0,
+            currentStatus: st,
+            registeredAt: Date.now(),
             getMoney: getMoney
           });
-        } else if (oldStatus === 0 && newStatus === 2) {
-          log('TRANSITION 0 -> 2', {
-            game: tracked.game,
-            typeid: tracked.typeid,
-            stage: tracked.stage,
-            id_product: tracked.id,
-            oldStatus: oldStatus,
-            newStatus: newStatus,
-            stake: tracked.stake
-          });
+          log('SETTLEMENT_DETECTED', { id: id, stage: stage, status: st, getMoney: getMoney, fastSettled: true });
         }
       }
     });
 
     // Group tracked bets by game + typeid + stage
     var groups = {};
-    trackedBets.forEach(function(tracked) {
+    trackedBets.forEach(function (tracked) {
       var groupKey = tracked.game + '_' + tracked.typeid + ':' + tracked.stage;
       if (!groups[groupKey]) groups[groupKey] = [];
       groups[groupKey].push(tracked);
@@ -451,7 +551,7 @@
     var groupKeys = Object.keys(groups);
     var processedCount = 0;
 
-    var hasPending = Array.from(trackedBets.values()).some(function(b) {
+    var hasPending = Array.from(trackedBets.values()).some(function (b) {
       return b.currentStatus === 0;
     });
 
@@ -460,58 +560,54 @@
       return;
     }
 
-    groupKeys.forEach(function(groupKey) {
+    groupKeys.forEach(function (groupKey) {
       var groupBets = groups[groupKey];
       var firstBet = groupBets[0];
       var stage = firstBet.stage;
 
-      if (resolvedKeys.has(groupKey)) {
-        groupBets.forEach(function(b) { trackedBets.delete(b.id); });
-        processedCount++;
-        if (processedCount === groupKeys.length) onComplete(hasPending);
-        return;
-      }
-
-      // Check if EVERY tracked bet in this group has settled (status 1 or 2)
-      var allSettled = groupBets.every(function(b) {
-        return b.currentStatus === 1 || b.currentStatus === 2;
-      });
-
-      if (!allSettled) {
-        log('GROUP_WAITING', {
-          game: firstBet.game,
-          typeid: firstBet.typeid,
-          stage: stage,
-          totalBets: groupBets.length,
-          pending: groupBets.filter(function(b) { return b.currentStatus === 0; }).length
+      if (resolvedStageKeys.has(groupKey)) {
+        groupBets.forEach(function (b) {
+          resolvedBetIds.add(b.id);
+          trackedBets.delete(b.id);
         });
         processedCount++;
         if (processedCount === groupKeys.length) onComplete(hasPending);
         return;
       }
 
-      // All tracked bets in group are settled!
-      log('GROUP_SETTLED', { groupKey: groupKey, count: groupBets.length });
-      resolvedKeys.add(groupKey);
-      if (resolvedKeys.size > 200) resolvedKeys.clear();
+      // Check if EVERY tracked bet in this group has settled (status 1 or 2)
+      var allSettled = groupBets.every(function (b) {
+        return b.currentStatus === 1 || b.currentStatus === 2;
+      });
+
+      if (!allSettled) {
+        processedCount++;
+        if (processedCount === groupKeys.length) onComplete(hasPending);
+        return;
+      }
+
+      // Mark group as resolved so it cannot trigger a duplicate modal
+      resolvedStageKeys.add(groupKey);
+      if (resolvedStageKeys.size > 200) resolvedStageKeys.clear();
 
       // Aggregate Win / Loss totals
       var totalStake = 0;
       var totalPayout = 0;
 
-      groupBets.forEach(function(b) {
+      groupBets.forEach(function (b) {
         totalStake += (b.stake || 0);
         if (b.currentStatus === 1) {
           totalPayout += (b.getMoney || 0);
         }
+        resolvedBetIds.add(b.id);
         trackedBets.delete(b.id);
       });
 
       var isWin = (totalPayout > 0);
       var displayAmount = isWin ? totalPayout : totalStake;
 
-      // Fetch actual lottery draw result number
-      fetchActualDrawResult(stage, function(realDrawNum) {
+      // Fetch authentic lottery draw result number without blocking
+      fetchActualDrawResult(stage, firstBet.game, firstBet.typeid, function (realDrawNum) {
         showOfficialReceipt(isWin ? 'win' : 'loss', {
           amount: displayAmount,
           period: stage,
@@ -559,7 +655,8 @@
   window.getResultModalState = function () {
     return {
       trackedBets: Array.from(trackedBets.values()),
-      resolvedKeys: Array.from(resolvedKeys),
+      resolvedStageKeys: Array.from(resolvedStageKeys),
+      resolvedBetIds: Array.from(resolvedBetIds),
       knownHistoricalBetIds: Array.from(knownHistoricalBetIds),
       isInitialFetch: isInitialFetch,
       isPollingActive: isPollingActive
