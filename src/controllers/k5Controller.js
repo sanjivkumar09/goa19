@@ -365,12 +365,17 @@ const add5D = async(game) => {
             await connection.execute(`UPDATE 5d SET result = ?, status = 1 WHERE period = ? AND game = ?`, [finalResult, period, game]);
         }
         
-        // Generate period based on current date (Format: YYYYMMDD + 4 digits: 0001, 0002, 0003...)
-        let date = new Date();
-        let years = date.getFullYear();
-        let months = String(date.getMonth() + 1).padStart(2, '0');
-        let days = String(date.getDate()).padStart(2, '0');
-        let todayPrefix = `${years}${months}${days}`;
+        // Generate period based on India date (Asia/Kolkata) (Format: YYYYMMDD + 4 digits: 0001, 0002, 0003...)
+        const kolkataParts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Kolkata',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).formatToParts(new Date());
+        const kYear = kolkataParts.find(p => p.type === 'year').value;
+        const kMonth = kolkataParts.find(p => p.type === 'month').value;
+        const kDay = kolkataParts.find(p => p.type === 'day').value;
+        let todayPrefix = `${kYear}${kMonth}${kDay}`;
 
         let nextPeriod;
         if (period && String(period).startsWith(todayPrefix)) {

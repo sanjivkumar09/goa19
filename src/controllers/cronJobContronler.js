@@ -8,12 +8,17 @@ const cron = require('node-cron');
 const initializeGamePeriods = async () => {
     try {
         const timeNow = Date.now();
-        let date = new Date();
-        let years = date.getFullYear();
-        let months = String(date.getMonth() + 1).padStart(2, '0');
-        let days = String(date.getDate()).padStart(2, '0');
-        let todayPrefix = `${years}${months}${days}`;
-        let tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+        const kolkataParts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Kolkata',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).formatToParts(new Date());
+        const kYear = kolkataParts.find(p => p.type === 'year').value;
+        const kMonth = kolkataParts.find(p => p.type === 'month').value;
+        const kDay = kolkataParts.find(p => p.type === 'day').value;
+        let todayPrefix = `${kYear}${kMonth}${kDay}`;
+        let tz = 'Asia/Kolkata';
         
         console.log(`[GAME_ENGINE] Initializing periods on date=${todayPrefix}, tz=${tz}`);
 
