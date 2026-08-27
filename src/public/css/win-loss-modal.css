@@ -1,0 +1,393 @@
+/* =========================================================
+   Win & Loss Animation Modal Styles for DiuWin Games
+   ========================================================= */
+
+#game-result-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#game-result-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Confetti Canvas */
+#game-result-confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000000;
+}
+
+/* Modal Box Container */
+.game-result-modal {
+  position: relative;
+  width: 90%;
+  max-width: 350px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.2);
+  transform: scale(0.6) translateY(40px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  z-index: 1000001;
+  text-align: center;
+}
+
+#game-result-overlay.active .game-result-modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* =========================================================
+   WIN THEME
+   ========================================================= */
+.game-result-modal.is-win {
+  background: linear-gradient(180deg, #1b263b 0%, #0d1b2a 100%);
+  border: 2px solid rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 40px rgba(255, 193, 7, 0.4), 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.game-result-modal.is-win .modal-header {
+  position: relative;
+  padding: 30px 20px 15px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+  overflow: hidden;
+}
+
+/* Rotating Sunburst Rays */
+.modal-rays {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 10%, transparent 60%),
+              repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.18) 0deg 15deg, transparent 15deg 30deg);
+  animation: rotateRays 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotateRays {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.win-icon-wrap {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 5px;
+  display: inline-block;
+  animation: bounceTrophy 1.2s ease infinite alternate;
+}
+
+@keyframes bounceTrophy {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-8px) scale(1.08); }
+}
+
+.win-crown {
+  font-size: 48px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+}
+
+.win-title {
+  position: relative;
+  z-index: 2;
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.win-subtitle {
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fef08a;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+/* =========================================================
+   LOSS THEME
+   ========================================================= */
+.game-result-modal.is-loss {
+  background: linear-gradient(180deg, #1e1e2d 0%, #151521 100%);
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.25), 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.game-result-modal.is-loss .modal-header {
+  position: relative;
+  padding: 26px 20px 14px;
+  background: linear-gradient(135deg, #475569 0%, #334155 50%, #1e293b 100%);
+}
+
+.loss-icon-wrap {
+  font-size: 42px;
+  line-height: 1;
+  margin-bottom: 5px;
+  display: inline-block;
+  animation: pulseLoss 1.5s ease infinite;
+}
+
+@keyframes pulseLoss {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+.loss-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin: 0;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.loss-subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* =========================================================
+   MODAL BODY
+   ========================================================= */
+.modal-body {
+  padding: 16px 20px 22px;
+}
+
+/* Money Count Box */
+.money-highlight-box {
+  margin: 8px 0 16px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.is-win .money-highlight-box {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.18) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.is-loss .money-highlight-box {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.money-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.money-val {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.is-win .money-val {
+  color: #4ade80;
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
+  animation: winGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes winGlow {
+  0% { text-shadow: 0 0 12px rgba(74, 222, 128, 0.5); }
+  100% { text-shadow: 0 0 26px rgba(74, 222, 128, 0.9), 0 0 40px rgba(250, 204, 21, 0.6); }
+}
+
+.is-loss .money-val {
+  color: #f87171;
+  text-shadow: 0 0 15px rgba(248, 113, 113, 0.4);
+}
+
+/* Details Table Card */
+.result-info-card {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 13px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .info-label {
+  color: #94a3b8;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.info-row .info-value {
+  color: #f1f5f9;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Result Ball Styles */
+.res-ball {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.res-ball.bg-green {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+}
+
+.res-ball.bg-red {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.res-ball.bg-violet {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+}
+
+.res-ball.bg-red-violet {
+  background: linear-gradient(135deg, #ef4444 50%, #a855f7 50%);
+}
+
+.res-ball.bg-green-violet {
+  background: linear-gradient(135deg, #22c55e 50%, #a855f7 50%);
+}
+
+.res-ball.bg-d5 {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  margin: 0 2px;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+}
+
+.res-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.res-tag.tag-big { background: #eab308; }
+.res-tag.tag-small { background: #3b82f6; }
+.res-tag.tag-bet { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); }
+
+/* Modal Action Button */
+.modal-btn {
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.is-win .modal-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #10b981 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.is-win .modal-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.is-loss .modal-btn {
+  background: linear-gradient(135deg, #475569 0%, #334155 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.is-loss .modal-btn:active {
+  transform: scale(0.97);
+}
+
+/* Close Icon Button */
+.modal-close-x {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.modal-close-x:hover {
+  background: rgba(0, 0, 0, 0.6);
+}

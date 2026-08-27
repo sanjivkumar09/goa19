@@ -24,6 +24,23 @@ socket.on("data-server-k3", function (msg) {
             $("#next").removeClass("block-click");
             $("#next").addClass("action");
             $("#next .van-icon-arrow").css("color", "#fff");
+
+            $.ajax({
+                type: "POST",
+                url: "/api/webapi/k3/GetMyEmerdList",
+                data: {
+                    gameJoin: $('html').attr('data-dpr'),
+                    pageno: "0",
+                    pageto: "10",
+                },
+                dataType: "json",
+                success: function (response) {
+                    let data = response.data.gameslist;
+                    if (window.checkAndShowGameResult && Result) {
+                        window.checkAndShowGameResult('k3' + msg.game, Result.period, Result.result, data);
+                    }
+                }
+            });
         }
     }
 });

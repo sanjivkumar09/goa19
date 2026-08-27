@@ -120,6 +120,9 @@ socket.on("data-server", function (msg) {
           "1/" + `${(response.page) ? response.page : '1'}`
         );
         showListOrder2(data, 1);
+        if (window.checkAndShowGameResult && msg.data && msg.data[1]) {
+          window.checkAndShowGameResult('wingo1', msg.data[1].period, msg.data[1].amount, data);
+        }
       },
     });
     $.ajax({

@@ -29,6 +29,23 @@ socket.on("data-server-5d", function (msg) {
             $("#next").removeClass("block-click");
             $("#next").addClass("action");
             $("#next .van-icon-arrow").css("color", "#fff");
+
+            $.ajax({
+                type: "POST",
+                url: "/api/webapi/5d/GetMyEmerdList",
+                data: {
+                    gameJoin: $('html').attr('data-dpr'),
+                    pageno: "0",
+                    pageto: "10",
+                },
+                dataType: "json",
+                success: function (response) {
+                    let data = response.data.gameslist;
+                    if (window.checkAndShowGameResult && Result) {
+                        window.checkAndShowGameResult('5d' + msg.game, Result.period, Result.result, data);
+                    }
+                }
+            });
         }
     }
 });
