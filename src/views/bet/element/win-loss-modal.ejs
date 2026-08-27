@@ -1,139 +1,282 @@
-<!-- DiuWin Floating Toast Win & Loss Banner (Inline Embed for 100% Reliability) -->
-<style id="diuwin-toast-styles">
-  #game-toast-container {
+<!-- DiuWin / Raja Club Official Receipt Win & Loss Modal (Pixel-Perfect Match) -->
+<style id="diuwin-receipt-modal-styles">
+  .diuwin-result-overlay {
     position: fixed !important;
-    top: 25px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.72) !important;
     z-index: 2147483647 !important;
-    width: 92% !important;
-    max-width: 360px !important;
-    pointer-events: none !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  }
-
-  .game-toast {
-    position: relative !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    padding: 16px 18px !important;
-    border-radius: 18px !important;
-    color: #ffffff !important;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.3) !important;
-    margin-bottom: 10px !important;
-    transform: translateY(-160%) scale(0.85) !important;
-    opacity: 0 !important;
-    transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease !important;
-    pointer-events: auto !important;
-    box-sizing: border-box !important;
-    cursor: pointer !important;
-  }
-
-  .game-toast * {
-    box-sizing: border-box !important;
-  }
-
-  .game-toast.toast-show {
-    transform: translateY(0) scale(1) !important;
-    opacity: 1 !important;
-  }
-
-  .game-toast.toast-hide {
-    transform: translateY(-160%) scale(0.85) !important;
-    opacity: 0 !important;
-  }
-
-  /* Win Toast */
-  .game-toast.toast-win {
-    background: linear-gradient(135deg, #10b981 0%, #059669 60%, #047857 100%) !important;
-    border: 2px solid #fde047 !important;
-    box-shadow: 0 14px 40px rgba(16, 185, 129, 0.65), 0 0 25px rgba(250, 204, 21, 0.5) !important;
-  }
-
-  /* Loss Toast */
-  .game-toast.toast-loss {
-    background: linear-gradient(135deg, #334155 0%, #1e293b 70%, #0f172a 100%) !important;
-    border: 2px solid rgba(239, 68, 68, 0.8) !important;
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(239, 68, 68, 0.4) !important;
-  }
-
-  .toast-icon-box {
-    font-size: 32px !important;
-    line-height: 1 !important;
-    margin-right: 14px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    flex-direction: column !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   }
 
-  .toast-win .toast-icon-box {
-    animation: toastWinBounce 1s infinite alternate ease-in-out !important;
+  .diuwin-result-overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
-  @keyframes toastWinBounce {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.2) rotate(6deg); }
+  .diuwin-modal-card {
+    position: relative !important;
+    width: 86% !important;
+    max-width: 320px !important;
+    border-radius: 26px !important;
+    padding: 38px 20px 20px 20px !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    transform: scale(0.85) translateY(20px) !important;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
   }
 
-  .toast-content-box {
-    flex: 1 !important;
-    text-align: left !important;
+  .diuwin-result-overlay.active .diuwin-modal-card {
+    transform: scale(1) translateY(0) !important;
   }
 
-  .toast-title {
-    font-size: 17px !important;
+  /* Loss Theme (Silver / Ice Blue) */
+  .diuwin-modal-card.loss-card {
+    background: linear-gradient(180deg, #dbeafe 0%, #e0f2fe 30%, #eff6ff 100%) !important;
+    border: 2px solid #bfdbfe !important;
+  }
+
+  /* Win Theme (Golden / Amber) */
+  .diuwin-modal-card.win-card {
+    background: linear-gradient(180deg, #fef3c7 0%, #fef9c3 30%, #fffbeb 100%) !important;
+    border: 2px solid #fde047 !important;
+  }
+
+  /* Top Winged Rocket Badge */
+  .diuwin-top-emblem {
+    position: absolute !important;
+    top: -46px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 150px !important;
+    height: 90px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: none !important;
+  }
+
+  .emblem-svg {
+    width: 100% !important;
+    height: 100% !important;
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25)) !important;
+  }
+
+  .diuwin-modal-title {
+    font-size: 26px !important;
     font-weight: 900 !important;
-    letter-spacing: 0.3px !important;
-    margin: 0 0 3px !important;
-    line-height: 1.2 !important;
+    margin: 10px 0 12px 0 !important;
+    letter-spacing: 0.5px !important;
   }
 
-  .toast-win .toast-title {
-    color: #ffffff !important;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+  .loss-card .diuwin-modal-title {
+    color: #475569 !important;
   }
 
-  .toast-win .toast-amount {
-    color: #fef08a !important;
-    font-weight: 900 !important;
-    font-size: 19px !important;
+  .win-card .diuwin-modal-title {
+    color: #dc2626 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
   }
 
-  .toast-loss .toast-title {
-    color: #f87171 !important;
+  /* Lottery Results Row */
+  .diuwin-lottery-results-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin-bottom: 16px !important;
+    font-size: 13px !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
   }
 
-  .toast-loss .toast-amount {
-    color: #fca5a5 !important;
-    font-weight: 900 !important;
-    font-size: 19px !important;
-  }
-
-  .toast-subtitle {
+  .lottery-badge {
+    padding: 3px 10px !important;
+    border-radius: 12px !important;
     font-size: 12px !important;
-    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    display: inline-block !important;
+  }
+
+  .badge-red { background: #ef4444 !important; }
+  .badge-green { background: #10b981 !important; }
+  .badge-violet { background: #8b5cf6 !important; }
+  .badge-num { background: #64748b !important; min-width: 18px !important; }
+  .badge-size { background: #3b82f6 !important; }
+
+  /* Slit opening for receipt */
+  .receipt-slit-box {
+    position: relative !important;
+    width: 92% !important;
+    margin: 0 auto !important;
+  }
+
+  .receipt-slit {
+    height: 12px !important;
+    background: #94a3b8 !important;
+    border-radius: 6px !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    margin: 0 auto !important;
+  }
+
+  /* White paper receipt sliding out */
+  .receipt-paper {
+    background: #ffffff !important;
+    border-radius: 0 0 16px 16px !important;
+    padding: 16px 14px 14px 14px !important;
+    margin: -6px 8px 0 8px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    position: relative !important;
+  }
+
+  .receipt-result-text {
+    font-size: 26px !important;
+    font-weight: 900 !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .loss-card .receipt-result-text {
+    color: #64748b !important;
+  }
+
+  .win-card .receipt-result-text {
+    color: #10b981 !important;
+  }
+
+  .receipt-amount-text {
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    color: #10b981 !important;
+    margin: 2px 0 6px 0 !important;
+  }
+
+  .receipt-period-text {
+    font-size: 11px !important;
+    color: #94a3b8 !important;
     font-weight: 600 !important;
     margin: 0 !important;
-    line-height: 1.3 !important;
+    letter-spacing: 0.3px !important;
   }
 
-  .toast-close-btn {
-    font-size: 24px !important;
-    line-height: 1 !important;
-    color: rgba(255, 255, 255, 0.7) !important;
-    margin-left: 10px !important;
-    padding: 4px !important;
-    cursor: pointer !important;
-    transition: color 0.2s !important;
+  /* Auto-close line */
+  .auto-close-row {
+    margin-top: 16px !important;
+    font-size: 13px !important;
+    color: #64748b !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    font-weight: 500 !important;
   }
 
-  .toast-close-btn:hover {
+  .auto-close-circle {
+    width: 14px !important;
+    height: 14px !important;
+    border-radius: 50% !important;
+    border: 1.5px solid #94a3b8 !important;
+    display: inline-block !important;
+  }
+
+  /* Bottom Floating Close Button */
+  .diuwin-modal-close-btn {
+    margin-top: 22px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255, 255, 255, 0.85) !important;
+    background: rgba(0, 0, 0, 0.3) !important;
     color: #ffffff !important;
+    font-size: 22px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: transform 0.2s, background 0.2s !important;
+  }
+
+  .diuwin-modal-close-btn:active {
+    transform: scale(0.9) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
   }
 </style>
 
-<div id="game-toast-container"></div>
+<!-- Receipt Modal DOM -->
+<div id="diuwin-receipt-overlay" class="diuwin-result-overlay">
+  <div id="diuwin-receipt-card" class="diuwin-modal-card loss-card">
+    
+    <!-- Top Emblem SVG -->
+    <div class="diuwin-top-emblem">
+      <svg class="emblem-svg" viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Wings Background -->
+        <path d="M20 55 C35 30, 60 40, 80 50 C100 40, 125 30, 140 55 C125 65, 100 55, 80 60 C60 55, 35 65, 20 55 Z" fill="#93c5fd" opacity="0.9"/>
+        <path d="M10 65 C30 45, 55 52, 80 58 C105 52, 130 45, 150 65 C130 75, 105 65, 80 68 C55 65, 30 75, 10 65 Z" fill="#60a5fa" opacity="0.7"/>
+        <!-- Central Shield / Circle -->
+        <circle cx="80" cy="46" r="32" fill="url(#emblemGrad)" stroke="#ffffff" stroke-width="3.5"/>
+        <!-- Ribbon Banner -->
+        <path d="M36 76 Q80 88 124 76 Q80 94 36 76 Z" fill="#3b82f6"/>
+        <!-- Rocket / Trophy Icon -->
+        <g id="emblem-icon-group" transform="translate(62, 28) scale(0.9)">
+          <path d="M20 2 C20 2, 28 10, 28 22 C28 26, 26 30, 24 32 L16 32 C14 30, 12 26, 12 22 C12 10, 20 2, 20 2 Z" fill="#ffffff"/>
+          <circle cx="20" cy="16" r="3.5" fill="#3b82f6"/>
+          <path d="M12 24 L6 30 L12 30 Z" fill="#ffffff" opacity="0.85"/>
+          <path d="M28 24 L34 30 L28 30 Z" fill="#ffffff" opacity="0.85"/>
+          <path d="M16 33 L20 38 L24 33 Z" fill="#f59e0b"/>
+        </g>
+        <defs>
+          <linearGradient id="emblemGrad" x1="48" y1="14" x2="112" y2="78" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#93c5fd"/>
+            <stop offset="1" stop-color="#3b82f6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <div id="diuwin-modal-title" class="diuwin-modal-title">Sorry</div>
+
+    <!-- Lottery Results Badges -->
+    <div class="diuwin-lottery-results-row">
+      <span>Lottery results</span>
+      <span id="badge-color" class="lottery-badge badge-red">Red</span>
+      <span id="badge-num" class="lottery-badge badge-num">2</span>
+      <span id="badge-size" class="lottery-badge badge-size">Small</span>
+    </div>
+
+    <!-- Slit and Receipt Paper -->
+    <div class="receipt-slit-box">
+      <div class="receipt-slit"></div>
+      <div class="receipt-paper">
+        <div id="receipt-result-text" class="receipt-result-text">Lose</div>
+        <div id="receipt-amount-text" class="receipt-amount-text" style="display: none;">+ ₹ 0.00</div>
+        <div id="receipt-period-text" class="receipt-period-text">Period: 202608270045</div>
+      </div>
+    </div>
+
+    <!-- Auto Close -->
+    <div class="auto-close-row">
+      <span class="auto-close-circle"></span>
+      <span id="auto-close-text">3 seconds auto close</span>
+    </div>
+
+  </div>
+
+  <!-- Close (X) button -->
+  <div id="diuwin-modal-close-btn" class="diuwin-modal-close-btn">&times;</div>
+</div>
 
 <script>
 (function () {
@@ -141,7 +284,8 @@
 
   var seenSettledBets = new Set();
   var isInitialFetch = true;
-  var activeToastTimer = null;
+  var autoCloseTimer = null;
+  var autoCloseInterval = null;
   var isPollingActive = false;
 
   function formatMoney(num) {
@@ -151,63 +295,90 @@
     });
   }
 
-  function getContainer() {
-    var container = document.getElementById('game-toast-container');
-    if (!container) {
-      container = document.createElement('div');
-      container.id = 'game-toast-container';
-      document.body.appendChild(container);
+  function closeReceiptModal() {
+    var overlay = document.getElementById('diuwin-receipt-overlay');
+    if (overlay) {
+      overlay.classList.remove('active');
     }
-    return container;
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = null;
+    }
+    if (autoCloseInterval) {
+      clearInterval(autoCloseInterval);
+      autoCloseInterval = null;
+    }
   }
 
-  function showFloatingToast(type, options) {
+  // Bind close buttons
+  document.addEventListener('DOMContentLoaded', function() {
+    var closeBtn = document.getElementById('diuwin-modal-close-btn');
+    if (closeBtn) closeBtn.onclick = closeReceiptModal;
+
+    var overlay = document.getElementById('diuwin-receipt-overlay');
+    if (overlay) {
+      overlay.onclick = function(e) {
+        if (e.target === overlay) closeReceiptModal();
+      };
+    }
+  });
+
+  function showOfficialReceipt(type, options) {
     options = options || {};
-    var container = getContainer();
-    container.innerHTML = '';
-
-    if (activeToastTimer) {
-      clearTimeout(activeToastTimer);
-      activeToastTimer = null;
-    }
-
     var isWin = (type === 'win');
-    var icon = isWin ? '🏆' : '💔';
-    var title = isWin 
-      ? '🎉 Won <span class="toast-amount">+₹' + formatMoney(options.amount) + '</span>'
-      : '💔 Result: <span class="toast-amount">-₹' + formatMoney(options.amount) + '</span>';
-    
-    var subtitle = (options.game ? options.game + ' | ' : '') + 'Period #' + (options.period || '-');
 
-    var toast = document.createElement('div');
-    toast.className = 'game-toast ' + (isWin ? 'toast-win' : 'toast-loss');
-    toast.innerHTML = `
-      <div class="toast-icon-box">${icon}</div>
-      <div class="toast-content-box">
-        <div class="toast-title">${title}</div>
-        <div class="toast-subtitle">${subtitle}</div>
-      </div>
-      <div class="toast-close-btn">&times;</div>
-    `;
+    var overlay = document.getElementById('diuwin-receipt-overlay');
+    var card = document.getElementById('diuwin-receipt-card');
+    var title = document.getElementById('diuwin-modal-title');
+    var badgeColor = document.getElementById('badge-color');
+    var badgeNum = document.getElementById('badge-num');
+    var badgeSize = document.getElementById('badge-size');
+    var resultText = document.getElementById('receipt-result-text');
+    var amountText = document.getElementById('receipt-amount-text');
+    var periodText = document.getElementById('receipt-period-text');
+    var autoCloseText = document.getElementById('auto-close-text');
 
-    container.appendChild(toast);
+    if (!overlay || !card) return;
 
-    requestAnimationFrame(function () {
-      toast.classList.add('toast-show');
-    });
-
-    function dismissToast() {
-      toast.classList.remove('toast-show');
-      toast.classList.add('toast-hide');
-      setTimeout(function () {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 450);
+    if (isWin) {
+      card.className = 'diuwin-modal-card win-card';
+      title.innerText = 'Congratulations';
+      resultText.innerText = 'Bonus';
+      amountText.innerText = '+ ₹ ' + formatMoney(options.amount);
+      amountText.style.display = 'block';
+    } else {
+      card.className = 'diuwin-modal-card loss-card';
+      title.innerText = 'Sorry';
+      resultText.innerText = 'Lose';
+      amountText.style.display = 'none';
     }
 
-    toast.onclick = dismissToast;
-    activeToastTimer = setTimeout(dismissToast, isWin ? 5500 : 4000);
+    // Set badges if available
+    var num = options.resultNum !== undefined ? options.resultNum : (isWin ? '6' : '2');
+    badgeNum.innerText = num;
+    var isNumOdd = (parseInt(num, 10) % 2 !== 0);
+    badgeColor.innerText = (num == '0' || num == '5') ? 'Violet' : (isNumOdd ? 'Green' : 'Red');
+    badgeColor.className = 'lottery-badge ' + ((num == '0' || num == '5') ? 'badge-violet' : (isNumOdd ? 'badge-green' : 'badge-red'));
+    badgeSize.innerText = (parseInt(num, 10) >= 5) ? 'Big' : 'Small';
+
+    periodText.innerText = 'Period: ' + (options.period || '202608270045');
+
+    // Auto-close countdown (3, 2, 1...)
+    var secondsLeft = 3;
+    autoCloseText.innerText = secondsLeft + ' seconds auto close';
+
+    if (autoCloseInterval) clearInterval(autoCloseInterval);
+    autoCloseInterval = setInterval(function() {
+      secondsLeft--;
+      if (secondsLeft > 0) {
+        autoCloseText.innerText = secondsLeft + ' seconds auto close';
+      }
+    }, 1000);
+
+    if (autoCloseTimer) clearTimeout(autoCloseTimer);
+    autoCloseTimer = setTimeout(closeReceiptModal, 3600);
+
+    overlay.classList.add('active');
   }
 
   function getCurrentGameEndpoint() {
@@ -295,7 +466,7 @@
           }
         });
 
-        // Trigger toast for newly resolved rounds
+        // Trigger official receipt for newly resolved rounds
         Object.keys(newlySettled).forEach(function(stage) {
           var bets = newlySettled[stage];
           var totalWin = 0;
@@ -315,9 +486,9 @@
           });
 
           if (isWin && totalWin > 0) {
-            showFloatingToast('win', { amount: totalWin, period: stage, game: ep.game });
+            showOfficialReceipt('win', { amount: totalWin, period: stage, game: ep.game });
           } else if (totalLoss > 0) {
-            showFloatingToast('loss', { amount: totalLoss, period: stage, game: ep.game });
+            showOfficialReceipt('loss', { amount: totalLoss, period: stage, game: ep.game });
           }
         });
       },
@@ -327,31 +498,34 @@
     });
   }
 
-  // Active interval check every 2 seconds (independent of WebSocket)
-  setInterval(checkActiveBetSettlement, 2000);
-  setTimeout(checkActiveBetSettlement, 600);
+  // Active check every 1.5 seconds
+  setInterval(checkActiveBetSettlement, 1500);
+  setTimeout(checkActiveBetSettlement, 500);
 
+  // Testing helpers
   function testWinModal(amount) {
-    showFloatingToast('win', {
+    showOfficialReceipt('win', {
       amount: amount || 196.00,
-      period: '202608270498',
-      game: 'Win Go 1Min'
+      period: '202608270045',
+      resultNum: '6'
     });
   }
 
   function testLossModal(amount) {
-    showFloatingToast('loss', {
+    showOfficialReceipt('loss', {
       amount: amount || 100.00,
-      period: '202608270498',
-      game: 'Win Go 1Min'
+      period: '202608270045',
+      resultNum: '2'
     });
   }
 
-  window.showFloatingToast = showFloatingToast;
+  window.showOfficialReceipt = showOfficialReceipt;
+  window.showFloatingToast = showOfficialReceipt;
   window.testWinModal = testWinModal;
   window.testLossModal = testLossModal;
   window.testWinModel = testWinModal;
   window.testLossModel = testLossModal;
   window.triggerBetCheck = checkActiveBetSettlement;
+  window.closeReceiptModal = closeReceiptModal;
 })();
 </script>

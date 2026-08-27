@@ -1,6 +1,5 @@
 /**
- * DiuWin - Simple & Reliable Floating Toast Win/Loss System (Option 1)
- * Ultra-lightweight, 0 external dependencies, works on all devices and browsers.
+ * DiuWin / Raja Club Official Receipt Win & Loss Modal (Pixel-Perfect Match)
  */
 
 (function () {
@@ -8,10 +7,10 @@
 
   var seenSettledBets = new Set();
   var isInitialFetch = true;
-  var activeToastTimer = null;
+  var autoCloseTimer = null;
+  var autoCloseInterval = null;
   var isPollingActive = false;
 
-  // Format currency with commas
   function formatMoney(num) {
     return Number(num || 0).toLocaleString('en-IN', {
       minimumFractionDigits: 2,
@@ -19,69 +18,90 @@
     });
   }
 
-  // Ensure toast container exists
-  function getOrCreateContainer() {
-    var container = document.getElementById('game-toast-container');
-    if (!container) {
-      container = document.createElement('div');
-      container.id = 'game-toast-container';
-      document.body.appendChild(container);
+  function closeReceiptModal() {
+    var overlay = document.getElementById('diuwin-receipt-overlay');
+    if (overlay) {
+      overlay.classList.remove('active');
     }
-    return container;
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = null;
+    }
+    if (autoCloseInterval) {
+      clearInterval(autoCloseInterval);
+      autoCloseInterval = null;
+    }
   }
 
-  // Show floating toast banner
-  function showFloatingToast(type, options) {
+  // Bind close buttons
+  document.addEventListener('DOMContentLoaded', function() {
+    var closeBtn = document.getElementById('diuwin-modal-close-btn');
+    if (closeBtn) closeBtn.onclick = closeReceiptModal;
+
+    var overlay = document.getElementById('diuwin-receipt-overlay');
+    if (overlay) {
+      overlay.onclick = function(e) {
+        if (e.target === overlay) closeReceiptModal();
+      };
+    }
+  });
+
+  function showOfficialReceipt(type, options) {
     options = options || {};
-    var container = getOrCreateContainer();
-
-    // Remove any existing toast
-    container.innerHTML = '';
-    if (activeToastTimer) {
-      clearTimeout(activeToastTimer);
-      activeToastTimer = null;
-    }
-
     var isWin = (type === 'win');
-    var icon = isWin ? '🏆' : '💔';
-    var title = isWin 
-      ? '🎉 Won <span class="toast-amount">+₹' + formatMoney(options.amount) + '</span>'
-      : '💔 Result: <span class="toast-amount">-₹' + formatMoney(options.amount) + '</span>';
-    
-    var subtitle = (options.game ? options.game + ' | ' : '') + 'Period #' + (options.period || '-');
 
-    var toast = document.createElement('div');
-    toast.className = 'game-toast ' + (isWin ? 'toast-win' : 'toast-loss');
-    toast.innerHTML = `
-      <div class="toast-icon-box">${icon}</div>
-      <div class="toast-content-box">
-        <div class="toast-title">${title}</div>
-        <div class="toast-subtitle">${subtitle}</div>
-      </div>
-      <div class="toast-close-btn">&times;</div>
-    `;
+    var overlay = document.getElementById('diuwin-receipt-overlay');
+    var card = document.getElementById('diuwin-receipt-card');
+    var title = document.getElementById('diuwin-modal-title');
+    var badgeColor = document.getElementById('badge-color');
+    var badgeNum = document.getElementById('badge-num');
+    var badgeSize = document.getElementById('badge-size');
+    var resultText = document.getElementById('receipt-result-text');
+    var amountText = document.getElementById('receipt-amount-text');
+    var periodText = document.getElementById('receipt-period-text');
+    var autoCloseText = document.getElementById('auto-close-text');
 
-    container.appendChild(toast);
+    if (!overlay || !card) return;
 
-    // Trigger slide-down animation
-    requestAnimationFrame(function () {
-      toast.classList.add('toast-show');
-    });
-
-    function dismissToast() {
-      toast.classList.remove('toast-show');
-      toast.classList.add('toast-hide');
-      setTimeout(function () {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 450);
+    if (isWin) {
+      card.className = 'diuwin-modal-card win-card';
+      title.innerText = 'Congratulations';
+      resultText.innerText = 'Bonus';
+      amountText.innerText = '+ ₹ ' + formatMoney(options.amount);
+      amountText.style.display = 'block';
+    } else {
+      card.className = 'diuwin-modal-card loss-card';
+      title.innerText = 'Sorry';
+      resultText.innerText = 'Lose';
+      amountText.style.display = 'none';
     }
 
-    toast.onclick = dismissToast;
+    // Set badges if available
+    var num = options.resultNum !== undefined ? options.resultNum : (isWin ? '6' : '2');
+    badgeNum.innerText = num;
+    var isNumOdd = (parseInt(num, 10) % 2 !== 0);
+    badgeColor.innerText = (num == '0' || num == '5') ? 'Violet' : (isNumOdd ? 'Green' : 'Red');
+    badgeColor.className = 'lottery-badge ' + ((num == '0' || num == '5') ? 'badge-violet' : (isNumOdd ? 'badge-green' : 'badge-red'));
+    badgeSize.innerText = (parseInt(num, 10) >= 5) ? 'Big' : 'Small';
 
-    // Auto-dismiss after 5.5 seconds for win, 4 seconds for loss
-    activeToastTimer = setTimeout(dismissToast, isWin ? 5500 : 4000);
+    periodText.innerText = 'Period: ' + (options.period || '202608270045');
+
+    // Auto-close countdown (3, 2, 1...)
+    var secondsLeft = 3;
+    autoCloseText.innerText = secondsLeft + ' seconds auto close';
+
+    if (autoCloseInterval) clearInterval(autoCloseInterval);
+    autoCloseInterval = setInterval(function() {
+      secondsLeft--;
+      if (secondsLeft > 0) {
+        autoCloseText.innerText = secondsLeft + ' seconds auto close';
+      }
+    }, 1000);
+
+    if (autoCloseTimer) clearTimeout(autoCloseTimer);
+    autoCloseTimer = setTimeout(closeReceiptModal, 3600);
+
+    overlay.classList.add('active');
   }
 
   function getCurrentGameEndpoint() {
@@ -169,7 +189,7 @@
           }
         });
 
-        // Trigger toast for newly resolved rounds
+        // Trigger official receipt for newly resolved rounds
         Object.keys(newlySettled).forEach(function(stage) {
           var bets = newlySettled[stage];
           var totalWin = 0;
@@ -189,9 +209,9 @@
           });
 
           if (isWin && totalWin > 0) {
-            showFloatingToast('win', { amount: totalWin, period: stage, game: ep.game });
+            showOfficialReceipt('win', { amount: totalWin, period: stage, game: ep.game });
           } else if (totalLoss > 0) {
-            showFloatingToast('loss', { amount: totalLoss, period: stage, game: ep.game });
+            showOfficialReceipt('loss', { amount: totalLoss, period: stage, game: ep.game });
           }
         });
       },
@@ -201,33 +221,33 @@
     });
   }
 
-  // Active interval check every 2 seconds (independent of WebSocket)
-  setInterval(checkActiveBetSettlement, 2000);
-  setTimeout(checkActiveBetSettlement, 600);
+  // Active check every 1.5 seconds
+  setInterval(checkActiveBetSettlement, 1500);
+  setTimeout(checkActiveBetSettlement, 500);
 
   // Testing helpers
   function testWinModal(amount) {
-    showFloatingToast('win', {
+    showOfficialReceipt('win', {
       amount: amount || 196.00,
-      period: '202608270498',
-      game: 'Win Go 1Min'
+      period: '202608270045',
+      resultNum: '6'
     });
   }
 
   function testLossModal(amount) {
-    showFloatingToast('loss', {
+    showOfficialReceipt('loss', {
       amount: amount || 100.00,
-      period: '202608270498',
-      game: 'Win Go 1Min'
+      period: '202608270045',
+      resultNum: '2'
     });
   }
 
-  // Global exports with spelling aliases
-  window.checkAndShowGameResult = checkActiveBetSettlement;
-  window.showFloatingToast = showFloatingToast;
+  window.showOfficialReceipt = showOfficialReceipt;
+  window.showFloatingToast = showOfficialReceipt;
   window.testWinModal = testWinModal;
   window.testLossModal = testLossModal;
   window.testWinModel = testWinModal;
   window.testLossModel = testLossModal;
   window.triggerBetCheck = checkActiveBetSettlement;
+  window.closeReceiptModal = closeReceiptModal;
 })();
