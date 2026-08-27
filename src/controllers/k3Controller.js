@@ -1091,25 +1091,28 @@ const GetMyEmerdList = async (req, res) => {
     let { gameJoin, pageno, pageto } = req.body;
     let auth = req.cookies.auth;
 
-    let checkGame = ['1', '3', '5', '10'].includes(String(gameJoin));
-    if (!checkGame || pageno < 0 || pageto < 0) {
+    pageno = parseInt(pageno, 10);
+    if (isNaN(pageno) || pageno < 0) pageno = 0;
+    pageto = parseInt(pageto, 10);
+    if (isNaN(pageto) || pageto <= 0) pageto = 10;
+
+    let game = Number(gameJoin || 1);
+
+    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1 LIMIT 1 ', [auth]);
+    if (!user || !user[0]) {
         return res.status(200).json({
             code: 0,
             msg: "No more data",
-            data: {
-                gameslist: [],
-            },
+            data: { gameslist: [] },
+            page: 1,
             status: false
         });
     }
 
-    let game = Number(gameJoin);
-
-    const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1 LIMIT 1 ', [auth]);
-    const [result_5d] = await connection.query(`SELECT * FROM result_k3 WHERE phone = ? AND game = '${game}' ORDER BY id DESC LIMIT ${Number(pageno) + ',' + Number(pageto)}`, [user[0].phone]);
+    const [result_5d] = await connection.query(`SELECT * FROM result_k3 WHERE phone = ? AND game = '${game}' ORDER BY id DESC LIMIT ${pageno}, ${pageto}`, [user[0].phone]);
     const [result_5dAll] = await connection.query(`SELECT * FROM result_k3 WHERE phone = ? AND game = '${game}' ORDER BY id DESC `, [user[0].phone]);
 
-    if (!result_5d[0]) {
+    if (!result_5d || result_5d.length === 0) {
         return res.status(200).json({
             code: 0,
             msg: "No more data",
@@ -1117,15 +1120,10 @@ const GetMyEmerdList = async (req, res) => {
                 gameslist: [],
             },
             page: 1,
-            status: false
-        });
-    }
-    if (!pageno || !pageto || !user[0] || !result_5d[0]) {
-        return res.status(200).json({
-            message: 'Error!',
             status: true
         });
     }
+
     let page = Math.ceil(result_5dAll.length / 10);
 
     let datas = result_5d.map((data) => {

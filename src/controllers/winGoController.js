@@ -451,11 +451,10 @@ const listOrderOld = async (req, res) => {
 
 const GetMyEmerdList = async (req, res) => {
     let { typeid, pageno, pageto } = req.body;
-
-    // if (!pageno || !pageto) {
-    //     pageno = 0;
-    //     pageto = 10;
-    // }
+    pageno = parseInt(pageno, 10);
+    if (isNaN(pageno) || pageno < 0) pageno = 0;
+    pageto = parseInt(pageto, 10);
+    if (isNaN(pageto) || pageto <= 0) pageto = 10;
 
     if (typeid != 1 && typeid != 3 && typeid != 5 && typeid != 10) {
         return res.status(200).json({
@@ -464,18 +463,7 @@ const GetMyEmerdList = async (req, res) => {
         });
     }
 
-    if (pageno < 0 || pageto < 0) {
-        return res.status(200).json({
-            code: 0,
-            msg: "No more data",
-            data: {
-                gameslist: [],
-            },
-            status: false
-        });
-    }
     let auth = req.cookies.auth;
-
     let game = '';
     if (typeid == 1) game = 'wingo';
     if (typeid == 3) game = 'wingo3';
@@ -483,25 +471,30 @@ const GetMyEmerdList = async (req, res) => {
     if (typeid == 10) game = 'wingo10';
 
     const [user] = await connection.query('SELECT `phone`, `code`, `invite`, `level`, IFNULL(`money_user`, `money`) AS `money` FROM users WHERE token = ? AND veri = 1 LIMIT 1 ', [auth]);
-    const [minutes_1] = await connection.query(`SELECT * FROM minutes_1 WHERE phone = ? AND game = '${game}' ORDER BY id DESC LIMIT ${Number(pageno) + ',' + Number(pageto)}`, [user[0].phone]);
+    if (!user || !user[0]) {
+        return res.status(200).json({
+            code: 0,
+            msg: "No more data",
+            data: { gameslist: [] },
+            status: false
+        });
+    }
+
+    const [minutes_1] = await connection.query(`SELECT * FROM minutes_1 WHERE phone = ? AND game = '${game}' ORDER BY id DESC LIMIT ${pageno}, ${pageto}`, [user[0].phone]);
     const [minutes_1All] = await connection.query(`SELECT * FROM minutes_1 WHERE phone = ? AND game = '${game}' ORDER BY id DESC `, [user[0].phone]);
 
-    if (!minutes_1[0]) {
+    if (!minutes_1 || minutes_1.length === 0) {
         return res.status(200).json({
             code: 0,
             msg: "No more data",
             data: {
                 gameslist: [],
             },
-            status: false
-        });
-    }
-    if (!pageno || !pageto || !user[0] || !minutes_1[0]) {
-        return res.status(200).json({
-            message: 'Error!',
+            page: 1,
             status: true
         });
     }
+
     let page = Math.ceil(minutes_1All.length / 10);
 
     let datas = minutes_1.map((data) => {
