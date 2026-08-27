@@ -10,7 +10,7 @@
   window.RESULT_MODAL_DEBUG = true;
 
   // Tracked State
-  // Map: id_product -> { id, stage, game, typeid, stake, previousStatus, currentStatus, registeredAt, getMoney }
+  // Map: id_product -> { id, stage, game, typeid, stake, currentStatus, registeredAt, getMoney }
   var trackedBets = new Map();
   var resolvedStageKeys = new Set(); // game_typeid:stage
   var resolvedBetIds = new Set();
@@ -37,7 +37,7 @@
   function ensureModalDOM() {
     var overlay = document.getElementById('diuwin-receipt-overlay');
     if (!overlay) {
-      log('MODAL_DOM_MISSING', 'Injecting modal DOM markup dynamically into body');
+      log('OVERLAY_CREATED', 'Injecting modal DOM markup dynamically into body');
       var modalHTML = '<div id="diuwin-receipt-overlay" class="diuwin-result-overlay">' +
         '<div id="diuwin-receipt-card" class="diuwin-modal-card loss-card">' +
         '<div class="diuwin-top-emblem">' +
@@ -199,8 +199,9 @@
       return;
     }
 
+    log('OVERLAY_VISIBLE', { type: type, period: options.period, amount: options.amount });
+
     if (isWin) {
-      log('WIN_MODAL', options);
       card.className = 'diuwin-modal-card win-card';
       if (title) title.innerText = 'Congratulations';
       if (resultText) resultText.innerText = 'Bonus';
@@ -209,7 +210,6 @@
         amountText.style.display = 'block';
       }
     } else {
-      log('LOSS_MODAL', options);
       card.className = 'diuwin-modal-card loss-card';
       if (title) title.innerText = 'Sorry';
       if (resultText) resultText.innerText = 'Lose';
@@ -231,6 +231,13 @@
 
     if (periodText) periodText.innerText = 'Period: ' + (options.period || '-');
 
+    // Force CSS reflow and trigger animation
+    overlay.classList.remove('active');
+    void overlay.offsetWidth;
+    overlay.classList.add('active');
+
+    log('ANIMATION_STARTED', { type: type, period: options.period });
+
     // Auto-close countdown (3, 2, 1...)
     var secondsLeft = 3;
     if (autoCloseText) autoCloseText.innerText = secondsLeft + ' seconds auto close';
@@ -245,8 +252,6 @@
 
     if (autoCloseTimer) clearTimeout(autoCloseTimer);
     autoCloseTimer = setTimeout(closeReceiptModal, 3600);
-
-    overlay.classList.add('active');
   }
 
   function getCurrentGameEndpoint() {
@@ -327,7 +332,6 @@
       game: game,
       typeid: typeid,
       stake: stake,
-      previousStatus: null,
       currentStatus: 0, // PENDING (0)
       registeredAt: Date.now(),
       getMoney: 0
@@ -357,12 +361,12 @@
   // Draw Result Cache
   var drawResultCache = new Map();
 
-  // Fetch actual draw result without fake fallbacks
+  // Fetch actual draw result without blocking the modal
   function fetchActualDrawResult(stage, game, typeid, callback) {
     var cacheKey = game + '_' + typeid + ':' + stage;
     if (drawResultCache.has(cacheKey)) {
       var cached = drawResultCache.get(cacheKey);
-      log('DRAW_RESULT', { stage: stage, drawNum: cached, fromCache: true });
+      log('DRAW_RESULT_RECEIVED', { stage: stage, drawNum: cached, fromCache: true });
       callback(cached);
       return;
     }
@@ -374,6 +378,7 @@
       url: ep.historyUrl,
       data: ep.historyData,
       dataType: "json",
+      timeout: 2500,
       success: function (resp) {
         var drawNum = null;
         if (resp && resp.data && Array.isArray(resp.data.gameslist)) {
@@ -387,14 +392,15 @@
 
         if (drawNum !== null && drawNum !== undefined) {
           drawResultCache.set(cacheKey, drawNum);
-          log('DRAW_RESULT', { stage: stage, drawNum: drawNum });
+          log('DRAW_RESULT_RECEIVED', { stage: stage, drawNum: drawNum });
           callback(drawNum);
         } else {
-          log('DRAW_RESULT', { stage: stage, drawNum: null, status: 'pending' });
+          log('DRAW_RESULT_RECEIVED', { stage: stage, drawNum: null, note: 'Draw result not in history yet' });
           callback(null);
         }
       },
       error: function () {
+        log('DRAW_RESULT_RECEIVED', { stage: stage, drawNum: null, error: true });
         callback(null);
       }
     });
@@ -467,7 +473,6 @@
               game: ep.game,
               typeid: ep.typeid,
               stake: parseFloat(b.money || b.price || 0),
-              previousStatus: null,
               currentStatus: 0,
               registeredAt: Date.now(),
               getMoney: parseFloat(b.get || 0)
@@ -497,6 +502,13 @@
         return;
       }
 
+      // If a synthetic bet with the same stage exists in trackedBets, clean it up
+      trackedBets.forEach(function (val, key) {
+        if (val.stage === stage && key !== id && String(key).indexOf('_') !== -1) {
+          trackedBets.delete(key);
+        }
+      });
+
       if (st === 0 && stage) {
         // Pending bet observed in this session
         if (!trackedBets.has(id)) {
@@ -506,7 +518,6 @@
             game: ep.game,
             typeid: ep.typeid,
             stake: stake,
-            previousStatus: null,
             currentStatus: 0,
             registeredAt: Date.now(),
             getMoney: 0
@@ -517,7 +528,6 @@
         // Settled bet observed in this session
         if (trackedBets.has(id)) {
           var tracked = trackedBets.get(id);
-          tracked.previousStatus = tracked.currentStatus;
           tracked.currentStatus = st;
           tracked.getMoney = getMoney;
           if (stake && !tracked.stake) tracked.stake = stake;
@@ -530,7 +540,6 @@
             game: ep.game,
             typeid: ep.typeid,
             stake: stake,
-            previousStatus: 0,
             currentStatus: st,
             registeredAt: Date.now(),
             getMoney: getMoney
@@ -565,6 +574,8 @@
       var firstBet = groupBets[0];
       var stage = firstBet.stage;
 
+      log('GROUP_CREATED', { groupKey: groupKey, count: groupBets.length });
+
       if (resolvedStageKeys.has(groupKey)) {
         groupBets.forEach(function (b) {
           resolvedBetIds.add(b.id);
@@ -575,16 +586,34 @@
         return;
       }
 
-      // Check if EVERY tracked bet in this group has settled (status 1 or 2)
-      var allSettled = groupBets.every(function (b) {
+      // Check if at least one bet in this group has settled
+      var settledBets = groupBets.filter(function (b) {
         return b.currentStatus === 1 || b.currentStatus === 2;
       });
 
-      if (!allSettled) {
+      if (settledBets.length === 0) {
+        // No settled bets yet; still pending
         processedCount++;
         if (processedCount === groupKeys.length) onComplete(hasPending);
         return;
       }
+
+      // Check if any bet for this stage is still reported as status 0 in the current list
+      var stillPendingInList = list.some(function (b) {
+        var bStage = String(b.stage || b.period || '').trim();
+        var bStatus = parseInt(b.status, 10);
+        return bStage === stage && bStatus === 0;
+      });
+
+      if (stillPendingInList && settledBets.length < groupBets.length) {
+        // Wait for remaining bets for this stage to settle
+        processedCount++;
+        if (processedCount === groupKeys.length) onComplete(hasPending);
+        return;
+      }
+
+      // All bets for this stage are settled!
+      log('ALL_SETTLED', { groupKey: groupKey, count: groupBets.length });
 
       // Mark group as resolved so it cannot trigger a duplicate modal
       resolvedStageKeys.add(groupKey);
@@ -605,6 +634,12 @@
 
       var isWin = (totalPayout > 0);
       var displayAmount = isWin ? totalPayout : totalStake;
+
+      if (isWin) {
+        log('WIN_MODAL', { amount: displayAmount, period: stage, game: firstBet.game });
+      } else {
+        log('LOSS_MODAL', { amount: displayAmount, period: stage, game: firstBet.game });
+      }
 
       // Fetch authentic lottery draw result number without blocking
       fetchActualDrawResult(stage, firstBet.game, firstBet.typeid, function (realDrawNum) {
