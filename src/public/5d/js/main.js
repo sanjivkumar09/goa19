@@ -228,6 +228,10 @@ function downAndHidden() {
     $('.supportss').fadeOut();
 }
 
+function formatMoney(num) {
+    return Number(num || 0).toFixed(2);
+}
+
 function reload_money() {
     fetch("/api/webapi/GetUserInfo")
         .then((response) => response.json())
@@ -236,7 +240,8 @@ function reload_money() {
                 unsetCookie();
                 return false;
             }
-            $(".num span").text(`₹ ${data.data.money_user}.00 `);
+            let moneyVal = parseFloat(data.data.money_user || data.data.money || 0);
+            $(".num span").text(`₹ ${formatMoney(moneyVal)} `);
             $('.Loading').fadeOut(0);
         });
 }
@@ -539,7 +544,7 @@ $('.foot .right').click(function (e) {
                 $('.foot .right').removeClass('block-click');
             }, 500);
             if (response.status == true) {
-                $('#money_show').text("₹ " + response.money + '.00');
+                $('#money_show').text("₹ " + formatMoney(response.money));
                 showMeJoin();
                 if (window.registerUserBet) {
                     window.registerUserBet({
@@ -658,7 +663,7 @@ function GetMyEmerdList(datas) {
                       <div data-v-42f27458="" class="tiem">${timerJoin(data.time)}</div>
                   </div>
                   <div data-v-42f27458="" class="money" style="display: ${(data.status == 0) ? 'none' : ''}">
-                      <span data-v-42f27458="" class="${(data.status == 1) ? 'success' : 'fail'}"> ${(data.status == 1) ? '+' : '-'} ${(data.status == 1) ? data.get : data.price}.00 </span>
+                      <span data-v-42f27458="" class="${(data.status == 1) ? 'success' : 'fail'}"> ${(data.status == 1) ? '+' : '-'} ${formatMoney((data.status == 1) ? data.get : data.price)} </span>
                       <!---->
                   </div>
               </div>
@@ -678,7 +683,7 @@ function GetMyEmerdList(datas) {
               </div>
               <div data-v-42f27458="" class="detailLi c-row c-row-between c-row-middle">
                   <div data-v-42f27458="">Spent Amount</div>
-                  <div data-v-42f27458="">${data.money}.00</div>
+                  <div data-v-42f27458="">${formatMoney(data.money)}</div>
               </div>
               <div data-v-42f27458="" class="detailLi c-row c-row-between c-row-middle">
                   <div data-v-42f27458="">Quantity Purchased</div>
@@ -686,11 +691,11 @@ function GetMyEmerdList(datas) {
               </div>
               <div data-v-42f27458="" class="detailLi c-row c-row-between c-row-middle">
                   <div data-v-42f27458="">After Tax Amount</div>
-                  <div data-v-42f27458="" class="red">${data.price}.00</div>
+                  <div data-v-42f27458="" class="red">${formatMoney(data.price)}</div>
               </div>
               <div data-v-42f27458="" class="detailLi c-row c-row-between c-row-middle">
                   <div data-v-42f27458="">Tax</div>
-                  <div data-v-42f27458="">${data.fee}.00</div>
+                  <div data-v-42f27458="">${formatMoney(data.fee)}</div>
               </div>
               <div data-v-42f27458="" class="detailLi c-row c-row-between c-row-middle">
                   <div data-v-42f27458="">Opening Price</div>
@@ -718,7 +723,7 @@ function GetMyEmerdList(datas) {
               </div>
               <div data-v-42f27458="" class="detailLi c-row c-row-between c-row-middle">
                   <div data-v-42f27458="">Win Or Loss</div>
-                  <div data-v-42f27458="" class="${(data.status == 1) ? 'green' : 'red'}" style="display: ${(data.status == 0) ? 'none' : ''};">${(data.status == 1) ? '+' : '-'} ${(data.status == 1) ? data.get : data.price}.00</div>
+                  <div data-v-42f27458="" class="${(data.status == 1) ? 'green' : 'red'}" style="display: ${(data.status == 0) ? 'none' : ''};">${(data.status == 1) ? '+' : '-'} ${formatMoney((data.status == 1) ? data.get : data.price)}</div>
                   <!---->
               </div>
               <div data-v-42f27458="" class="detailLi c-row c-row-between c-row-middle">

@@ -331,7 +331,7 @@ const add5D = async(game) => {
         
         // Check if there's an active period
         if (!k5D || k5D.length === 0) {
-            console.log(`No active 5D period found for game: ${game}`);
+            console.log(`[5D_ENGINE] No active 5D period found for game: ${game}`);
             return;
         }
         
@@ -339,17 +339,18 @@ const add5D = async(game) => {
         let period = k5D[0].period;
 
         let nextResult = '';
-        if (game == 1) nextResult = setting[0].k5d;
-        if (game == 3) nextResult = setting[0].k5d3;
-        if (game == 5) nextResult = setting[0].k5d5;
-        if (game == 10) nextResult = setting[0].k5d10;
+        if (game == 1) nextResult = (setting[0] && setting[0].k5d) ? setting[0].k5d : '-1';
+        if (game == 3) nextResult = (setting[0] && setting[0].k5d3) ? setting[0].k5d3 : '-1';
+        if (game == 5) nextResult = (setting[0] && setting[0].k5d5) ? setting[0].k5d5 : '-1';
+        if (game == 10) nextResult = (setting[0] && setting[0].k5d10) ? setting[0].k5d10 : '-1';
 
         let newArr = '';
+        let finalResult = '';
         if (nextResult == '-1') {
-            await connection.execute(`UPDATE 5d SET result = ?,status = ? WHERE period = ? AND game = "${game}"`, [result2, 1, period]);
+            finalResult = result2;
+            await connection.execute(`UPDATE 5d SET result = ?, status = 1 WHERE period = ? AND game = ?`, [finalResult, period, game]);
             newArr = '-1';
         } else {
-            let result = '';
             let arr = nextResult.split('|');
             let check = arr.length;
             if (check == 1) {
@@ -360,8 +361,8 @@ const add5D = async(game) => {
                 }
                 newArr = newArr.slice(0, -1);
             }
-            result = arr[0];
-            await connection.execute(`UPDATE 5d SET result = ?,status = ? WHERE period = ? AND game = ${game}`, [result, 1, period]);
+            finalResult = arr[0];
+            await connection.execute(`UPDATE 5d SET result = ?, status = 1 WHERE period = ? AND game = ?`, [finalResult, period, game]);
         }
         
         // Generate period based on current date (Format: YYYYMMDD + 4 digits: 0001, 0002, 0003...)
@@ -380,8 +381,11 @@ const add5D = async(game) => {
             nextPeriod = `${todayPrefix}0001`;
         }
         
-        const sql = `INSERT INTO 5d SET period = ?, result = ?, game = ?, status = ?, time = ?`;
-        await connection.execute(sql, [nextPeriod, 0, game, 0, timeNow]);
+        const sql = `INSERT INTO 5d (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`;
+        await connection.execute(sql, [nextPeriod, '00000', game, 0, timeNow]);
+
+        let tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+        console.log(`[5D_ENGINE] serverTime=${new Date().toISOString()} timezone=${tz} currentPeriod=${nextPeriod} previousPeriod=${period} resultPeriod=${period} result=${finalResult}`);
 
         if (game == 1) join = 'k5d';
         if (game == 3) join = 'k5d3';
@@ -396,12 +400,13 @@ const add5D = async(game) => {
     }
 }
 
-async function funHanding(game) {
-    const [k5d] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = ${game} ORDER BY id DESC LIMIT 1 `);
+async function funHanding(game, period) {
+    const [k5d] = await connection.query(`SELECT * FROM 5d WHERE period = ? AND game = ? LIMIT 1`, [period, game]);
+    if (!k5d || k5d.length === 0) return;
     let k5dInfo = k5d[0];
  
-    // update ket qua
-    await connection.execute(`UPDATE result_5d SET result = ? WHERE status = 0 AND game = ${game}`, [k5dInfo.result]);
+    // update ket qua strictly for this period
+    await connection.execute(`UPDATE result_5d SET result = ? WHERE status = 0 AND game = ? AND stage = ?`, [k5dInfo.result, game, period]);
     let result = String(k5dInfo.result).split('');
     let a = result[0];
     let b = result[1];
@@ -414,7 +419,7 @@ async function funHanding(game) {
     }
 
     // xử lý game a
-    const [joinA] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ${game} AND join_bet = 'a' `);
+    const [joinA] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ? AND stage = ? AND join_bet = 'a' `, [game, period]);
     let lengthA = joinA.length;
     for (let i = 0; i < lengthA; i++) {
         let info = joinA[i];
@@ -426,25 +431,24 @@ async function funHanding(game) {
                 await connection.execute(`UPDATE result_5d SET status = 2 WHERE id = ? `, [info.id]);
             }
         }
-        
     }
     if (lengthA > 0) {
         if(a == '0' || a == '1' || a == '2' || a == '3' || a == '4') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'a' AND bet = 'b' `)
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'a' AND bet = 'b' `, [game, period]);
+        }
         if(a == '5' || a == '6' || a == '7' || a == '8' || a == '9') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'a' AND bet = 's' `)
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'a' AND bet = 's' `, [game, period]);
+        }
         if(Number(a) % 2 == 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'a' AND bet = 'l' `)
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'a' AND bet = 'l' `, [game, period]);
+        }
         if(Number(a) % 2 != 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'a' AND bet = 'c' `)
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'a' AND bet = 'c' `, [game, period]);
+        }
     }
 
     // xử lý game b
-    const [joinB] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ${game} AND join_bet = 'b' `);
+    const [joinB] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ? AND stage = ? AND join_bet = 'b' `, [game, period]);
     let lengthB = joinB.length;
     for (let i = 0; i < lengthB; i++) {
         let info = joinB[i];
@@ -456,25 +460,24 @@ async function funHanding(game) {
                 await connection.execute(`UPDATE result_5d SET status = 2 WHERE id = ? `, [info.id]);
             }
         }
-        
     }
     if (lengthB > 0) {
         if(b == '0' || b == '1' || b == '2' || b == '3' || b == '4') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'b' AND bet = 'b' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'b' AND bet = 'b' `, [game, period]);
+        }
         if(b == '5' || b == '6' || b == '7' || b == '8' || b == '9') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'b' AND bet = 's' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'b' AND bet = 's' `, [game, period]);
+        }
         if(Number(b) % 2 == 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'b' AND bet = 'l' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'b' AND bet = 'l' `, [game, period]);
+        }
         if(Number(b) % 2 != 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'b' AND bet = 'c' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'b' AND bet = 'c' `, [game, period]);
+        }
     }
 
     // xử lý game c
-    const [joinC] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ${game} AND join_bet = 'c' `);
+    const [joinC] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ? AND stage = ? AND join_bet = 'c' `, [game, period]);
     let lengthC = joinC.length;
     for (let i = 0; i < lengthC; i++) {
         let info = joinC[i];
@@ -486,25 +489,24 @@ async function funHanding(game) {
                 await connection.execute(`UPDATE result_5d SET status = 2 WHERE id = ? `, [info.id]);
             }
         }
-        
     }
     if (lengthC > 0) {
         if(c == '0' || c == '1' || c == '2' || c == '3' || c == '4') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'c' AND bet = 'b' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'c' AND bet = 'b' `, [game, period]);
+        }
         if(c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'c' AND bet = 's' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'c' AND bet = 's' `, [game, period]);
+        }
         if(Number(c) % 2 == 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'c' AND bet = 'l' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'c' AND bet = 'l' `, [game, period]);
+        }
         if(Number(c) % 2 != 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'c' AND bet = 'c' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'c' AND bet = 'c' `, [game, period]);
+        }
     }
     
     // xử lý game d
-    const [joinD] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ${game} AND join_bet = 'd' `);
+    const [joinD] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ? AND stage = ? AND join_bet = 'd' `, [game, period]);
     let lengthD = joinD.length;
     for (let i = 0; i < lengthD; i++) {
         let info = joinD[i];
@@ -516,25 +518,24 @@ async function funHanding(game) {
                 await connection.execute(`UPDATE result_5d SET status = 2 WHERE id = ? `, [info.id]);
             }
         }
-        
     }
     if (lengthD > 0) {
         if(d == '0' || d == '1' || d == '2' || d == '3' || d == '4') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'd' AND bet = 'b' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'd' AND bet = 'b' `, [game, period]);
+        }
         if(d == '5' || d == '6' || d == '7' || d == '8' || d == '9') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'd' AND bet = 's' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'd' AND bet = 's' `, [game, period]);
+        }
         if(Number(d) % 2 == 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'd' AND bet = 'l' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'd' AND bet = 'l' `, [game, period]);
+        }
         if(Number(d) % 2 != 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'd' AND bet = 'c' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'd' AND bet = 'c' `, [game, period]);
+        }
     }
 
     // xử lý game e
-    const [joinE] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ${game} AND join_bet = 'e' `);
+    const [joinE] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ? AND stage = ? AND join_bet = 'e' `, [game, period]);
     let lengthE = joinE.length;
     for (let i = 0; i < lengthE; i++) {
         let info = joinE[i];
@@ -546,48 +547,50 @@ async function funHanding(game) {
                 await connection.execute(`UPDATE result_5d SET status = 2 WHERE id = ? `, [info.id]);
             }
         }
-        
     }
     if (lengthE > 0) {
         if(e == '0' || e == '1' || e == '2' || e == '3' || e == '4') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'e' AND bet = 'b' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'e' AND bet = 'b' `, [game, period]);
+        }
         if(e == '5' || e == '6' || e == '7' || e == '8' || e == '9') {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'e' AND bet = 's' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'e' AND bet = 's' `, [game, period]);
+        }
         if(Number(e) % 2 == 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'e' AND bet = 'l' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'e' AND bet = 'l' `, [game, period]);
+        }
         if(Number(e) % 2 != 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'e' AND bet = 'c' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'e' AND bet = 'c' `, [game, period]);
+        }
     }
 
-    // xử lý game e
-    const [joinTotal] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ${game} AND join_bet = 'total' `);
+    // xử lý game total
+    const [joinTotal] = await connection.execute(`SELECT id, bet FROM result_5d WHERE status = 0 AND game = ? AND stage = ? AND join_bet = 'total' `, [game, period]);
     if (joinTotal.length > 0) {
         if(total <= 22) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'total' AND bet = 'b' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'total' AND bet = 'b' `, [game, period]);
+        }
         if(total > 22) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'total' AND bet = 's' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'total' AND bet = 's' `, [game, period]);
+        }
         if(total % 2 == 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'total' AND bet = 'l' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'total' AND bet = 'l' `, [game, period]);
+        }
         if(total % 2 != 0) {
-            await connection.execute(`UPDATE result_5d SET status = 2 WHERE join_bet = 'total' AND bet = 'c' `);
-        };
+            await connection.execute(`UPDATE result_5d SET status = 2 WHERE game = ? AND stage = ? AND join_bet = 'total' AND bet = 'c' `, [game, period]);
+        }
     }
 }
 
 const handling5D = async(typeid) => {
-
     let game = Number(typeid);
 
-    await funHanding(game);
+    const [k5d] = await connection.query(`SELECT * FROM 5d WHERE status != 0 AND game = ? ORDER BY id DESC LIMIT 1 `, [game]);
+    if (!k5d || k5d.length === 0) return;
+    let period = k5d[0].period;
 
-    const [order] = await connection.execute(`SELECT id, phone, bet, price, money, fee, amount FROM result_5d WHERE status = 0 AND game = ${game} `);
+    await funHanding(game, period);
+
+    const [order] = await connection.execute(`SELECT id, phone, bet, price, money, fee, amount FROM result_5d WHERE status = 0 AND game = ? AND stage = ? `, [game, period]);
     for (let i = 0; i < order.length; i++) {
         let orders = order[i];
         let id = orders.id;

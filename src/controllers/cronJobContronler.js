@@ -4,7 +4,7 @@ const k5Controller = require("./k5Controller.js");
 const k3Controller = require("./k3Controller.js");
 const cron = require('node-cron');
 
-// Initialize game periods if they don't exist
+// Initialize game periods ensuring active monotonic periods
 const initializeGamePeriods = async () => {
     try {
         const timeNow = Date.now();
@@ -13,7 +13,10 @@ const initializeGamePeriods = async () => {
         let months = String(date.getMonth() + 1).padStart(2, '0');
         let days = String(date.getDate()).padStart(2, '0');
         let todayPrefix = `${years}${months}${days}`;
+        let tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
         
+        console.log(`[GAME_ENGINE] Initializing periods on date=${todayPrefix}, tz=${tz}`);
+
         // Initialize WinGo games
         const wingoGames = [
             { game: 1, name: 'wingo' },
@@ -23,15 +26,21 @@ const initializeGamePeriods = async () => {
         ];
         
         for (const { game, name } of wingoGames) {
-            const [existing] = await connection.query(`SELECT * FROM wingo WHERE game = '${name}' AND status = 0 LIMIT 1`);
+            // Close any stale status = 0 periods from older dates or duplicates
+            await connection.execute(
+                `UPDATE wingo SET status = 1, amount = IF(amount = 0, FLOOR(RAND()*10), amount) WHERE game = ? AND status = 0 AND period NOT LIKE ?`,
+                [name, `${todayPrefix}%`]
+            );
+
+            const [existing] = await connection.query(`SELECT * FROM wingo WHERE game = ? AND status = 0 ORDER BY id DESC LIMIT 1`, [name]);
             if (!existing || existing.length === 0) {
-                const [last] = await connection.query(`SELECT period FROM wingo WHERE game = '${name}' ORDER BY id DESC LIMIT 1`);
+                const [last] = await connection.query(`SELECT period FROM wingo WHERE game = ? ORDER BY id DESC LIMIT 1`, [name]);
                 let startPeriod = `${todayPrefix}0001`;
                 if (last && last.length > 0 && String(last[0].period).startsWith(todayPrefix)) {
                     let seq = (parseInt(String(last[0].period).slice(todayPrefix.length), 10) || 0) + 1;
                     startPeriod = `${todayPrefix}${String(seq).padStart(4, '0')}`;
                 }
-                console.log(`Initializing ${name} game period with: ${startPeriod}`);
+                console.log(`[WINGO_ENGINE] Initializing ${name} period: ${startPeriod}`);
                 await connection.execute(
                     `INSERT INTO wingo (period, amount, game, status, time) VALUES (?, ?, ?, ?, ?)`,
                     [startPeriod, 0, name, 0, timeNow]
@@ -42,15 +51,21 @@ const initializeGamePeriods = async () => {
         // Initialize K3 games
         const k3Games = [1, 3, 5, 10];
         for (const game of k3Games) {
-            const [existing] = await connection.query(`SELECT * FROM k3 WHERE game = ${game} AND status = 0 LIMIT 1`);
+            // Close any stale status = 0 periods from older dates
+            await connection.execute(
+                `UPDATE k3 SET status = 1, result = IF(result = 0, 111, result) WHERE game = ? AND status = 0 AND period NOT LIKE ?`,
+                [game, `${todayPrefix}%`]
+            );
+
+            const [existing] = await connection.query(`SELECT * FROM k3 WHERE game = ? AND status = 0 ORDER BY id DESC LIMIT 1`, [game]);
             if (!existing || existing.length === 0) {
-                const [last] = await connection.query(`SELECT period FROM k3 WHERE game = ${game} ORDER BY id DESC LIMIT 1`);
+                const [last] = await connection.query(`SELECT period FROM k3 WHERE game = ? ORDER BY id DESC LIMIT 1`, [game]);
                 let startPeriod = `${todayPrefix}0001`;
                 if (last && last.length > 0 && String(last[0].period).startsWith(todayPrefix)) {
                     let seq = (parseInt(String(last[0].period).slice(todayPrefix.length), 10) || 0) + 1;
                     startPeriod = `${todayPrefix}${String(seq).padStart(4, '0')}`;
                 }
-                console.log(`Initializing K3 game ${game} period with: ${startPeriod}`);
+                console.log(`[K3_ENGINE] Initializing K3 game ${game} period: ${startPeriod}`);
                 await connection.execute(
                     `INSERT INTO k3 (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
                     [startPeriod, 0, game, 0, timeNow]
@@ -61,15 +76,21 @@ const initializeGamePeriods = async () => {
         // Initialize 5D games
         const d5Games = [1, 3, 5, 10];
         for (const game of d5Games) {
-            const [existing] = await connection.query(`SELECT * FROM 5d WHERE game = ${game} AND status = 0 LIMIT 1`);
+            // Close any stale status = 0 periods from older dates or duplicates (e.g. 20260119)
+            await connection.execute(
+                `UPDATE 5d SET status = 1, result = IF(result = '00000', LPAD(FLOOR(RAND()*100000), 5, '0'), result) WHERE game = ? AND status = 0 AND period NOT LIKE ?`,
+                [game, `${todayPrefix}%`]
+            );
+
+            const [existing] = await connection.query(`SELECT * FROM 5d WHERE game = ? AND status = 0 ORDER BY id DESC LIMIT 1`, [game]);
             if (!existing || existing.length === 0) {
-                const [last] = await connection.query(`SELECT period FROM 5d WHERE game = ${game} ORDER BY id DESC LIMIT 1`);
+                const [last] = await connection.query(`SELECT period FROM 5d WHERE game = ? ORDER BY id DESC LIMIT 1`, [game]);
                 let startPeriod = `${todayPrefix}0001`;
                 if (last && last.length > 0 && String(last[0].period).startsWith(todayPrefix)) {
                     let seq = (parseInt(String(last[0].period).slice(todayPrefix.length), 10) || 0) + 1;
                     startPeriod = `${todayPrefix}${String(seq).padStart(4, '0')}`;
                 }
-                console.log(`Initializing 5D game ${game} period with: ${startPeriod}`);
+                console.log(`[5D_ENGINE] Initializing 5D game ${game} period: ${startPeriod}`);
                 await connection.execute(
                     `INSERT INTO 5d (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`,
                     [startPeriod, '00000', game, 0, timeNow]
