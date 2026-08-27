@@ -297,11 +297,12 @@ const addK3 = async (game) => {
         if (game == 10) nextResult = setting[0].k3d10;
 
         let newArr = '';
+        let finalResult = '';
         if (nextResult == '-1') {
-            await connection.execute(`UPDATE k3 SET result = ?,status = ? WHERE period = ? AND game = "${game}"`, [result2, 1, period]);
+            finalResult = result2;
+            await connection.execute(`UPDATE k3 SET result = ?, status = 1 WHERE period = ? AND game = ?`, [finalResult, period, game]);
             newArr = '-1';
         } else {
-            let result = '';
             let arr = nextResult.split('|');
             let check = arr.length;
             if (check == 1) {
@@ -312,8 +313,8 @@ const addK3 = async (game) => {
                 }
                 newArr = newArr.slice(0, -1);
             }
-            result = arr[0];
-            await connection.execute(`UPDATE k3 SET result = ?,status = ? WHERE period = ? AND game = ${game}`, [result, 1, period]);
+            finalResult = arr[0];
+            await connection.execute(`UPDATE k3 SET result = ?, status = 1 WHERE period = ? AND game = ?`, [finalResult, period, game]);
         }
         
         // Generate period based on India date (Asia/Kolkata) (Format: YYYYMMDD + 4 digits: 0001, 0002, 0003...)
@@ -340,7 +341,7 @@ const addK3 = async (game) => {
         const sql = `INSERT INTO k3 (period, result, game, status, time) VALUES (?, ?, ?, ?, ?)`;
         await connection.execute(sql, [nextPeriod, 0, game, 0, timeNow]);
 
-        console.log(`[K3_ENGINE] serverTime=${new Date().toISOString()} timezone=Asia/Kolkata currentPeriod=${nextPeriod} previousPeriod=${period} resultPeriod=${period} result=${result}`);
+        console.log(`[K3_ENGINE] serverTime=${new Date().toISOString()} timezone=Asia/Kolkata currentPeriod=${nextPeriod} previousPeriod=${period} resultPeriod=${period} result=${finalResult}`);
 
         if (game == 1) join = 'k3d';
         if (game == 3) join = 'k3d3';

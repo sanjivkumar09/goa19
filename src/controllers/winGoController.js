@@ -743,8 +743,6 @@ const handlingWinGo1P = async (typeid) => {
         return;
     }
 
-    // update ket qua
-    await connection.execute(`UPDATE minutes_1 SET result = ? WHERE status = 0 AND game = '${game}'`, [winGoNow[0].amount]);
     let result = Number(winGoNow[0].amount);
     switch (result) {
         case 0:
@@ -791,7 +789,6 @@ const handlingWinGo1P = async (typeid) => {
     const [order] = await connection.execute(`SELECT * FROM minutes_1 WHERE status = 0 AND game = '${game}' `);
     for (let i = 0; i < order.length; i++) {
         let orders = order[i];
-        let result = orders.result;
         let bet = orders.bet;
         let total = orders.money;
         let id = orders.id;
