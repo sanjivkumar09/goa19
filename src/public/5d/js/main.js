@@ -596,25 +596,26 @@ function isNumber(params) {
     let pattern = /^[0-9]*\d$/;
     return pattern.test(params);
 }
-var lastSeen5DStage = null;
-var isFirstLoad5D = true;
+var notified5DBetIds = new Set();
 
 function displayGameResultNotice(list_orders) {
     if (!list_orders || list_orders.length === 0) return;
     var topBet = list_orders[0];
     var stage = String(topBet.stage || topBet.period || '');
+    var betId = String(topBet.id_product || topBet.id || stage);
     var status = parseInt(topBet.status, 10);
 
     if (status === 0) return;
+    if (notified5DBetIds.has(betId)) return;
 
-    if (isFirstLoad5D) {
-        isFirstLoad5D = false;
-        lastSeen5DStage = stage;
+    var betTime = Number(topBet.time || 0);
+    if (betTime > 0 && (Date.now() - betTime > 300000)) {
+        notified5DBetIds.add(betId);
         return;
     }
 
-    if (lastSeen5DStage === stage) return;
-    lastSeen5DStage = stage;
+    notified5DBetIds.add(betId);
+    if (notified5DBetIds.size > 200) notified5DBetIds.clear();
 
     var stageBets = list_orders.filter(function(b) {
         return String(b.stage || b.period || '') === stage;
@@ -636,74 +637,14 @@ function displayGameResultNotice(list_orders) {
         }
     });
 
-    $(".game-win-loss-banner").remove();
-
-    if (isWin && totalWin > 0) {
-        $("body").append(`
-            <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
-                <div style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: 2.5px solid #fde047; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(250,204,21,0.5); border-radius: 20px; padding: 20px 16px; color: #fff;">
-                    <div style="font-size: 36px; line-height: 1;">👑 🎉 🏆</div>
-                    <div style="font-size: 24px; font-weight: 900; color: #fff; margin-top: 6px; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">YOU WON!</div>
-                    <div style="font-size: 32px; font-weight: 900; color: #fef08a; margin: 8px 0; text-shadow: 0 0 12px rgba(254,240,138,0.8);">+ ₹ ${Number(totalWin).toFixed(2)}</div>
-                    <div style="font-size: 13px; color: #f1f5f9; font-weight: 600;">5D Lotre | Period #${stage}</div>
-                </div>
-            </div>
-        `);
-    } else if (totalLoss > 0) {
-        $("body").append(`
-            <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
-                <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #ef4444; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(239,68,68,0.3); border-radius: 20px; padding: 20px 16px; color: #fff;">
-                    <div style="font-size: 32px; line-height: 1;">💔</div>
-                    <div style="font-size: 22px; font-weight: 900; color: #f87171; margin-top: 6px;">YOU LOST</div>
-                    <div style="font-size: 28px; font-weight: 900; color: #fca5a5; margin: 8px 0;">- ₹ ${Number(totalLoss).toFixed(2)}</div>
-                    <div style="font-size: 13px; color: #94a3b8; font-weight: 600;">5D Lotre | Period #${stage}</div>
-                </div>
-            </div>
-        `);
+    if (typeof window.showFloatingToast === 'function') {
+        if (isWin && totalWin > 0) {
+            window.showFloatingToast('win', { amount: totalWin, period: stage, game: '5D Lotre' });
+        } else if (totalLoss > 0) {
+            window.showFloatingToast('loss', { amount: totalLoss, period: stage, game: '5D Lotre' });
+        }
     }
-
-    setTimeout(function() {
-        $(".game-win-loss-banner").fadeOut(500, function() {
-            $(this).remove();
-        });
-    }, 5000);
 }
-
-window.testWinModal = function(amount) {
-  $(".game-win-loss-banner").remove();
-  $("body").append(`
-    <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
-      <div style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: 2.5px solid #fde047; box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 25px rgba(250,204,21,0.5); border-radius: 20px; padding: 20px 16px; color: #fff;">
-        <div style="font-size: 36px; line-height: 1;">👑 🎉 🏆</div>
-        <div style="font-size: 24px; font-weight: 900; color: #fff; margin-top: 6px; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">YOU WON!</div>
-        <div style="font-size: 32px; font-weight: 900; color: #fef08a; margin: 8px 0; text-shadow: 0 0 12px rgba(254,240,138,0.8);">+ ₹ ${(amount || 196).toFixed(2)}</div>
-        <div style="font-size: 13px; color: #f1f5f9; font-weight: 600;">5D Lotre | Period #202608270045</div>
-      </div>
-    </div>
-  `);
-  setTimeout(function() {
-    $(".game-win-loss-banner").fadeOut(500, function() { $(this).remove(); });
-  }, 5000);
-};
-
-window.testLossModal = function(amount) {
-  $(".game-win-loss-banner").remove();
-  $("body").append(`
-    <div class="game-win-loss-banner" style="position: fixed; top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 2147483647; width: 88%; max-width: 320px; text-align: center; pointer-events: none;">
-      <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 2px solid #ef4444; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(239,68,68,0.3); border-radius: 20px; padding: 20px 16px; color: #fff;">
-        <div style="font-size: 32px; line-height: 1;">💔</div>
-        <div style="font-size: 22px; font-weight: 900; color: #f87171; margin-top: 6px;">YOU LOST</div>
-        <div style="font-size: 28px; font-weight: 900; color: #fca5a5; margin: 8px 0;">- ₹ ${(amount || 100).toFixed(2)}</div>
-        <div style="font-size: 13px; color: #94a3b8; font-weight: 600;">5D Lotre | Period #202608270045</div>
-      </div>
-    </div>
-  `);
-  setTimeout(function() {
-    $(".game-win-loss-banner").fadeOut(500, function() { $(this).remove(); });
-  }, 5000);
-};
-window.testWinModel = window.testWinModal;
-window.testLossModel = window.testLossModal;
 
 function GetMyEmerdList(datas) {
     if (datas && datas.length > 0) {
