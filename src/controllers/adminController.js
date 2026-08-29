@@ -682,29 +682,52 @@ const settingBank = async (req, res) => {
     let typer = req.body.typer;
     if (!auth || !typer) {
         return res.status(200).json({
-            message: 'Failed',
+            message: 'Failed: Missing authentication or type',
             status: false,
             timeStamp: timeNow,
         });
     }
-    if (typer == 'bank') {
-        const [result] = await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ? WHERE type = 'bank'`, [name_bank, name, info]);
-        if (result.affectedRows === 0) {
-            await connection.query(`INSERT INTO bank_recharge (name_bank, name_user, stk, type, time) VALUES (?, ?, ?, 'bank', ?)`, [name_bank, name, info, Date.now()]);
+    try {
+        if (typer == 'bank') {
+            const [result] = await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ? WHERE type = 'bank'`, [name_bank, name, info]);
+            if (result.affectedRows === 0) {
+                await connection.query(`INSERT INTO bank_recharge (name_bank, name_user, stk, type, time) VALUES (?, ?, ?, 'bank', ?)`, [name_bank, name, info, Date.now()]);
+            }
+            return res.status(200).json({
+                message: 'Bank account updated successfully',
+                status: true,
+            });
         }
-        return res.status(200).json({
-            message: 'Successful change',
-            status: true,
-        });
-    }
-    if (typer == 'momo' || typer == 'upi') {
-        const [result] = await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ?, qr_code_image = ? WHERE type = 'momo' OR type = 'upi'`, [name_bank, name, info, qr]);
-        if (result.affectedRows === 0) {
-            await connection.query(`INSERT INTO bank_recharge (name_bank, name_user, stk, type, qr_code_image, time) VALUES (?, ?, ?, 'momo', ?, ?)`, [name_bank, name, info, qr, Date.now()]);
+        if (typer == 'momo' || typer == 'upi') {
+            try {
+                const [result] = await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ?, qr_code_image = ? WHERE type = 'momo' OR type = 'upi'`, [name_bank, name, info, qr]);
+                if (result.affectedRows === 0) {
+                    await connection.query(`INSERT INTO bank_recharge (name_bank, name_user, stk, type, qr_code_image, time) VALUES (?, ?, ?, 'momo', ?, ?)`, [name_bank, name, info, qr, Date.now()]);
+                }
+            } catch (dbErr) {
+                console.log('Attempting auto-migration on bank_recharge table...', dbErr.message);
+                try {
+                    await connection.query('ALTER TABLE `bank_recharge` ADD COLUMN IF NOT EXISTS `qr_code_image` LONGTEXT NULL');
+                    await connection.query('ALTER TABLE `bank_recharge` MODIFY COLUMN `qr_code_image` LONGTEXT NULL');
+                    const [result] = await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ?, qr_code_image = ? WHERE type = 'momo' OR type = 'upi'`, [name_bank, name, info, qr]);
+                    if (result.affectedRows === 0) {
+                        await connection.query(`INSERT INTO bank_recharge (name_bank, name_user, stk, type, qr_code_image, time) VALUES (?, ?, ?, 'momo', ?, ?)`, [name_bank, name, info, qr, Date.now()]);
+                    }
+                } catch (retryErr) {
+                    console.error('Migration retry error:', retryErr.message);
+                    throw retryErr;
+                }
+            }
+            return res.status(200).json({
+                message: 'UPI & QR Code updated successfully',
+                status: true,
+            });
         }
-        return res.status(200).json({
-            message: 'Successful change',
-            status: true,
+    } catch (err) {
+        console.error('Error in settingBank:', err.message);
+        return res.status(500).json({
+            message: 'Database error: ' + err.message,
+            status: false
         });
     }
 }

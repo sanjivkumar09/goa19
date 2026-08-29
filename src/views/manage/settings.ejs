@@ -165,8 +165,7 @@
                 reader.onload = function(evt) {
                     let img = new Image();
                     img.onload = function() {
-                        // Max dimension 500px for optimal speed and clarity
-                        let maxDim = 500;
+                        let maxDim = 450;
                         let w = img.width;
                         let h = img.height;
                         if (w > maxDim || h > maxDim) {
@@ -183,7 +182,7 @@
                         canvas.height = h;
                         let ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, w, h);
-                        let compressedBase64 = canvas.toDataURL('image/png', 0.9);
+                        let compressedBase64 = canvas.toDataURL('image/jpeg', 0.88);
                         $('#edit-momo-qr').val(compressedBase64);
                         $('#qr-preview-img').attr('src', compressedBase64);
                     };
@@ -259,15 +258,23 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Update Failed',
-                            text: response.message || 'Error occurred'
+                            text: response.message || 'Error occurred while saving.'
                         });
                     }
                 },
                 error: function(err) {
+                    let errMsg = 'Server error while saving settings.';
+                    if (err.responseJSON && err.responseJSON.message) {
+                        errMsg = err.responseJSON.message;
+                    } else if (err.status === 413) {
+                        errMsg = 'Uploaded QR image file is too large for the web server. Please choose a smaller image file.';
+                    } else if (err.statusText) {
+                        errMsg = 'Error (' + err.status + '): ' + err.statusText;
+                    }
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error',
-                        text: err.responseJSON ? err.responseJSON.message : 'Server error while saving settings.'
+                        title: 'Error Saving Settings',
+                        text: errMsg
                     });
                 }
             });
