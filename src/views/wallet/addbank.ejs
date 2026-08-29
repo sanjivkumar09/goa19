@@ -176,8 +176,8 @@
                         console.log(response);
                         alertMess(response.message, $(this));
                         setTimeout(() => {
-                            if (response.message) {
-                                window.location.href = "https://lotus365lottery.in/wallet/withdrawal";
+                            if (response.status) {
+                                window.location.href = "/wallet/withdrawal";
                             }
                         }, 1200);
                     }

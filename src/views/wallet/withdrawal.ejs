@@ -7647,17 +7647,21 @@
             url: "/api/webapi/check/Info", 
             dataType: "json",
             success: function (response) {
+                if (!response.userInfo || !response.userInfo[0]) return;
                 let user = response.userInfo[0];
-                $('.money').text("₹" + user.money);
-                console.log(user);
-                $('.bankBox .box .item:eq(1) div:eq(1)').text(`2. Complete Bet ₹ ${response.result}`);
-                if(!response.datas[0]) return;
+                let bal = (user.money_user !== null && user.money_user !== undefined) ? user.money_user : user.money;
+                $('.money').text("₹" + parseFloat(bal || 0).toFixed(2));
+                
+                if (response.result !== undefined) {
+                    $('.bankBox .box .item:eq(0) div:eq(1)').text(`◆ Need to bet ₹${parseFloat(response.result).toFixed(2)} to be able to withdraw`);
+                }
+                if(!response.datas || !response.datas[0]) return;
                 let data = response.datas[0];
-                $('.conBox .list').append(
+                $('.conBox .list').html(
                     `
                     <div data-v-25d9c352="" class="item c-row c-row-between c-row-middle-center">
                         <div data-v-25d9c352="" class="name van-ellipsis">
-                            <span data-v-25d9c352="">${data.stk}</span>
+                            <span data-v-25d9c352="">${data.name_bank} - ${data.stk} (${data.name_user})</span>
                         </div>
                         <div data-v-25d9c352="" class="icon action c-row c-row-middle-center">
                             <i data-v-25d9c352="" class="van-icon van-icon-success" style="color: rgb(71, 129, 255); font-size: 16px;">
@@ -7685,14 +7689,16 @@
                 setTimeout(() => {
                     $('.msg').remove();
                 }, 100);
-                sic.removeClass('block-click');
-            }, 1000);
+                if (sic) sic.removeClass('block-click');
+            }, 1500);
         }
         $('button').click(function (e) { 
             e.preventDefault();
+            const btn = $(this);
             let money = $('input:eq(0)').val().trim();
             let password = $('input:eq(1)').val().trim();
             if (money && password && Number(money) >= 110 && Number(money) <= 100000) {
+                btn.addClass('block-click');
                 $.ajax({
                     type: "POST",
                     url: "/api/webapi/withdrawal",
@@ -7702,19 +7708,28 @@
                     },
                     dataType: "json",
                     success: function (response) {
-                        $(this).addClass('block-click');
+                        btn.removeClass('block-click');
                         if (response.status == true) {
-                            $('.money').text("₹" + response.money + '.00');
+                            $('.money').text("₹" + parseFloat(response.money).toFixed(2));
+                            $('input:eq(0)').val('');
+                            $('input:eq(1)').val('');
+                            alertMess(response.message || 'Withdrawal request submitted!', btn);
+                            setTimeout(() => {
+                                window.location.href = '/wallet/withdrawalrecord';
+                            }, 1500);
+                        } else {
+                            alertMess(response.message || 'Withdrawal failed', btn);
                         }
-                        alertMess(response.message, $(this));
+                    },
+                    error: function(err) {
+                        btn.removeClass('block-click');
+                        alertMess(err.responseJSON ? err.responseJSON.message : 'Server error during withdrawal', btn);
                     }
                 });
             } else if (!money || !password) {
-                $(this).addClass('block-click');
-                alertMess('Please enter complete information', $(this));
+                alertMess('Please enter complete information', btn);
             } else {
-                $(this).addClass('block-click');
-                alertMess('Withdrawal amount range: ₹110 ~ ₹1,00,000', $(this));
+                alertMess('Withdrawal amount range: ₹110 ~ ₹1,00,000', btn);
             }
         });
     </script>

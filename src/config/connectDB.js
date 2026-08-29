@@ -41,7 +41,23 @@ connection.getConnection()
                 UNIQUE KEY \`setting_key\` (\`setting_key\`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`);
 
-            // 3. Ensure aviator tables exist
+            // 3. Ensure withdraw table has ifsc, sdt, tp columns and today column is VARCHAR(50)
+            const ensureWithdrawCol = async (col, type) => {
+                const [cols] = await conn.query("SHOW COLUMNS FROM `withdraw` LIKE '" + col + "'");
+                if (cols.length === 0) {
+                    await conn.query("ALTER TABLE `withdraw` ADD COLUMN `" + col + "` " + type);
+                    console.log('✓ Added ' + col + ' column to withdraw table');
+                }
+            };
+            await ensureWithdrawCol('ifsc', 'VARCHAR(50) NULL');
+            await ensureWithdrawCol('sdt', 'VARCHAR(50) NULL');
+            await ensureWithdrawCol('tp', 'VARCHAR(50) NULL');
+            try {
+                await conn.query("ALTER TABLE `withdraw` MODIFY COLUMN `today` VARCHAR(50) NULL");
+                await conn.query("ALTER TABLE `recharge` MODIFY COLUMN `today` VARCHAR(50) NULL");
+            } catch (e) {}
+
+            // 4. Ensure aviator tables exist
             await conn.query(`CREATE TABLE IF NOT EXISTS \`aviator\` (
                 \`id\` int(11) NOT NULL AUTO_INCREMENT,
                 \`period\` varchar(50) NOT NULL,
