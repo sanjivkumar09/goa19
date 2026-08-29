@@ -70,12 +70,27 @@
                                     <input type="text" class="form-control" placeholder="Enter Account Number" id="edit-banking-info" value=""><br>
                                     <button type="submit" class="btn btn-primary edit-banking" style="width: 100%;margin-bottom: 20px;">Submit</button>
                                     <!---------------------------------------------------------------->
-                                    <label for="quantity" style="color: #a50064;">UPI</label>
+                                    <label for="quantity" style="color: #a50064;">UPI / QR PAYMENT</label>
                                     <input type="text" class="form-control" placeholder="Bank Name" id="edit-momo-name_bank" value=""><br>
                                     <input type="text" class="form-control" placeholder="Wallet Owner Name" id="edit-momo-name" value=""><br>
-                                    <input type="text" class="form-control" placeholder="Upi id" id="edit-momo-info" value=""><br>
-                                     <input type="text" class="form-control" placeholder="qr link" id="edit-momo-qr" value=""><br>
-                                    <button type="submit" class="btn btn-primary edit-momo" style="width: 100%;">Submit</button>
+                                    <input type="text" class="form-control" placeholder="UPI ID (e.g. merchant@upi)" id="edit-momo-info" value=""><br>
+                                    
+                                    <label style="font-weight: 600; color: #555;">QR Code Image (Paste URL or Upload file):</label>
+                                    <input type="text" class="form-control" placeholder="QR Image URL or Base64 Link" id="edit-momo-qr" value=""><br>
+                                    
+                                    <div class="mb-3">
+                                        <label for="upload-qr-file" class="btn btn-outline-secondary btn-sm" style="cursor: pointer;">
+                                            <i class="fas fa-upload mr-1"></i> Upload QR Image File
+                                        </label>
+                                        <input type="file" id="upload-qr-file" accept="image/*" style="display: none;">
+                                    </div>
+
+                                    <div id="qr-preview-box" class="text-center p-2 mb-3" style="background: #f8f9fa; border: 1px dashed #ccc; border-radius: 8px;">
+                                        <p class="text-muted mb-1" style="font-size: 13px;">Active QR Code Preview:</p>
+                                        <img id="qr-preview-img" src="/images/qr-payment.jpeg" alt="QR Preview" style="max-width: 180px; max-height: 180px; object-fit: contain; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary edit-momo" style="width: 100%;">Submit UPI & QR</button>
                                 </div>
 
                                 <div class="form-group">
@@ -116,6 +131,9 @@
                     $('#edit-momo-name').val(momo.name_user || '');
                     $('#edit-momo-info').val(momo.stk || '');
                     $('#edit-momo-qr').val(momo.qr_code_image || '');
+                    if (momo.qr_code_image) {
+                        $('#qr-preview-img').attr('src', momo.qr_code_image);
+                    }
                 }
                 if (bank) {
                     $('#edit-banking-name_bank').val(bank.name_bank || '');
@@ -126,6 +144,52 @@
                 $('#telegram').val(response.settings[0].telegram);
                 $('#cskh').val(response.settings[0].cskh);
                 $('#myapp_web').val(response.settings[0].app);
+            }
+        });
+
+        // Live preview on input change
+        $('#edit-momo-qr').on('input', function() {
+            let val = $(this).val().trim();
+            if (val) {
+                $('#qr-preview-img').attr('src', val);
+            } else {
+                $('#qr-preview-img').attr('src', '/images/qr-payment.jpeg');
+            }
+        });
+
+        // File upload with Canvas optimization
+        $('#upload-qr-file').on('change', function(e) {
+            let file = e.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(evt) {
+                    let img = new Image();
+                    img.onload = function() {
+                        // Max dimension 500px for optimal speed and clarity
+                        let maxDim = 500;
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) {
+                                h = Math.round((h * maxDim) / w);
+                                w = maxDim;
+                            } else {
+                                w = Math.round((w * maxDim) / h);
+                                h = maxDim;
+                            }
+                        }
+                        let canvas = document.createElement('canvas');
+                        canvas.width = w;
+                        canvas.height = h;
+                        let ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        let compressedBase64 = canvas.toDataURL('image/png', 0.9);
+                        $('#edit-momo-qr').val(compressedBase64);
+                        $('#qr-preview-img').attr('src', compressedBase64);
+                    };
+                    img.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         });
     </script>
@@ -163,23 +227,48 @@
         }
 
         function sendRequestBank(name_bank = '', name = '', info = '', qr = '', typer = '') {
+            Swal.fire({
+                title: 'Saving...',
+                text: 'Please wait while updating settings',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             $.ajax({
                 type: "POST",
                 url: "/admin/manager/settings/bank",
-                data: {
+                data: JSON.stringify({
                     name_bank: name_bank,
                     name: name,
                     info: info,
                     qr: qr,
                     typer: typer
-                },
+                }),
+                contentType: "application/json",
                 dataType: "json",
                 success: function(response) {
-                    Swal.fire(
-                        'Good job!',
-                        'Updated Successfully!',
-                        'success'
-                    )
+                    if (response.status) {
+                        Swal.fire(
+                            'Updated!',
+                            'Payment & QR Settings Updated Successfully!',
+                            'success'
+                        );
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Update Failed',
+                            text: response.message || 'Error occurred'
+                        });
+                    }
+                },
+                error: function(err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: err.responseJSON ? err.responseJSON.message : 'Server error while saving settings.'
+                    });
                 }
             });
         }

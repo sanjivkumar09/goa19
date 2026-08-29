@@ -68,6 +68,15 @@ const initAviatorEngine = async (io) => {
                 if (typeof callback === 'function') callback({ status: false, message: e.message });
             }
         });
+
+        socket.on('aviator:cancel_bet', async (data, callback) => {
+            try {
+                const res = await cancelBetInternal(data.auth, data.betId);
+                if (typeof callback === 'function') callback(res);
+            } catch (e) {
+                if (typeof callback === 'function') callback({ status: false, message: e.message });
+            }
+        });
     });
 
     // Start initial game cycle
@@ -407,16 +416,122 @@ const placeBetInternal = async (authCookie, amount, autoCashout, panelNum = 1) =
     };
 };
 
+const cancelBetInternal = async (authCookie, betId) => {
+    if (!betId) {
+        throw new Error('Invalid Bet ID!');
+    }
+
+    const bIdNum = parseInt(betId, 10);
+    const bIdStr = String(betId);
+
+    // Look for the bet in activeBets or queuedBets
+    let betObj = gameState.activeBets.get(bIdNum) || gameState.activeBets.get(bIdStr) || gameState.activeBets.get(betId);
+    let isQueued = false;
+
+    if (!betObj) {
+        betObj = gameState.queuedBets.get(bIdNum) || gameState.queuedBets.get(bIdStr) || gameState.queuedBets.get(betId);
+        if (betObj) isQueued = true;
+    }
+
+    if (!betObj) {
+        throw new Error('No pending bet found to cancel!');
+    }
+
+    // Active bets cannot be cancelled once flight has started (must cashout instead)
+    if (!isQueued && gameState.status === 'FLYING') {
+        throw new Error('Flight has already started! Use Cash Out.');
+    }
+
+    if (betObj.status !== 0) {
+        throw new Error('Bet is already settled or cancelled!');
+    }
+
+    // Verify user authorization
+    const [users] = await connection.execute(
+        'SELECT `phone`, `money`, `money_user` FROM `users` WHERE `token` = ? AND `veri` = 1',
+        [authCookie || betObj.auth]
+    );
+
+    if (!users || users.length === 0 || users[0].phone !== betObj.phone) {
+        throw new Error('Unauthorized cancel attempt!');
+    }
+
+    const user = users[0];
+    const rawBal = (user.money_user !== null && user.money_user !== undefined) ? user.money_user : user.money;
+    const currentBalance = parseFloat(rawBal || 0);
+    const refundAmount = parseFloat(betObj.money || 0);
+    const newBalance = currentBalance + refundAmount;
+
+    // Refund money atomically to both money and money_user
+    await connection.execute(
+        'UPDATE `users` SET `money` = ?, `money_user` = ? WHERE `phone` = ?',
+        [newBalance, newBalance, user.phone]
+    );
+
+    // Update aviator_bets table status = 3 (Cancelled)
+    await connection.execute(
+        'UPDATE `aviator_bets` SET `status` = 3, `result` = 0 WHERE `id` = ?',
+        [betObj.id]
+    );
+
+    // Remove from in-memory maps
+    gameState.activeBets.delete(bIdNum);
+    gameState.activeBets.delete(bIdStr);
+    gameState.queuedBets.delete(bIdNum);
+    gameState.queuedBets.delete(bIdStr);
+
+    console.log(`↩️ Player ${betObj.username} CANCELLED bet #${betObj.id} (Refunded: ₹${refundAmount})`);
+
+    if (ioInstance) {
+        ioInstance.emit('aviator:player_cancel', {
+            betId: betObj.id,
+            phone: betObj.phone,
+            username: betObj.username,
+            amount: refundAmount
+        });
+    }
+    broadcastState();
+
+    return {
+        status: true,
+        message: `Bet cancelled! Refunded ₹${refundAmount.toFixed(2)}`,
+        betId: betObj.id,
+        newBalance
+    };
+};
+
 const cashoutInternal = async (authCookie, betId, forceMultiplier = null, isAuto = false) => {
     if (gameState.status !== 'FLYING') {
         throw new Error('Cash-out is only allowed during active flight!');
     }
 
+    const bIdNum = parseInt(betId, 10);
+    const bIdStr = String(betId);
     const currentMult = forceMultiplier || gameState.currentMultiplier;
-    const betObj = gameState.activeBets.get(parseInt(betId, 10)) || gameState.activeBets.get(betId);
+    const betObj = gameState.activeBets.get(bIdNum) || gameState.activeBets.get(bIdStr) || gameState.activeBets.get(betId);
 
-    if (!betObj || betObj.status !== 0) {
+    if (!betObj) {
         throw new Error('No active bet found for cash-out!');
+    }
+
+    // Idempotency: If already cashed out, gracefully return the existing payout
+    if (betObj.status === 1) {
+        const [users] = await connection.execute(
+            'SELECT `phone`, `money`, `money_user` FROM `users` WHERE `token` = ? AND `veri` = 1',
+            [authCookie || betObj.auth]
+        );
+        const curBal = users && users.length > 0 ? ((users[0].money_user !== null && users[0].money_user !== undefined) ? users[0].money_user : users[0].money) : 0;
+        return {
+            status: true,
+            message: `Already cashed out at ${parseFloat(betObj.cashoutMultiplier).toFixed(2)}x!`,
+            multiplier: betObj.cashoutMultiplier,
+            payout: betObj.payout,
+            newBalance: parseFloat(curBal || 0)
+        };
+    }
+
+    if (betObj.status !== 0) {
+        throw new Error('Bet is no longer active!');
     }
 
     // Verify user authorization
@@ -458,6 +573,7 @@ const cashoutInternal = async (authCookie, betId, forceMultiplier = null, isAuto
     if (ioInstance) {
         ioInstance.emit('aviator:player_cashout', {
             betId: betObj.id,
+            phone: betObj.phone,
             username: betObj.username,
             multiplier: currentMult,
             payout,
@@ -507,6 +623,17 @@ const cashoutAviator = async (req, res) => {
     }
 };
 
+const cancelBetAviator = async (req, res) => {
+    const auth = req.cookies.auth;
+    const { betId } = req.body;
+    try {
+        const result = await cancelBetInternal(auth, betId);
+        return res.status(200).json(result);
+    } catch (err) {
+        return res.status(400).json({ status: false, message: err.message });
+    }
+};
+
 const getAviatorHistory = async (req, res) => {
     try {
         const [rows] = await connection.execute(
@@ -545,6 +672,7 @@ module.exports = {
     aviatorPage,
     betAviator,
     cashoutAviator,
+    cancelBetAviator,
     getAviatorHistory,
     getAviatorMyBets
 };

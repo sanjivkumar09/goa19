@@ -87,6 +87,7 @@ const initWebRouter = (app) => {
     router.get('/aviator', middlewareController, aviatorController.aviatorPage);
     router.post('/api/webapi/aviator/bet', middlewareController, aviatorController.betAviator);
     router.post('/api/webapi/aviator/cashout', middlewareController, aviatorController.cashoutAviator);
+    router.post('/api/webapi/aviator/cancel_bet', middlewareController, aviatorController.cancelBetAviator);
     router.get('/api/webapi/aviator/history', middlewareController, aviatorController.getAviatorHistory);
     router.get('/api/webapi/aviator/my_bets', middlewareController, aviatorController.getAviatorMyBets);
 

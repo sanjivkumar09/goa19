@@ -57,10 +57,22 @@ const rechargePage = async(req, res) => {
     return res.render("wallet/recharge.ejs"); 
 }
 const rechargeGateway = async(req, res) => {
-    return res.render("wallet/pay.ejs"); 
+    try {
+        const [bank_recharge] = await connection.query('SELECT * FROM bank_recharge');
+        let upiInfo = bank_recharge.find(b => b.type === 'momo' || b.type === 'upi') || bank_recharge[0] || {};
+        return res.render("wallet/pay.ejs", { upiInfo, bank_recharge }); 
+    } catch (err) {
+        return res.render("wallet/pay.ejs", { upiInfo: {}, bank_recharge: [] }); 
+    }
 }
 const rechargeGateway1 = async(req, res) => {
-    return res.render("wallet/pay1.ejs"); 
+    try {
+        const [bank_recharge] = await connection.query('SELECT * FROM bank_recharge');
+        let upiInfo = bank_recharge.find(b => b.type === 'momo' || b.type === 'upi') || bank_recharge[0] || {};
+        return res.render("wallet/pay1.ejs", { upiInfo, bank_recharge }); 
+    } catch (err) {
+        return res.render("wallet/pay1.ejs", { upiInfo: {}, bank_recharge: [] }); 
+    }
 }
 
 const rechargerecordPage = async(req, res) => {

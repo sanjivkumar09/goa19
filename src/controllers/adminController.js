@@ -688,14 +688,20 @@ const settingBank = async (req, res) => {
         });
     }
     if (typer == 'bank') {
-        await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ? WHERE type = 'bank'`, [name_bank, name, info]);
+        const [result] = await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ? WHERE type = 'bank'`, [name_bank, name, info]);
+        if (result.affectedRows === 0) {
+            await connection.query(`INSERT INTO bank_recharge (name_bank, name_user, stk, type, time) VALUES (?, ?, ?, 'bank', ?)`, [name_bank, name, info, Date.now()]);
+        }
         return res.status(200).json({
             message: 'Successful change',
             status: true,
         });
     }
-    if (typer == 'momo') {
-        await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ?, qr_code_image = ? WHERE type = 'momo' OR type = 'upi'`, [name_bank, name, info, qr]);
+    if (typer == 'momo' || typer == 'upi') {
+        const [result] = await connection.query(`UPDATE bank_recharge SET name_bank = ?, name_user = ?, stk = ?, qr_code_image = ? WHERE type = 'momo' OR type = 'upi'`, [name_bank, name, info, qr]);
+        if (result.affectedRows === 0) {
+            await connection.query(`INSERT INTO bank_recharge (name_bank, name_user, stk, type, qr_code_image, time) VALUES (?, ?, ?, 'momo', ?, ?)`, [name_bank, name, info, qr, Date.now()]);
+        }
         return res.status(200).json({
             message: 'Successful change',
             status: true,

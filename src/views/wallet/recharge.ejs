@@ -7820,20 +7820,6 @@
                     </div>
                     
                 </div>
-                <div data-v-67caa467="" class="pay-box">
-                    <div data-v-67caa467="" class="title c-row c-row-middle">
-                        <div data-v-67caa467="" class="van-image" style="width: 20px; height: 20px;">
-                            <img src="/images/htmls2.png" class="van-image__img">
-                        </div>
-                        <span data-v-67caa467="" class="m-l-10"> Payment Method </span>
-                    </div>
-                    <div data-v-67caa467="" class="list c-row c-flex-warp m-t-10">
-                        <div data-v-67caa467="" class="item action" type="bank" style="width: 100%; display: flex; align-items: center; justify-content: center; padding: 12px; gap: 8px; border-radius: 10px; cursor: pointer;">
-                            <i class="fa fa-qrcode" style="font-size: 20px; color: #20B96B;"></i>
-                            <div data-v-67caa467="" class="name" style="font-size: 14px; font-weight: 700;">QR Code (UPI / QR Pay)</div>
-                        </div>
-                    </div>
-                </div>
                 <!---->
                 <div data-v-67caa467="" class="pay-box">
                     <div data-v-67caa467="" class="title c-row c-row-middle c-row-between">
@@ -7880,7 +7866,20 @@
                                     <span data-v-67caa467="" class="number">₹1,00,000</span>
                                 </div>
                             </div>
-                            <div data-v-67caa467="" style="margin-top: 20px;">
+
+                            <!-- Deposit Button (Moved above Rules & Regulations) -->
+                            <div data-v-67caa467="" class="btn-list c-row c-row-center m-t-20 m-b-20">
+                                <div data-v-67caa467="" class="item flex-cover" id="create-bank">
+                                    <button data-v-67caa467="" class="next-btn van-button van-button--default van-button--normal van-button--block van-button--round" style="color: #ffffff; background: #20B96B; border-color: #20B96B; font-weight: 700; font-size: 16px; border-radius: 999px; height: 44px; box-shadow: 0 4px 12px rgba(32, 185, 107, 0.3);">
+                                        <div data-v-67caa467="" class="van-button__content">
+                                            <span data-v-67caa467="" class="van-button__text"> Deposit </span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Rules & Regulations -->
+                            <div data-v-67caa467="" style="margin-top: 15px;">
                                 <div style="background: #f0f8ff; border-left: 4px solid #4CAF50; padding: 15px; margin-bottom: 15px; border-radius: 4px;">
                                     <h4 style="margin: 0 0 10px 0; color: #333; font-size: 16px; font-weight: 600;">📋 Rules & Regulations</h4>
                                     
@@ -7918,16 +7917,6 @@
                                         <span style="color: #ff5722; margin-right: 10px; font-size: 12px;">⚠️</span>
                                         <span style="color: #d32f2f; font-size: 14px; line-height: 1.6; font-weight: 500;">If you transfer the wrong amount, the funds will be lost and our company will not be held responsible!</span>
                                     </div>
-                                </div>
-                            </div>
-                            <div data-v-67caa467="" class="btn-list c-row c-row-center m-t-30">
-                                <!---->
-                                <div data-v-67caa467="" class="item flex-cover" id="create-bank">
-                                    <button data-v-67caa467="" class="next-btn van-button van-button--default van-button--normal van-button--block van-button--round" style="color: rgb (255, 255, 255); background: rgb(71, 129, 255); border-color: rgb(71, 129, 255);">
-                                        <div data-v-67caa467="" class="van-button__content">
-                                            <span data-v-67caa467="" class="van-button__text"> Deposit </span>
-                                        </div>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -8040,7 +8029,7 @@
             e.preventDefault();
             $(this).addClass('block-click');
             let money = $('#ramount').val().trim();
-            let type = $('.pay-box:eq(0) .list').find('.action').attr('type') || 'bank';
+            let type = 'bank';
             if (money && money >= 500 && money <= 100000) { 
                 $.ajax({
                     type: "POST",

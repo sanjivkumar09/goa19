@@ -1,0 +1,290 @@
+/* DIUWIN Global Theme - Green Brand Aesthetic (#20B96B) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    /* DIUWIN Green Palette */
+    --primary-color: #20B96B;
+    --primary-red: #20B96B;
+    --primary-coral: #20B96B;
+    --primary-gradient: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
+    --primary-gradient-135: linear-gradient(135deg, #20B96B 0%, #36C66B 100%);
+    --secondary-coral: #36C66B;
+    --accent-red: #20B96B;
+    --dark-red: #199955;
+    
+    /* Backgrounds */
+    --bg-grey: #f4f5f8;
+    --bg-page: #f2f4f8;
+    --bg-card: #ffffff;
+    --bg-card-alt: #fbfbfd;
+    --bg-overlay: rgba(0, 0, 0, 0.4);
+    
+    /* Text Colors */
+    --text-primary: #0B1833;
+    --text-dark: #0B1833;
+    --text-secondary: #7C8290;
+    --text-muted: #8b96a5;
+    --text-light: #5d6472;
+    --text-white: #ffffff;
+    --text-coral: #20B96B;
+    --text-gold: #20B96B;
+    
+    /* Border & Shadow */
+    --border-color: #ebeef5;
+    --border-light: 1px solid #f0f2f5;
+    --border-coral: 1px solid rgba(32, 185, 107, 0.3);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+    --shadow-coral: 0 4px 15px rgba(32, 185, 107, 0.35);
+    
+    /* Spacing & Radius */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --border-radius: 14px;
+}
+
+/* Global Body & Root Styles */
+html, body {
+    background-color: #e8ecef !important;
+    background-image: none !important;
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Main Layout Wrapper */
+.mian {
+    min-height: 100vh;
+    background: #ffffff !important;
+    padding-bottom: 80px;
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Navbar - Clean White Header with Green Accents */
+.navbar {
+    background: #ffffff !important;
+    backdrop-filter: blur(10px) !important;
+    color: #0B1833 !important;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.navbar-title {
+    font-size: 18px;
+    font-weight: 800;
+    flex: 1;
+    text-align: center;
+    color: #20B96B !important;
+    letter-spacing: 0.5px;
+}
+
+.navbar-left, .navbar-right {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-left img, .navbar-right img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* Card Styles - Clean White Cards with Soft Shadow */
+.card {
+    background: #ffffff;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 16px 12px;
+    box-shadow: var(--shadow-md);
+    border: var(--border-light);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0B1833;
+}
+
+.card-body {
+    color: var(--text-light);
+}
+
+/* Buttons - DIUWIN Green Gradient */
+.btn, button {
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-coral);
+}
+
+.btn:hover, button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(32, 185, 107, 0.45);
+}
+
+.btn:active, button:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
+    color: #ffffff !important;
+}
+
+.btn-secondary {
+    background: #ffffff !important;
+    color: #20B96B !important;
+    border: 1.5px solid #20B96B !important;
+    box-shadow: none !important;
+}
+
+/* Input Fields */
+input, textarea, select {
+    background: #ffffff;
+    border: 1.5px solid #e1e4e8;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #0B1833;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #20B96B !important;
+    box-shadow: 0 0 10px rgba(32, 185, 107, 0.2) !important;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #8b96a5;
+}
+
+/* List Items */
+.list-item {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.list-item:hover {
+    border-color: #20B96B;
+    box-shadow: 0 4px 15px rgba(32, 185, 107, 0.15);
+    transform: translateY(-2px);
+}
+
+.list-item-title {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 15px;
+}
+
+.list-item-value {
+    font-weight: 700;
+    color: #20B96B;
+    font-size: 16px;
+}
+
+/* Wallet / Balance Cards */
+.balance-card {
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
+    border-radius: var(--border-radius);
+    padding: 24px;
+    margin: 16px 12px;
+    box-shadow: 0 8px 25px rgba(32, 185, 107, 0.3);
+    text-align: center;
+    color: #ffffff;
+}
+
+.balance-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.balance-amount {
+    font-size: 32px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Floating Customer Support Button */
+.support-btn {
+    position: fixed;
+    bottom: 85px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #20B96B 0%, #36C66B 100%) !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(32, 185, 107, 0.4);
+    cursor: pointer;
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+
+.support-btn:hover {
+    transform: scale(1.1);
+}
+
+.support-btn img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Utility Classes */
+.text-gold { color: #20B96B !important; }
+.text-light { color: #5d6472 !important; }
+.text-white { color: #ffffff !important; }
+.text-dark { color: #0B1833 !important; }
+.text-center { text-align: center; }
+.text-bold { font-weight: 700; }
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}

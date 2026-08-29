@@ -1271,20 +1271,28 @@ const recharge2 = async (req, res) => {
             message: 'Failed',
             status: false,
             timeStamp: timeNow,
-        })
+        });
     }
     const [user] = await connection.query('SELECT `phone`, `code`,`invite` FROM users WHERE `token` = ?', [auth]);
-    let userInfo = user[0];
-    if (!user) {
+    if (!user || user.length === 0) {
         return res.status(200).json({
             message: 'Failed',
             status: false,
             timeStamp: timeNow,
         });
-    };
-    const [recharge] = await connection.query('SELECT * FROM recharge WHERE id_order = ? AND status = ? ', [orderid, 0]);
-    const [bank_recharge] = await connection.query('SELECT * FROM bank_recharge ');
-    if (recharge.length != 0) {
+    }
+    let userInfo = user[0];
+    const [bank_recharge] = await connection.query('SELECT * FROM bank_recharge');
+    
+    let recharge = [];
+    if (orderid) {
+        [recharge] = await connection.query('SELECT * FROM recharge WHERE id_order = ? AND phone = ?', [orderid, userInfo.phone]);
+    }
+    if (recharge.length === 0) {
+        [recharge] = await connection.query('SELECT * FROM recharge WHERE phone = ? ORDER BY id DESC LIMIT 1', [userInfo.phone]);
+    }
+
+    if (recharge.length !== 0) {
         return res.status(200).json({
             message: 'Received success',
             datas: recharge[0],
@@ -1294,12 +1302,12 @@ const recharge2 = async (req, res) => {
         });
     } else {
         return res.status(200).json({
-            message: 'order id does not exists',
+            message: 'order id does not exist',
+            infoBank: bank_recharge,
             status: false,
             timeStamp: timeNow,
         });
     }
-
 }
 
 const listRecharge = async (req, res) => {

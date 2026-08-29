@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Aviator - Real-time Crash Game</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" crossorigin="anonymous"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>if (typeof io === 'undefined') { document.write('<script src="https://cdn.socket.io/4.4.1/socket.io.min.js"><\/script>'); }</script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -1091,11 +1091,14 @@
         type: 'GET',
         success: function(res) {
           if (res && res.data) {
-            currentUserPhone = res.data.phone_user || res.data.phone || currentUserPhone;
+            currentUserPhone = String(res.data.phone_user || res.data.phone || currentUserPhone || '');
             const bal = (res.data.money_user !== undefined && res.data.money_user !== null)
               ? res.data.money_user
               : (res.data.money !== undefined ? res.data.money : 0);
             $('#user-balance').text(parseFloat(bal).toFixed(2));
+            if (currentGameState) {
+              updateGameStateUI(currentGameState);
+            }
           }
         }
       });
@@ -1123,6 +1126,13 @@
         crashAnimation.active = false;
         $('#mult-val').removeClass('crashed-text').text('1.00x');
         
+        [1, 2].forEach(p => {
+          if (panelState[p].status === 'QUEUED') {
+            panelState[p].status = 'BET_PLACED';
+            updatePanelButtonUI(p);
+          }
+        });
+
         const durationSec = data ? (data.durationMs / 1000) : 5;
         startCountdownTimer(durationSec);
       });
@@ -1133,6 +1143,12 @@
         stopCountdownTimer();
         $('#mult-label').text('FLYING');
         playChime(600, 'sine');
+        [1, 2].forEach(p => {
+          if (panelState[p].status === 'QUEUED') {
+            panelState[p].status = 'BET_PLACED';
+          }
+          updatePanelButtonUI(p);
+        });
       });
 
       socket.on('aviator:multiplier', function(data) {
@@ -1171,6 +1187,7 @@
         playChime(200, 'sawtooth');
 
         [1, 2].forEach(p => {
+          // Only reset active bet from this round; preserve QUEUED bets for next round
           if (panelState[p].status === 'BET_PLACED') {
             panelState[p].status = 'NONE';
             panelState[p].betId = null;
@@ -1181,17 +1198,40 @@
       });
 
       socket.on('aviator:player_cashout', function(data) {
-        if (data.username === currentUserPhone || data.phone === currentUserPhone) {
+        let isMe = false;
+        if (currentUserPhone && (String(data.username) === String(currentUserPhone) || String(data.phone) === String(currentUserPhone))) {
+          isMe = true;
+        }
+        [1, 2].forEach(pNum => {
+          if (panelState[pNum].betId == data.betId) {
+            isMe = true;
+            panelState[pNum].status = 'CASHED_OUT';
+            updatePanelButtonUI(pNum);
+          }
+        });
+        if (isMe) {
           playChime(1200, 'triangle');
           confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
           showToast(`🎉 CASHED OUT @ ${parseFloat(data.multiplier).toFixed(2)}x (+₹${parseFloat(data.payout).toFixed(2)})`);
-          
-          [1, 2].forEach(pNum => {
-            if (panelState[pNum].betId == data.betId) {
-              panelState[pNum].status = 'CASHED_OUT';
-              updatePanelButtonUI(pNum);
-            }
-          });
+          fetchUserInfo();
+        }
+      });
+
+      socket.on('aviator:player_cancel', function(data) {
+        let isMe = false;
+        if (currentUserPhone && (String(data.username) === String(currentUserPhone) || String(data.phone) === String(currentUserPhone))) {
+          isMe = true;
+        }
+        [1, 2].forEach(pNum => {
+          if (panelState[pNum].betId == data.betId) {
+            isMe = true;
+            panelState[pNum].status = 'NONE';
+            panelState[pNum].betId = null;
+            updatePanelButtonUI(pNum);
+          }
+        });
+        if (isMe) {
+          showToast(`↩️ Bet cancelled! Refunded ₹${parseFloat(data.amount).toFixed(2)}`);
           fetchUserInfo();
         }
       });
@@ -1226,9 +1266,9 @@
           `;
 
           // Sync local bet state for logged in user
-          if (currentUserPhone && (b.phone === currentUserPhone || b.username === currentUserPhone) && b.status === 0) {
+          if (currentUserPhone && (String(b.phone) === String(currentUserPhone) || String(b.username) === String(currentUserPhone)) && b.status === 0) {
             let pNum = b.panelNum || 1;
-            if (panelState[pNum].status === 'NONE') {
+            if (panelState[pNum].status === 'NONE' || panelState[pNum].status === 'QUEUED') {
               panelState[pNum].status = 'BET_PLACED';
               panelState[pNum].betId = b.id;
               panelState[pNum].amount = parseFloat(b.money || b.amount);
@@ -1240,62 +1280,153 @@
       }
     }
 
-    // Panel Action Handler (Bet & Cashout)
+    // Panel Action Handler (Bet, Cancel & Cashout)
     function handlePanelAction(panelNum) {
       const p = panelState[panelNum];
+      if (p.isProcessing) return;
 
+      // 1. PLACE NEW BET
       if (p.status === 'NONE') {
         const amount = parseFloat($(`#p${panelNum}-amount`).val());
         const autoVal = p.auto ? parseFloat($(`#p${panelNum}-auto-val`).val()) : null;
 
+        if (isNaN(amount) || amount <= 0) {
+          showToast('Please enter a valid bet amount!');
+          return;
+        }
+
+        p.isProcessing = true;
         $.ajax({
           url: '/api/webapi/aviator/bet',
           type: 'POST',
           data: JSON.stringify({ amount, autoCashout: autoVal, panelNum }),
           contentType: 'application/json',
           success: function(res) {
+            p.isProcessing = false;
             if (res.status) {
-              p.status = 'BET_PLACED';
+              p.status = res.isQueued ? 'QUEUED' : 'BET_PLACED';
               p.betId = res.betId;
               p.amount = amount;
               showToast(res.message);
-              $('#user-balance').text(parseFloat(res.newBalance).toFixed(2));
+              if (res.newBalance !== undefined) {
+                $('#user-balance').text(parseFloat(res.newBalance).toFixed(2));
+              }
               updatePanelButtonUI(panelNum);
             } else {
-              showToast(res.message);
+              showToast(res.message || 'Bet failed');
             }
           },
           error: function(err) {
+            p.isProcessing = false;
             showToast(err.responseJSON ? err.responseJSON.message : 'Bet failed');
           }
         });
-      } else if (p.status === 'BET_PLACED') {
-        // Emit Socket Cashout + AJAX Fallback for Instant Cashout
-        if (socket && p.betId) {
-          socket.emit('aviator:cashout', { betId: p.betId });
+      }
+      // 2. CANCEL QUEUED BET (Waiting for next round)
+      else if (p.status === 'QUEUED') {
+        if (!p.betId) {
+          p.status = 'NONE';
+          updatePanelButtonUI(panelNum);
+          return;
         }
-
+        p.isProcessing = true;
         $.ajax({
-          url: '/api/webapi/aviator/cashout',
+          url: '/api/webapi/aviator/cancel_bet',
           type: 'POST',
           data: JSON.stringify({ betId: p.betId }),
           contentType: 'application/json',
           success: function(res) {
+            p.isProcessing = false;
             if (res.status) {
-              p.status = 'CASHED_OUT';
-              showToast(`🎉 CASHED OUT @ ${parseFloat(res.multiplier).toFixed(2)}x (+₹${parseFloat(res.payout).toFixed(2)})`);
-              $('#user-balance').text(parseFloat(res.newBalance).toFixed(2));
-              confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
-              playChime(1200, 'triangle');
+              p.status = 'NONE';
+              p.betId = null;
+              showToast(res.message || 'Bet cancelled!');
+              if (res.newBalance !== undefined) {
+                $('#user-balance').text(parseFloat(res.newBalance).toFixed(2));
+              }
+              fetchUserInfo();
               updatePanelButtonUI(panelNum);
             } else {
-              showToast(res.message);
+              showToast(res.message || 'Cancel failed');
             }
           },
           error: function(err) {
-            showToast(err.responseJSON ? err.responseJSON.message : 'Cashout failed');
+            p.isProcessing = false;
+            showToast(err.responseJSON ? err.responseJSON.message : 'Cancel failed');
           }
         });
+      }
+      // 3. BET PLACED (FLYING -> Cashout, WAITING/BETTING_OPEN -> Cancel)
+      else if (p.status === 'BET_PLACED') {
+        if (gameStatus === 'FLYING') {
+          // --- CASH OUT ---
+          if (!p.betId) return;
+          p.isProcessing = true;
+          $.ajax({
+            url: '/api/webapi/aviator/cashout',
+            type: 'POST',
+            data: JSON.stringify({ betId: p.betId }),
+            contentType: 'application/json',
+            success: function(res) {
+              p.isProcessing = false;
+              if (res.status) {
+                p.status = 'CASHED_OUT';
+                showToast(`🎉 CASHED OUT @ ${parseFloat(res.multiplier).toFixed(2)}x (+₹${parseFloat(res.payout).toFixed(2)})`);
+                if (res.newBalance !== undefined) {
+                  $('#user-balance').text(parseFloat(res.newBalance).toFixed(2));
+                }
+                confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+                playChime(1200, 'triangle');
+                fetchUserInfo();
+                updatePanelButtonUI(panelNum);
+              } else {
+                showToast(res.message || 'Cashout failed');
+              }
+            },
+            error: function(err) {
+              p.isProcessing = false;
+              showToast(err.responseJSON ? err.responseJSON.message : 'Cashout failed');
+            }
+          });
+        } else {
+          // --- CANCEL BET BEFORE FLIGHT ---
+          if (!p.betId) {
+            p.status = 'NONE';
+            updatePanelButtonUI(panelNum);
+            return;
+          }
+          p.isProcessing = true;
+          $.ajax({
+            url: '/api/webapi/aviator/cancel_bet',
+            type: 'POST',
+            data: JSON.stringify({ betId: p.betId }),
+            contentType: 'application/json',
+            success: function(res) {
+              p.isProcessing = false;
+              if (res.status) {
+                p.status = 'NONE';
+                p.betId = null;
+                showToast(res.message || 'Bet cancelled!');
+                if (res.newBalance !== undefined) {
+                  $('#user-balance').text(parseFloat(res.newBalance).toFixed(2));
+                }
+                fetchUserInfo();
+                updatePanelButtonUI(panelNum);
+              } else {
+                showToast(res.message || 'Cancel failed');
+              }
+            },
+            error: function(err) {
+              p.isProcessing = false;
+              showToast(err.responseJSON ? err.responseJSON.message : 'Cancel failed');
+            }
+          });
+        }
+      }
+      else if (p.status === 'CASHED_OUT') {
+        p.status = 'NONE';
+        p.betId = null;
+        updatePanelButtonUI(panelNum);
       }
     }
 
@@ -1308,10 +1439,18 @@
         const amt = parseFloat($(`#p${panelNum}-amount`).val() || 0);
         btn.attr('class', 'btn-action btn-bet').find('span:first').text('BET');
         sub.text('₹' + amt.toFixed(2));
+      } else if (p.status === 'QUEUED') {
+        btn.attr('class', 'btn-action btn-cancel').find('span:first').text('CANCEL');
+        sub.text('WAITING (₹' + p.amount.toFixed(2) + ')');
       } else if (p.status === 'BET_PLACED') {
-        const winVal = (p.amount * animatedMultiplier).toFixed(2);
-        btn.attr('class', 'btn-action btn-cashout').find('span:first').text('CASHOUT');
-        sub.text('₹' + winVal);
+        if (gameStatus === 'FLYING') {
+          const winVal = (p.amount * animatedMultiplier).toFixed(2);
+          btn.attr('class', 'btn-action btn-cashout').find('span:first').text('CASHOUT');
+          sub.text('₹' + winVal);
+        } else {
+          btn.attr('class', 'btn-action btn-cancel').find('span:first').text('CANCEL');
+          sub.text('₹' + p.amount.toFixed(2));
+        }
       } else if (p.status === 'CASHED_OUT') {
         const amt = parseFloat($(`#p${panelNum}-amount`).val() || 0);
         btn.attr('class', 'btn-action btn-bet').find('span:first').text('BET');

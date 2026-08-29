@@ -1,0 +1,746 @@
+/* DiuWin Premium Theme - Dark with Rich Golden Accents */
+
+:root {
+    --primary-gold: #D4AF37;
+    --secondary-gold: #C5A028;
+    --accent-gold: #E6BE4E;
+    --dark-gold: #B8941E;
+    --bg-dark: #1a1a2e;
+    --bg-darker: #16213e;
+    --bg-darkest: #0f3460;
+    --card-bg: rgba(212, 175, 55, 0.95);
+    --card-bg-dark: rgba(30, 30, 46, 0.9);
+    --text-gold: #D4AF37;
+    --text-light: #e0e0e0;
+    --text-white: #ffffff;
+    --border-radius: 16px;
+}
+
+/* Body Background - Premium Grey Theme */
+body.home-page {
+    background: #2a2a2a;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Logo & Header - DiuWin Style */
+.diuwin-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    background: #2a2a2a;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+}
+
+.diuwin-logo img {
+    height: 50px;
+    width: auto;
+    filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.3));
+}
+
+.diuwin-logo-text {
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-left: 15px;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    letter-spacing: 2px;
+}
+
+/* Banner Section - Premium Gold Theme with Background Image */
+.banner-section {
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.bonus-banner {
+    background: url('/images/bonus-banner-custom.png') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--border-radius);
+    padding: 40px 25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(212, 175, 55, 0.2);
+    min-height: 200px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.bonus-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 0.4; }
+}
+
+.bonus-content {
+    position: relative;
+    z-index: 1;
+}
+
+.bonus-content h2 {
+    color: var(--primary-gold);
+    font-size: 32px;
+    font-weight: 900;
+    margin: 0 0 12px 0;
+    text-shadow: 0 4px 12px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.3);
+    letter-spacing: 1px;
+}
+
+.bonus-content p {
+    color: var(--text-light);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 25px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.bonus-btn {
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+    color: #000000;
+    padding: 14px 36px;
+    border-radius: 30px;
+    font-weight: 900;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.3);
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.bonus-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.7), 0 0 50px rgba(212, 175, 55, 0.5);
+}
+
+/* Welcome Text - DiuWin Alert Bar Style */
+.welcome-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(30, 30, 46, 0.7);
+    margin: 0 10px 20px;
+    padding: 15px 15px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.speaker-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+}
+
+.welcome-text p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 14px;
+    flex: 1;
+    font-weight: 500;
+}
+
+.detail-btn {
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+    color: #000000;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
+}
+
+.detail-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(212, 175, 55, 0.6);
+}
+
+/* Category Icons - DiuWin Compact Row Style */
+.category-section {
+    padding: 0 10px 30px;
+}
+
+.category-grid {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+    padding: 16px 10px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    min-width: 0;
+}
+
+.category-item::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.category-item:hover::before {
+    opacity: 1;
+}
+
+.category-item:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6), 0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+.category-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    padding: 10px;
+}
+
+.category-icon img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.category-name {
+    font-size: 12px;
+    color: #000000;
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+}
+
+/* Section Header - DiuWin Style */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding: 0 10px;
+}
+
+.section-header h3 {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text-gold);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
+}
+
+.section-header h3::before {
+    content: '';
+    width: 5px;
+    height: 24px;
+    background: linear-gradient(180deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.more-link {
+    color: var(--primary-gold);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.more-link:hover {
+    color: var(--secondary-gold);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Game Cards - DiuWin Premium Grey Theme */
+.home-page {
+    background: #2a2a2a;
+    min-height: 100vh;
+}
+
+.games-container {
+    padding: 20px 10px;
+    margin: 0 10px 20px;
+    background: transparent;
+    border-radius: var(--border-radius);
+    width: calc(100% - 20px);
+}
+
+.section-subtitle {
+    color: var(--text-light);
+    font-size: 14px;
+    margin: 0 0 20px 0;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.game-card {
+    background: transparent;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    backdrop-filter: none;
+}
+
+.game-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(212, 175, 55, 0.4);
+    border-color: var(--primary-gold);
+}
+
+.game-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.game-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4)) brightness(1.1);
+}
+
+.game-name {
+    padding: 14px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-gold);
+    background: transparent;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.game-desc {
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: center;
+    padding: 6px 12px 12px;
+    margin-top: -6px;
+}
+
+/* Super Jackpot Section - DiuWin Gold Theme */
+.jackpot-section {
+    padding: 20px;
+    margin: 0 10px 20px;
+    background: rgba(30, 30, 46, 0.8);
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+.jackpot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.jackpot-header h3 {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text-gold);
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(212, 175, 55, 0.5);
+}
+
+.jackpot-info {
+    font-size: 14px;
+    color: var(--text-light);
+    margin: 0 0 10px 0;
+    font-weight: 500;
+}
+
+.jackpot-amount {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--primary-gold);
+    margin: 0;
+    text-shadow: 0 4px 12px rgba(212, 175, 55, 0.6);
+}
+
+.jackpot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.jackpot-card {
+    background: rgba(50, 50, 70, 0.8);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.jackpot-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+    border-color: var(--primary-gold);
+}
+
+/* Bottom Navigation - DiuWin Premium Grey Theme */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(42, 42, 42, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 2px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 -4px 25px rgba(0,0,0,0.6), 0 0 0 1px rgba(212, 175, 55, 0.1);
+    z-index: 1000;
+    padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #9ca3af;
+    transition: all 0.3s ease;
+    flex: 1;
+    padding: 6px 0;
+    border-radius: 12px;
+}
+
+.nav-item.active {
+    color: var(--primary-gold);
+    background: rgba(212, 175, 55, 0.15);
+}
+
+.nav-item:hover {
+    color: #fbbf24;
+    transform: translateY(-2px);
+}
+
+.nav-item img {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 6px;
+    filter: grayscale(1) opacity(0.5);
+    transition: all 0.3s ease;
+}
+
+.nav-item.active img {
+    filter: grayscale(0) opacity(1) drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
+    transform: scale(1.1);
+}
+
+.nav-item:hover img {
+    filter: grayscale(0) opacity(0.8);
+    transform: scale(1.1);
+}
+
+.nav-item span {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Responsive - DiuWin Mobile Optimization */
+@media (max-width: 600px) {
+    .category-grid {
+        gap: 8px;
+    }
+    
+    .category-item {
+        padding: 12px 8px;
+    }
+    
+    .category-icon {
+        width: 50px;
+        height: 50px;
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .category-icon img {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .category-name {
+        font-size: 11px;
+    }
+    
+    .games-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    .game-image {
+        height: 110px;
+        padding: 15px;
+    }
+    
+    .game-name {
+        font-size: 14px;
+        padding: 10px;
+    }
+    
+    .support-btn {
+        width: 55px;
+        height: 55px;
+        bottom: 90px;
+    }
+}
+
+@media (max-width: 400px) {
+    .category-grid {
+        gap: 6px;
+    }
+    
+    .category-item {
+        padding: 10px 6px;
+    }
+    
+    .category-icon {
+        width: 45px;
+        height: 45px;
+        padding: 6px;
+        margin-bottom: 6px;
+    }
+    
+    .category-icon img {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .category-name {
+        font-size: 10px;
+    }
+    
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .bonus-content h2 {
+        font-size: 26px;
+    }
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+    0% { background-position: -468px 0; }
+    100% { background-position: 468px 0; }
+}
+
+.skeleton {
+    animation: shimmer 1.2s ease-in-out infinite;
+    background: linear-gradient(to right, #f0f0f0 8%, #f8f8f8 18%, #f0f0f0 33%);
+    background-size: 800px 100px;
+}
+
+/* Support Button - DiuWin Premium Style */
+.support-btn {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 62px;
+    height: 62px;
+    background: linear-gradient(135deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.3);
+    cursor: pointer;
+    z-index: 999;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    animation: supportPulse 2s ease-in-out infinite;
+}
+
+@keyframes supportPulse {
+    0%, 100% { 
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.3);
+    }
+    50% { 
+        box-shadow: 0 8px 30px rgba(212, 175, 55, 0.7), 0 0 50px rgba(212, 175, 55, 0.5);
+    }
+}
+
+.support-btn:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 10px 35px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.6);
+}
+
+.support-btn img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Additional DiuWin Premium Styles */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-gold) var(--bg-darker);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--bg-darker);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-gold) 0%, var(--secondary-gold) 100%);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--secondary-gold) 0%, #FF8C00 100%);
+}
+
+/* Global Text Colors for Dark Theme */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-gold);
+}
+
+p, span, div {
+    color: var(--text-light);
+}
+
+/* Link Styles */
+a {
+    color: var(--primary-gold);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-gold);
+}
+
+/* Premium Glow Animation for Special Elements */
+@keyframes goldenGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+    }
+}
+
+/* Ensure mobile responsiveness for bottom padding */
+@media (max-width: 768px) {
+    body.home-page {
+        padding-bottom: 80px !important;
+    }
+}
+
+/* ========================================
+   Force Bottom Navigation Fixed Position
+   ======================================== */
+
+#nav_checkUrl,
+.nav.c-pr {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 70px !important;
+    z-index: 9999 !important;
+}
+
+.van-hairline--top-bottom.van-tabbar.van-tabbar--fixed,
+.van-hairline--top-bottom.van-tabbar,
+.van-tabbar--fixed,
+.van-tabbar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    height: 70px !important;
+    z-index: 9999 !important;
+    transform: none !important;
+    margin: 0 !important;
+}

@@ -17,15 +17,17 @@ const host = process.env.SERVER_HOST || '0.0.0.0';
 
 app.use(cookieParser());
 // app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 // Request & Response Logger Middleware
 app.use((req, res, next) => {
-    console.log(`[REQUEST] ${req.method} ${req.url} - Body:`, req.body);
+    const isBig = req.body && req.body.qr && req.body.qr.length > 200;
+    const logBody = isBig ? { ...req.body, qr: `[Base64 Image (${req.body.qr.length} chars)]` } : req.body;
+    console.log(`[REQUEST] ${req.method} ${req.url} - Body:`, logBody);
     const oldJson = res.json;
     res.json = function(data) {
-        console.log(`[RESPONSE] ${req.method} ${req.url} - Status: ${res.statusCode} - Data:`, data);
+        console.log(`[RESPONSE] ${req.method} ${req.url} - Status: ${res.statusCode}`);
         return oldJson.apply(res, arguments);
     };
     next();
