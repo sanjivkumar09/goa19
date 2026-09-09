@@ -6,9 +6,14 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const homePage = async(req, res) => {
-    const [settings] = await connection.query('SELECT `app` FROM admin');
-    let app = settings[0].app;
-    return res.render("home/index.ejs", { app }); 
+    try {
+        const [settings] = await connection.query('SELECT `app` FROM admin');
+        let app = (settings && settings.length > 0 && settings[0].app) ? settings[0].app : '#';
+        return res.render("home/index.ejs", { app }); 
+    } catch (error) {
+        console.error("Error loading home page:", error.message);
+        return res.render("home/index.ejs", { app: '#' });
+    }
 }
 
 const checkInPage = async(req, res) => {
