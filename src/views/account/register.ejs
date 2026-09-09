@@ -406,7 +406,7 @@
                         <span>+91</span>
                         <i class="fa fa-chevron-down"></i>
                     </div>
-                    <input id="username" type="tel" maxlength="10" placeholder="Please enter the phone number" class="input-field" oninput="value=value.replace(/\D/g,'')">
+                    <input id="username" type="tel" maxlength="10" name="user_phone_no" autocomplete="off" placeholder="Please enter the phone number" class="input-field" oninput="value=value.replace(/\D/g,'')">
                 </div>
 
                 <!-- Set Password label -->
@@ -418,7 +418,7 @@
                 </div>
                 <!-- Password input wrapper -->
                 <div class="input-wrapper">
-                    <input id="password" type="password" placeholder="Set password" class="input-field pw-input">
+                    <input id="password" type="password" name="user_new_pwd" autocomplete="new-password" placeholder="Set password" class="input-field pw-input">
                     <span class="fa fa-fw fa-eye field_icon toggle-password"></span>
                 </div>
 
@@ -430,7 +430,7 @@
                     <span>Confirm password</span>
                 </div>
                 <div class="input-wrapper">
-                    <input id="confirm_password" type="password" placeholder="Confirm password" class="input-field pw-input">
+                    <input id="confirm_password" type="password" name="user_confirm_pwd" autocomplete="new-password" placeholder="Confirm password" class="input-field pw-input">
                     <span class="fa fa-fw fa-eye field_icon toggle-password"></span>
                 </div>
 
@@ -605,6 +605,14 @@
         if (c) {
             $('#invite_code').val(c);
         }
+
+        $(document).ready(function() {
+            setTimeout(function() {
+                if ($('#username').val() === '8209810991') {
+                    $('#username').val('');
+                }
+            }, 100);
+        });
     </script>
 </body>
 </html>
