@@ -199,7 +199,7 @@ const getMe = async (req, res) => {
         }
 
         const [freshUsers] = await connection.execute(
-            'SELECT `id`, `id_user`, `phone`, `name_user`, `money`, `money_user`, `status` FROM `users` WHERE `phone` = ?',
+            'SELECT `id`, `id_user`, `phone`, `name_user`, `money`, `money_user`, `status`, `level` FROM `users` WHERE `phone` = ?',
             [user.phone]
         );
         const freshUser = (freshUsers && freshUsers.length > 0) ? freshUsers[0] : user;
@@ -210,7 +210,7 @@ const getMe = async (req, res) => {
             id: String(freshUser.id_user || freshUser.phone),
             username: freshUser.name_user || freshUser.phone,
             email: `${freshUser.phone}@diuwin.game`,
-            role: (freshUser.phone === '9981474023' || freshUser.phone === '9981474025') ? 'ADMIN' : 'USER',
+            role: (freshUser.level == 1) ? 'ADMIN' : 'USER',
             status: freshUser.status == 1 ? 'ACTIVE' : 'SUSPENDED',
             balance,
             isGuest: false
